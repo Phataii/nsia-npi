@@ -1,0 +1,845 @@
+@{
+    ViewData["Title"] = "Team Info — NSIA Prize for Innovation";
+    Layout = null;
+    var applicantName = ViewBag.ApplicantName as string ?? "Adaeze Okonkwo";
+    var completedStep = (int)(ViewBag.CompletedStep ?? 2);
+    var initials = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
+    var totalSteps = 7;
+
+    var steps = new[] {
+        new { Num = 1, Name = "Profile",                 Action = "Profile"      },
+        new { Num = 2, Name = "Company Info",            Action = "CompanyInfo"  },
+        new { Num = 3, Name = "Team Info",               Action = "TeamInfo"     },
+        new { Num = 4, Name = "Product Info",            Action = "ProductInfo"  },
+        new { Num = 5, Name = "Commercial",              Action = "Commercial"   },
+        new { Num = 6, Name = "Impact & Sustainability", Action = "Impact"       },
+        new { Num = 7, Name = "Additional Information",  Action = "Additional"   },
+    };
+
+    string StepStatus(int num) {
+        if (num <= completedStep) return "completed";
+        if (num == completedStep + 1) return "active";
+        return "locked";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --teal: #0e86ab; --teal-d: #0a6b8a;
+            --green: #08703a; --green-d: #065a2f;
+            --lime: #83c240;
+            --ink: #0d1a12; --cream: #faf8f3; --off: #f4f2ec;
+            --muted: #5a6b60; --border: rgba(0,0,0,0.08);
+            --nav-h: 62px; --step-h: 56px;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
+
+        /* ── TOP NAV ── */
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: var(--ink); display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
+        .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 30% 50%, rgba(14,134,171,0.12) 0%, transparent 60%); }
+        .nav-brand { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
+        @* .nav-brand-icon { width: 34px; height: 34px; border-radius: 7px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; } *@
+        .nav-brand-icon img { width: 130px; height: 30%px; stroke: white; stroke-width: 2; fill: none; }
+        .nav-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
+        .nav-brand-text span { display: block; font-size: 10px; color: rgba(255,255,255,0.35); }
+        .nav-right { display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 1; }
+        .nav-deadline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.45); }
+        .nav-deadline svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.35); stroke-width: 1.75; fill: none; }
+        .deadline-val { color: var(--lime); font-weight: 500; }
+        .nav-user { display: flex; align-items: center; gap: 8px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: white; flex-shrink: 0; }
+        .user-name { font-size: 12px; color: rgba(255,255,255,0.7); }
+        .nav-logout { font-size: 11px; color: rgba(255,255,255,0.35); text-decoration: none; padding: .3rem .7rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: color .2s, border-color .2s; white-space: nowrap; }
+        .nav-logout:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.25); }
+        .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 1; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: transform .3s, opacity .3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        /* ── STEP BAR ── */
+        .step-bar { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190; height: var(--step-h); background: white; border-bottom: 1px solid var(--border); display: flex; align-items: stretch; overflow: hidden; }
+        .step-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 0 .5rem; text-decoration: none; color: var(--ink); border-right: 1px solid var(--border); position: relative; transition: background .2s; min-width: 0; }
+        .step-item:last-child { border-right: none; }
+        .step-item::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background .2s; }
+        .step-item:hover { background: var(--off); }
+        .step-item:hover::after { background: rgba(14,134,171,0.3); }
+        .step-item.completed .step-num { background: var(--green); border-color: var(--green); color: white; }
+        .step-item.completed .step-num svg { display: block; }
+        .step-item.completed .step-num span { display: none; }
+        .step-item.completed .step-name { color: var(--green); }
+        .step-item.completed::after { background: var(--green); }
+        .step-item.active { background: rgba(14,134,171,0.04); }
+        .step-item.active .step-num { background: var(--teal); border-color: var(--teal); color: white; }
+        .step-item.active .step-name { color: var(--teal); font-weight: 500; }
+        .step-item.active::after { background: var(--teal); }
+        .step-num { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: var(--muted); transition: background .2s, border-color .2s; }
+        .step-num svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .step-name { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .2s; }
+
+        /* ── SIDE DRAWER ── */
+        .drawer-overlay { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity .3s; }
+        .drawer-overlay.open { opacity: 1; }
+        .side-drawer { position: fixed; top: 0; left: -280px; bottom: 0; z-index: 160; width: 280px; background: var(--ink); display: flex; flex-direction: column; transition: left .3s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
+        .side-drawer.open { left: 0; }
+        .drawer-header { padding: 1.25rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .drawer-brand-icon { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .drawer-brand-icon svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+        .drawer-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .07em; text-transform: uppercase; }
+        .drawer-brand-text span { font-size: 10px; color: rgba(255,255,255,0.35); }
+        .drawer-user { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .drawer-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: white; }
+        .drawer-uname { font-size: 13px; font-weight: 500; color: white; }
+        .drawer-uemail { font-size: 11px; color: rgba(255,255,255,0.35); }
+        .drawer-steps { padding: .75rem 0; flex: 1; }
+        .drawer-step-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.3); letter-spacing: .1em; text-transform: uppercase; padding: .5rem 1.25rem .25rem; display: block; }
+        .drawer-item { display: flex; align-items: center; gap: .9rem; padding: .8rem 1.25rem; text-decoration: none; color: rgba(255,255,255,0.55); transition: background .2s, color .2s; position: relative; }
+        .drawer-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.85); }
+        .drawer-item.active { background: rgba(14,134,171,0.12); color: white; }
+        .drawer-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal); border-radius: 0 2px 2px 0; }
+        .drawer-item-num { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; transition: background .2s; }
+        .drawer-item.completed .drawer-item-num { background: var(--green); border-color: var(--green); }
+        .drawer-item.completed .drawer-item-num svg { display: block; }
+        .drawer-item.completed .drawer-item-num span { display: none; }
+        .drawer-item.active .drawer-item-num { background: var(--teal); border-color: var(--teal); }
+        .drawer-item-num svg { width: 11px; height: 11px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .drawer-item-name { font-size: 13px; }
+        .drawer-item-status { font-size: 10px; margin-top: 2px; color: rgba(255,255,255,0.25); }
+        .drawer-item.completed .drawer-item-status { color: #4ade80; }
+        .drawer-item.active .drawer-item-status { color: rgba(14,134,171,0.8); }
+        .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
+        .drawer-logout { display: flex; align-items: center; gap: .6rem; font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; padding: .6rem 0; transition: color .2s; }
+        .drawer-logout svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; }
+        .drawer-logout:hover { color: rgba(255,255,255,0.65); }
+
+        /* ── MAIN ── */
+        .main { padding-top: calc(var(--nav-h) + var(--step-h)); min-height: 100vh; }
+        .content { max-width: 800px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+
+        /* ── PAGE HEADER ── */
+        .page-header { margin-bottom: 2rem; }
+        .breadcrumb { display: flex; align-items: center; gap: .4rem; font-size: 11px; color: var(--muted); margin-bottom: .75rem; flex-wrap: wrap; }
+        .breadcrumb a { color: var(--teal); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); stroke-width: 2; fill: none; }
+        .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
+        .page-sub { font-size: .84rem; color: var(--muted); line-height: 1.65; }
+
+        /* ── STEP MINI ── */
+        .step-mini { display: flex; align-items: center; gap: .75rem; background: white; border-radius: 8px; border: 1px solid var(--border); padding: .85rem 1.25rem; margin-bottom: 2rem; }
+        .step-mini-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+        .step-mini-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+        .step-mini-name { font-size: .85rem; font-weight: 500; color: var(--ink); }
+        .step-mini-spacer { flex: 1; }
+        .step-mini-progress { font-size: 11px; color: var(--muted); white-space: nowrap; }
+        .step-mini-bar { width: 120px; height: 4px; background: var(--off); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--lime)); border-radius: 10px; width: 43%; }
+
+        /* ── FORM CARD ── */
+        .form-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
+        .form-card-header { padding: 1.2rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+        .form-card-icon { width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .form-card-icon.teal { background: rgba(14,134,171,0.1); }
+        .form-card-icon.teal svg { stroke: var(--teal); }
+        .form-card-icon.green { background: rgba(8,112,58,0.1); }
+        .form-card-icon.green svg { stroke: var(--green); }
+        .form-card-icon svg { width: 18px; height: 18px; stroke-width: 1.75; fill: none; }
+        .form-card-title { font-size: .95rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+        .form-card-desc { font-size: .75rem; color: var(--muted); line-height: 1.4; }
+        .form-card-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem; }
+
+        /* ── FORM ELEMENTS ── */
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+        .form-group { display: flex; flex-direction: column; gap: .38rem; }
+        label { font-size: .75rem; font-weight: 500; color: var(--ink); letter-spacing: .02em; }
+        .label-req { color: #e53e3e; margin-left: 2px; }
+        .label-opt { font-size: .68rem; color: var(--muted); font-weight: 400; margin-left: 4px; }
+        .input-wrap { position: relative; }
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); }
+        .input-icon svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.75; fill: none; display: block; }
+
+        input[type="text"], input[type="url"], input[type="number"], input[type="tel"], select {
+            width: 100%; border: 1px solid var(--border); border-radius: 7px;
+            font-size: .85rem; font-family: 'DM Sans', sans-serif;
+            background: white; color: var(--ink);
+            transition: border-color .2s, box-shadow .2s;
+            outline: none; -webkit-appearance: none; appearance: none;
+            padding: .72rem .9rem .72rem 2.5rem;
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        select { padding: .72rem 2.25rem .72rem 2.5rem; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6b60' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+        input::placeholder { color: #aab5af; }
+        input:focus, select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(14,134,171,0.1); }
+
+        /* Validation */
+        .field-error { font-size: .71rem; color: #b91c1c; display: none; }
+        .form-group.invalid input, .form-group.invalid select { border-color: #f87171; }
+        .form-group.invalid input:focus, .form-group.invalid select:focus { box-shadow: 0 0 0 3px rgba(248,113,113,0.12); }
+        .form-group.invalid .field-error { display: block; }
+
+        /* Multi-choice checkboxes */
+        .mc-options { display: flex; flex-direction: column; gap: .65rem; }
+        .mc-option { position: relative; }
+        .mc-option input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        .mc-label { display: flex; align-items: flex-start; gap: .85rem; padding: .9rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
+        .mc-label:hover { border-color: rgba(14,134,171,0.3); background: rgba(14,134,171,0.02); }
+        .mc-option input:checked + .mc-label { border-color: var(--teal); background: rgba(14,134,171,0.05); }
+        .mc-box { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: background .15s, border-color .15s; margin-top: 1px; }
+        .mc-option input:checked + .mc-label .mc-box { background: var(--teal); border-color: var(--teal); }
+        .mc-box svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; opacity: 0; transform: scale(0); transition: opacity .15s, transform .15s; }
+        .mc-option input:checked + .mc-label .mc-box svg { opacity: 1; transform: scale(1); }
+        .mc-letter { font-size: .72rem; font-weight: 500; color: var(--muted); flex-shrink: 0; min-width: 16px; }
+        .mc-option input:checked + .mc-label .mc-letter { color: var(--teal); }
+        .mc-text { font-size: .84rem; color: var(--ink); line-height: 1.5; }
+        .form-group.invalid .mc-label { border-color: #f87171; }
+
+        /* ── FOUNDER CARDS ── */
+        .founders-list { display: flex; flex-direction: column; gap: 1rem; }
+
+        .founder-card {
+            border: 1px solid var(--border); border-radius: 10px;
+            overflow: hidden; transition: box-shadow .2s;
+            background: white;
+        }
+        .founder-card:focus-within { box-shadow: 0 0 0 3px rgba(14,134,171,0.08); border-color: rgba(14,134,171,0.25); }
+
+        .founder-card-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: .9rem 1.25rem;
+            background: var(--off); border-bottom: 1px solid var(--border);
+            cursor: pointer; user-select: none;
+        }
+        .founder-card-header-left { display: flex; align-items: center; gap: .75rem; }
+        .founder-avatar {
+            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 500; color: white;
+        }
+        .founder-card-label { font-size: .85rem; font-weight: 500; color: var(--ink); }
+        .founder-card-sublabel { font-size: .72rem; color: var(--muted); margin-top: 1px; }
+        .founder-card-actions { display: flex; align-items: center; gap: .5rem; }
+        .founder-toggle {
+            width: 28px; height: 28px; border-radius: 6px; border: none;
+            background: white; border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: background .2s; flex-shrink: 0;
+        }
+        .founder-toggle svg { width: 14px; height: 14px; stroke: var(--muted); stroke-width: 2; fill: none; transition: transform .25s; }
+        .founder-card.collapsed .founder-toggle svg { transform: rotate(-90deg); }
+        .btn-remove-founder {
+            width: 28px; height: 28px; border-radius: 6px;
+            background: white; border: 1px solid rgba(248,113,113,0.3);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: background .2s; flex-shrink: 0;
+        }
+        .btn-remove-founder svg { width: 13px; height: 13px; stroke: #f87171; stroke-width: 2; fill: none; }
+        .btn-remove-founder:hover { background: #fef2f2; }
+
+        .founder-card-body {
+            padding: 1.25rem;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+            transition: all .25s ease;
+        }
+        .founder-card.collapsed .founder-card-body {
+            display: none;
+        }
+        .founder-field-full { grid-column: 1 / -1; }
+
+        /* ── ADD FOUNDER BUTTON ── */
+        .btn-add-founder {
+            display: flex; align-items: center; justify-content: center; gap: .6rem;
+            width: 100%; padding: .85rem;
+            border: 1.5px dashed rgba(14,134,171,0.3); border-radius: 10px;
+            background: rgba(14,134,171,0.02); color: var(--teal);
+            font-size: .84rem; font-weight: 500; font-family: 'DM Sans', sans-serif;
+            cursor: pointer; transition: background .2s, border-color .2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-add-founder:hover { background: rgba(14,134,171,0.06); border-color: rgba(14,134,171,0.5); }
+        .btn-add-founder svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        /* Founder count badge */
+        .founder-count-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(14,134,171,0.08); border: 1px solid rgba(14,134,171,0.18);
+            padding: .2rem .65rem; border-radius: 100px;
+            font-size: 11px; color: var(--teal); font-weight: 500;
+            margin-left: .75rem;
+        }
+
+        /* ── ACTIONS ── */
+        .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
+        .actions-left { display: flex; align-items: center; gap: .75rem; }
+        .btn-back { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.3rem; border-radius: 7px; border: 1px solid var(--border); background: white; font-size: .84rem; font-weight: 400; color: var(--muted); text-decoration: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: border-color .2s, color .2s; }
+        .btn-back:hover { border-color: rgba(0,0,0,0.2); color: var(--ink); }
+        .btn-back svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: .72rem 1.5rem; border-radius: 7px; background: white; border: 1px solid var(--border); font-size: .84rem; font-weight: 500; color: var(--teal); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, border-color .2s; }
+        .btn-save:hover { background: rgba(14,134,171,0.04); border-color: rgba(14,134,171,0.3); }
+        .btn-save svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-next { display: inline-flex; align-items: center; gap: 7px; padding: .76rem 1.75rem; border-radius: 7px; background: var(--green); color: white; border: none; font-size: .88rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, transform .15s; -webkit-tap-highlight-color: transparent; }
+        .btn-next:hover { background: var(--green-d); transform: translateY(-1px); }
+        .btn-next:active { transform: scale(0.98); }
+        .btn-next:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+        .btn-next svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+
+        /* ── TOAST ── */
+        .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--ink); color: white; padding: .75rem 1.25rem; border-radius: 8px; font-size: .8rem; display: flex; align-items: center; gap: .6rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transform: translateY(20px); opacity: 0; transition: transform .3s, opacity .3s; pointer-events: none; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast svg { width: 15px; height: 15px; stroke: var(--lime); stroke-width: 2; fill: none; flex-shrink: 0; }
+
+        /* ── RESPONSIVE ── */
+        @@media (max-width: 900px) {
+            .step-bar { display: none; }
+            .top-nav { padding: 0 1.25rem; }
+            .hamburger { display: flex; }
+            .nav-deadline, .user-name, .nav-logout { display: none; }
+            .main { padding-top: var(--nav-h); }
+            .content { padding: 1.5rem 1rem 3rem; }
+            .form-grid-2 { grid-template-columns: 1fr; }
+            .step-mini-bar, .step-mini-progress { display: none; }
+        }
+        @@media (max-width: 600px) {
+            .founder-card-body { grid-template-columns: 1fr; }
+            .founder-field-full { grid-column: 1; }
+            .page-title { font-size: 1.6rem; }
+            .form-card-body { padding: 1.25rem; }
+            .form-actions { flex-direction: column; align-items: stretch; }
+            .actions-left { justify-content: space-between; }
+            .btn-next { justify-content: center; width: 100%; padding: 1rem; }
+            .toast { left: 1rem; right: 1rem; bottom: 1rem; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+    <div class="nav-brand">
+        <div class="nav-brand-icon">
+            <img src="~/logo.png" alt="logo"/> 
+        </div>
+        @* <div class="nav-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div> *@
+    </div>
+    <div class="nav-right">
+        <div class="nav-deadline">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Deadline: <span class="deadline-val">5 June 2026</span>
+        </div>
+        <div class="nav-user">
+            <div class="user-avatar">@initials</div>
+            <span class="user-name">@applicantName</span>
+        </div>
+        <a asp-action="Logout" asp-controller="Account" class="nav-logout">Sign out</a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- STEP BAR -->
+<div class="step-bar">
+    @foreach (var s in steps) {
+        var status = StepStatus(s.Num);
+        <a asp-action="@s.Action" asp-controller="Application" class="step-item @status" title="@s.Name">
+            <div class="step-num">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                <span>@s.Num</span>
+            </div>
+            <span class="step-name">@s.Name</span>
+        </a>
+    }
+</div>
+
+<!-- MOBILE DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+        <div class="drawer-brand-icon"><svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg></div>
+        <div class="drawer-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div>
+    </div>
+    <div class="drawer-user">
+        <div class="drawer-avatar">@initials</div>
+        <div><div class="drawer-uname">@applicantName</div><div class="drawer-uemail">NPI 4.0 Applicant</div></div>
+    </div>
+    <div class="drawer-steps">
+        <span class="drawer-step-label">Application Steps</span>
+        @foreach (var s in steps) {
+            var status = StepStatus(s.Num);
+            var statusLabel = status == "completed" ? "Completed" : status == "active" ? "In progress" : "Locked";
+            @* <a asp-action="@s.Action" asp-controller="Application"
+               class="drawer-item @status"
+               @(status == "locked" ? "style=pointer-events:none;opacity:.45" : "")>
+                <div class="drawer-item-num">
+                    <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                    <span>@s.Num</span>
+                </div>
+                <div>
+                    <div class="drawer-item-name">@s.Name</div>
+                    <div class="drawer-item-status">@statusLabel</div>
+                </div>
+            </a> *@
+        }
+    </div>
+    <div class="drawer-footer">
+        <a asp-action="Logout" asp-controller="Account" class="drawer-logout">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out of account
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+    <div class="content">
+
+        <div class="page-header">
+            <div class="breadcrumb">
+                <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>Team Info</span>
+            </div>
+            <h1 class="page-title">Team Information</h1>
+            <p class="page-sub">Tell us about the people driving your innovation — founders, their backgrounds, and your full team size.</p>
+        </div>
+
+        <div class="step-mini">
+            <div class="step-mini-dot">3</div>
+            <div>
+                <div class="step-mini-label">Step 3 of 7</div>
+                <div class="step-mini-name">Team Info</div>
+            </div>
+            <div class="step-mini-spacer"></div>
+            <span class="step-mini-progress">Step 3 of 7</span>
+            <div class="step-mini-bar"><div class="step-mini-fill"></div></div>
+        </div>
+
+        <form asp-action="SaveTeamInfo" asp-controller="Application" method="post" id="teamForm" novalidate>
+            @Html.AntiForgeryToken()
+
+            <!-- ── CARD 1: Team Overview ── -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon teal">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Team Overview</div>
+                        <div class="form-card-desc">High-level information about your founding team size and composition.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+                    <div class="form-grid-2">
+
+                        <!-- Number of founders -->
+                        <div class="form-group" id="grp-foundercount">
+                            <label for="NumberOfFounders">
+                                How many founders are on the team?
+                                <span class="label-req">*</span>
+                            </label>
+                            <div class="input-wrap">
+                                <span class="input-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                </span>
+                                <select id="NumberOfFounders" name="NumberOfFounders">
+                                    <option value="" disabled selected="@(ViewBag.NumberOfFounders == null)">Select number</option>
+                                    @for (int i = 1; i <= 10; i++)
+                                    {
+                                        <option value="@i" selected="@(ViewBag.NumberOfFounders == i)">
+                                            @i founder@(i > 1 ? "s" : "")
+                                        </option>
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="field-error">Please select the number of founders.</div>
+                        </div>
+
+                        <!-- Total employees -->
+                        <div class="form-group" id="grp-employees">
+                            <label for="TotalEmployees">
+                                Total number of employees
+                                <span class="label-req">*</span>
+                            </label>
+                            <div class="input-wrap">
+                                <span class="input-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                </span>
+                                <input type="number" id="TotalEmployees" name="TotalEmployees"
+                                       placeholder="e.g. 12" min="1" max="10000"
+                                       value="@ViewBag.TotalEmployees" />
+                            </div>
+                            <div class="field-error">Please enter the total number of employees.</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Founding team composition -->
+                    <div class="form-group" id="grp-teamcomp">
+                        <label>
+                            Who is on your founding team?
+                            <span class="label-req">*</span>
+                            <span class="label-opt">(select all that apply)</span>
+                        </label>
+                        <div class="mc-options">
+                            @{
+                                var teamProfiles = new[] {
+                                    new { Val = "A", Text = "Experienced professionals with industry expertise" },
+                                    new { Val = "B", Text = "Innovators with a track record of success" },
+                                    new { Val = "C", Text = "Recent graduates with fresh perspectives" },
+                                    new { Val = "D", Text = "A diverse mix of technical and business skills" },
+                                };
+                                var savedTeamComp = ViewBag.TeamComposition as List<string> ?? new List<string>();
+                            }
+                            @foreach (var t in teamProfiles) {
+                                <div class="mc-option">
+                                    <input type="checkbox" id="tc-@t.Val" name="TeamComposition" value="@t.Val"
+                                           @(savedTeamComp.Contains(t.Val) ? "checked" : "") />
+                                    <label class="mc-label" for="tc-@t.Val">
+                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                        <span class="mc-letter">@t.Val)</span>
+                                        <span class="mc-text">@t.Text</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select at least one option.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── CARD 2: Founders' Details ── -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon green">
+                        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">
+                            Founders' Details
+                            <span class="founder-count-badge" id="founderCountBadge">0 founders</span>
+                        </div>
+                        <div class="form-card-desc">Provide the name, phone number, role, LinkedIn/profile URL, and nationality for each founder.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+                    <div class="founders-list" id="foundersList"></div>
+                    <div class="form-group" id="grp-founders-error" style="display:none">
+                        <div class="field-error" style="display:block;color:#b91c1c;font-size:.78rem">
+                            Please add at least one founder and fill in all required fields.
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add-founder" id="btnAddFounder">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        Add a founder
+                    </button>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <div class="actions-left">
+                    <a asp-action="CompanyInfo" asp-controller="Application" class="btn-back">
+                        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                        Back
+                    </a>
+                    <button type="button" class="btn-save" id="saveBtn">
+                        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Save draft
+                    </button>
+                </div>
+                <button type="submit" class="btn-next" id="nextBtn">
+                    Save &amp; Continue
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<div class="toast" id="toast">
+    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <span id="toastMsg">Draft saved successfully</span>
+</div>
+
+<script>
+    // ── Drawer
+    const hamburger     = document.getElementById('hamburger');
+    const sideDrawer    = document.getElementById('sideDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const openDrawer  = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display='block'; setTimeout(()=>drawerOverlay.classList.add('open'),10); hamburger.classList.add('open'); document.body.style.overflow='hidden'; };
+    const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(()=>drawerOverlay.style.display='',300); hamburger.classList.remove('open'); document.body.style.overflow=''; };
+    hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
+    drawerOverlay.addEventListener('click', closeDrawer);
+
+    // ── Founder card builder
+    let founderIndex = 0;
+    const foundersList = document.getElementById('foundersList');
+    const countBadge   = document.getElementById('founderCountBadge');
+
+    // Pre-load saved founders from server (populate from ViewBag in controller)
+    const savedFounders = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Founders ?? new object[0]));
+
+    function getInitials(name) {
+        if (!name || !name.trim()) return '?';
+        return name.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+    }
+
+    function updateCountBadge() {
+        const count = foundersList.querySelectorAll('.founder-card').length;
+        countBadge.textContent = count + ' founder' + (count !== 1 ? 's' : '');
+    }
+
+    function updateAvatarInitials(card) {
+        const nameInput = card.querySelector('.founder-name-input');
+        const avatar    = card.querySelector('.founder-avatar');
+        if (nameInput && avatar) {
+            avatar.textContent = getInitials(nameInput.value);
+        }
+    }
+
+    function updateCardLabel(card) {
+        const nameInput = card.querySelector('.founder-name-input');
+        const roleInput = card.querySelector('.founder-role-input');
+        const label     = card.querySelector('.founder-card-label');
+        const sublabel  = card.querySelector('.founder-card-sublabel');
+        if (label)    label.textContent    = nameInput?.value.trim() || 'New Founder';
+        if (sublabel) sublabel.textContent = roleInput?.value.trim() || 'Role not set';
+    }
+
+    function addFounder(data) {
+        const idx  = founderIndex++;
+        const card = document.createElement('div');
+        card.className = 'founder-card';
+        card.dataset.index = idx;
+
+        const name        = data?.name        || '';
+        const phone       = data?.phone       || '';
+        const role        = data?.role        || '';
+        const linkedin    = data?.linkedin    || '';
+        const nationality = data?.nationality || '';
+
+        card.innerHTML = `
+        <div class="founder-card-header" onclick="toggleFounderCard(this.closest('.founder-card'))">
+            <div class="founder-card-header-left">
+                <div class="founder-avatar">${getInitials(name)}</div>
+                <div>
+                    <div class="founder-card-label">${name || 'New Founder'}</div>
+                    <div class="founder-card-sublabel">${role || 'Role not set'}</div>
+                </div>
+            </div>
+            <div class="founder-card-actions">
+                <button type="button" class="btn-remove-founder" onclick="removeFounder(event, this)" title="Remove founder">
+                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                </button>
+                <button type="button" class="founder-toggle" title="Collapse">
+                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="founder-card-body">
+            <div class="form-group founder-field-full" id="grp-fname-${idx}">
+                <label>Full name <span class="label-req">*</span></label>
+                <div class="input-wrap">
+                    <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                    <input type="text" class="founder-name-input" name="Founders[${idx}].Name"
+                           placeholder="e.g. Emeka Okafor" value="${escHtml(name)}" />
+                </div>
+                <div class="field-error">Please enter the founder's name.</div>
+            </div>
+            <div class="form-group" id="grp-fphone-${idx}">
+                <label>Phone number <span class="label-req">*</span></label>
+                <div class="input-wrap">
+                    <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+                    <input type="tel" name="Founders[${idx}].PhoneNumber"
+                           placeholder="+234 800 000 0000" value="${escHtml(phone)}"
+                           inputmode="tel" />
+                </div>
+                <div class="field-error">Please enter a valid phone number.</div>
+            </div>
+            <div class="form-group" id="grp-frole-${idx}">
+                <label>Role / Title <span class="label-req">*</span></label>
+                <div class="input-wrap">
+                    <span class="input-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+                    <input type="text" class="founder-role-input" name="Founders[${idx}].Role"
+                           placeholder="e.g. CEO &amp; Co-Founder" value="${escHtml(role)}" />
+                </div>
+                <div class="field-error">Please enter the founder's role.</div>
+            </div>
+            <div class="form-group" id="grp-fnationality-${idx}">
+                <label>Nationality <span class="label-req">*</span></label>
+                <div class="input-wrap">
+                    <span class="input-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+                    <input type="text" name="Founders[${idx}].Nationality"
+                           placeholder="e.g. Nigerian" value="${escHtml(nationality)}" />
+                </div>
+                <div class="field-error">Please enter the founder's nationality.</div>
+            </div>
+            <div class="form-group founder-field-full" id="grp-flinkedin-${idx}">
+                <label>LinkedIn or Profile URL <span class="label-opt">(optional)</span></label>
+                <div class="input-wrap">
+                    <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
+                    <input type="url" name="Founders[${idx}].LinkedInUrl"
+                           placeholder="https://linkedin.com/in/username" value="${escHtml(linkedin)}" />
+                </div>
+            </div>
+        </div>`;
+
+        // Live update avatar + label on name/role change
+        card.querySelector('.founder-name-input').addEventListener('input', () => {
+            updateAvatarInitials(card);
+            updateCardLabel(card);
+        });
+        card.querySelector('.founder-role-input').addEventListener('input', () => updateCardLabel(card));
+
+        foundersList.appendChild(card);
+        updateCountBadge();
+        syncFounderCountSelect();
+    }
+
+    function toggleFounderCard(card) {
+        card.classList.toggle('collapsed');
+    }
+
+    function removeFounder(e, btn) {
+        e.stopPropagation();
+        const card = btn.closest('.founder-card');
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.97)';
+        card.style.transition = 'opacity .2s, transform .2s';
+        setTimeout(() => { card.remove(); updateCountBadge(); syncFounderCountSelect(); }, 200);
+    }
+
+    function syncFounderCountSelect() {
+        const count = foundersList.querySelectorAll('.founder-card').length;
+        const sel = document.getElementById('NumberOfFounders');
+        if (count > 0) sel.value = count;
+    }
+
+    function escHtml(str) {
+        return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // Add founder button
+    document.getElementById('btnAddFounder').addEventListener('click', () => {
+        addFounder({});
+        // Scroll new card into view
+        const cards = foundersList.querySelectorAll('.founder-card');
+        cards[cards.length - 1]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    // When number of founders select changes, sync card count
+    document.getElementById('NumberOfFounders').addEventListener('change', function () {
+        const target  = parseInt(this.value);
+        const current = foundersList.querySelectorAll('.founder-card').length;
+        if (target > current) {
+            for (let i = current; i < target; i++) addFounder({});
+        }
+    });
+
+    // Load saved founders on page load
+    if (savedFounders && savedFounders.length > 0) {
+        savedFounders.forEach(f => addFounder(f));
+    }
+
+    // ── Validation helpers
+    function setInvalid(id) { document.getElementById(id)?.classList.add('invalid'); }
+    function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
+    function isValidPhone(v) { return /^[+\d][\d\s\-(). ]{6,19}$/.test(v.trim()); }
+
+    ['NumberOfFounders'].forEach(id => {
+        document.getElementById(id)?.addEventListener('change', () => clearInvalid('grp-foundercount'));
+    });
+    document.getElementById('TotalEmployees')?.addEventListener('input', () => clearInvalid('grp-employees'));
+    document.querySelectorAll('input[name="TeamComposition"]').forEach(c => c.addEventListener('change', () => clearInvalid('grp-teamcomp')));
+
+    function validate() {
+        let ok = true;
+
+        if (!document.getElementById('NumberOfFounders').value) { setInvalid('grp-foundercount'); ok = false; } else clearInvalid('grp-foundercount');
+
+        const emp = parseInt(document.getElementById('TotalEmployees').value);
+        if (!emp || emp < 1) { setInvalid('grp-employees'); ok = false; } else clearInvalid('grp-employees');
+
+        if (!document.querySelector('input[name="TeamComposition"]:checked')) { setInvalid('grp-teamcomp'); ok = false; } else clearInvalid('grp-teamcomp');
+
+        // Validate each founder card
+        const cards = foundersList.querySelectorAll('.founder-card');
+        if (cards.length === 0) {
+            document.getElementById('grp-founders-error').style.display = 'block';
+            ok = false;
+        } else {
+            document.getElementById('grp-founders-error').style.display = 'none';
+        }
+
+        cards.forEach(card => {
+            const idx  = card.dataset.index;
+            const name = card.querySelector(`input[name="Founders[${idx}].Name"]`);
+            const ph   = card.querySelector(`input[name="Founders[${idx}].PhoneNumber"]`);
+            const role = card.querySelector(`input[name="Founders[${idx}].Role"]`);
+            const nat  = card.querySelector(`input[name="Founders[${idx}].Nationality"]`);
+
+            if (!name?.value.trim()) { document.getElementById(`grp-fname-${idx}`)?.classList.add('invalid'); ok = false; card.classList.remove('collapsed'); }
+            else document.getElementById(`grp-fname-${idx}`)?.classList.remove('invalid');
+
+            if (!ph?.value.trim() || !isValidPhone(ph.value)) { document.getElementById(`grp-fphone-${idx}`)?.classList.add('invalid'); ok = false; card.classList.remove('collapsed'); }
+            else document.getElementById(`grp-fphone-${idx}`)?.classList.remove('invalid');
+
+            if (!role?.value.trim()) { document.getElementById(`grp-frole-${idx}`)?.classList.add('invalid'); ok = false; card.classList.remove('collapsed'); }
+            else document.getElementById(`grp-frole-${idx}`)?.classList.remove('invalid');
+
+            if (!nat?.value.trim()) { document.getElementById(`grp-fnationality-${idx}`)?.classList.add('invalid'); ok = false; card.classList.remove('collapsed'); }
+            else document.getElementById(`grp-fnationality-${idx}`)?.classList.remove('invalid');
+        });
+
+        if (!ok) document.querySelector('.invalid, [style*="block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return ok;
+    }
+
+    // ── Toast
+    function showToast(msg, isError) {
+        const toast = document.getElementById('toast');
+        toast.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--lime)';
+        document.getElementById('toastMsg').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ── Save draft
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('saveBtn');
+        btn.textContent = 'Saving...'; btn.disabled = true;
+        try {
+            const fd  = new FormData(document.getElementById('teamForm'));
+            const res = await fetch('/Application/SaveTeamInfoDraft', { method: 'POST', body: fd });
+            showToast(res.ok ? 'Draft saved successfully' : 'Could not save draft', !res.ok);
+        } catch { showToast('Could not save draft', true); }
+        finally {
+            btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save draft';
+            btn.disabled = false;
+        }
+    });
+
+    // ── Submit
+    document.getElementById('teamForm').addEventListener('submit', function (e) {
+        if (!validate()) { e.preventDefault(); return; }
+        const btn = document.getElementById('nextBtn');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Saving...';
+        btn.disabled = true;
+    });
+</script>
+</body>
+</html>

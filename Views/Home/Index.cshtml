@@ -1,0 +1,667 @@
+﻿@{
+    ViewData["Title"] = "NSIA Prize for Innovation";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NSIA Prize for Innovation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --teal: #0e86ab; --green: #08703a; --lime: #83c240;
+            --teal-dark: #0a6b8a; --green-dark: #065a2f;
+            --off-white: #f4f2ec; --cream: #faf8f3;
+            --ink: #0d1a12; --muted: #5a6b60;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+        /* ══ NAV ══ */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem 4rem;
+            background: rgba(250,248,243,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(14,134,171,0.12);
+        }
+        .nav-brand { display: flex; align-items: center; }
+        .nav-logo img { width: 150px; height: auto; display: block; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+        .nav-links a { font-size: .82rem; font-weight: 500; color: var(--ink); text-decoration: none; opacity: .75; transition: opacity .2s; }
+        .nav-links a:hover { opacity: 1; color: var(--teal); }
+        .nav-cta { background: var(--green); color: white !important; padding: .6rem 1.5rem; border-radius: 4px; font-size: .82rem; font-weight: 600; opacity: 1 !important; transition: background .2s; }
+        .nav-cta:hover { background: var(--green-dark); }
+        .nav-hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+        .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .3s, opacity .3s; }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .mobile-menu { display: none; position: fixed; inset: 0; z-index: 150; background: var(--ink); flex-direction: column; align-items: center; justify-content: center; gap: 2rem; }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu a { font-size: 1.4rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; color: white; text-decoration: none; }
+        .mobile-menu a:hover { color: var(--lime); }
+        .mobile-menu .m-cta { background: var(--green); color: white; padding: .85rem 2.5rem; border-radius: 4px; font-size: .9rem; font-family: 'DM Sans', sans-serif; font-weight: 600; margin-top: .5rem; }
+        .mobile-menu-close { position: absolute; top: 1.25rem; right: 1.5rem; background: none; border: none; cursor: pointer; color: white; font-size: 1.75rem; line-height: 1; }
+
+        /* ══ HERO ══ */
+        .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+        .hero-left {
+            background: var(--ink); padding: 10rem 4rem 4rem;
+            position: relative; display: flex; flex-direction: column; justify-content: center;
+        }
+        .hero-left::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(14,134,171,0.25) 0%, transparent 65%),
+                        radial-gradient(ellipse at 80% 20%, rgba(8,112,58,0.2) 0%, transparent 55%);
+        }
+        .hero-left > * { position: relative; z-index: 1; }
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: .5rem;
+            background: rgba(131,194,64,0.15); border: 1px solid rgba(131,194,64,0.3);
+            padding: .35rem .9rem; border-radius: 100px;
+            font-size: .72rem; font-weight: 600; color: var(--lime);
+            letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2rem; width: fit-content;
+        }
+        .hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--lime); display: inline-block; animation: pulse 2s ease-in-out infinite; }
+        @@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+        .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem,4.5vw,5.5rem); font-weight: 700; line-height: 1; color: white; margin-bottom: 1.5rem; }
+        .hero-title .accent { color: var(--lime); font-style: italic; }
+        .hero-sub { font-size: 1rem; line-height: 1.75; color: rgba(255,255,255,0.6); max-width: 440px; margin-bottom: 3rem; font-weight: 300; }
+        .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .btn-primary { background: var(--lime); color: var(--ink); padding: .9rem 2rem; border-radius: 4px; font-size: .88rem; font-weight: 700; text-decoration: none; letter-spacing: .04em; text-transform: uppercase; transition: transform .2s, box-shadow .2s; display: inline-flex; align-items: center; gap: .5rem; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(131,194,64,0.35); }
+        .btn-secondary { background: transparent; color: white; padding: .9rem 2rem; border-radius: 4px; font-size: .88rem; font-weight: 500; text-decoration: none; border: 1px solid rgba(255,255,255,0.25); transition: border-color .2s, background .2s; }
+        .btn-secondary:hover { border-color: white; background: rgba(255,255,255,0.05); }
+        .hero-stats { display: flex; gap: 2.5rem; margin-top: 4rem; padding-top: 2.5rem; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
+        .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; color: var(--lime); line-height: 1; }
+        .stat-label { font-size: .72rem; color: rgba(255,255,255,0.45); letter-spacing: .08em; text-transform: uppercase; margin-top: .25rem; }
+
+        /* ══ HERO RIGHT ══ */
+        .hero-right {
+            background: var(--off-white); padding: 10rem 4rem 4rem;
+            display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden;
+        }
+        .hero-right::after { content: 'NPI'; position: absolute; top: 5rem; right: 3rem; font-family: 'Cormorant Garamond', serif; font-size: 12rem; font-weight: 700; color: rgba(14,134,171,0.06); line-height: 1; pointer-events: none; }
+        .timeline-label { font-size: .72rem; font-weight: 600; color: var(--teal); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1.25rem; }
+        .phase-track { display: flex; flex-direction: column; position: relative; }
+        .phase-track::before { content: ''; position: absolute; left: 15px; top: 16px; bottom: 16px; width: 2px; background: linear-gradient(to bottom, var(--teal), var(--lime)); }
+        .phase-item { display: flex; align-items: flex-start; gap: 1.25rem; padding: 1rem 0; position: relative; }
+        .phase-dot { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; z-index: 1; }
+        .phase-dot.active { background: var(--teal); color: white; }
+        .phase-dot.upcoming { background: var(--off-white); border: 2px solid var(--lime); color: var(--lime); }
+        .phase-dot.future { background: var(--off-white); border: 2px solid #ccc; color: #aaa; }
+        .phase-name { font-weight: 600; font-size: .88rem; margin-bottom: .15rem; }
+        .phase-desc { font-size: .76rem; color: var(--muted); line-height: 1.5; }
+
+        /* ══ PARTNERS CARD ══ */
+        .partners-card {
+            margin-top: 1.75rem; background: white; border-radius: 12px;
+            border: 1px solid rgba(14,134,171,0.12);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06); overflow: hidden;
+        }
+        .partners-card-header {
+            padding: .85rem 1.25rem;
+            background: rgba(14,134,171,0.04);
+            border-bottom: 1px solid rgba(14,134,171,0.1);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .partners-card-title { font-size: .7rem; font-weight: 600; color: var(--teal); letter-spacing: .1em; text-transform: uppercase; }
+        .partners-total-badge {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem; font-weight: 700; color: var(--ink);
+        }
+        .partners-total-badge span { font-size: .65rem; font-family: 'DM Sans', sans-serif; font-weight: 400; color: var(--muted); margin-right: 3px; }
+        .partners-list { padding: .5rem 0; }
+        .partner-row {
+            display: flex; align-items: center; gap: .85rem;
+            padding: .7rem 1.25rem;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            transition: background .15s;
+        }
+        .partner-row:last-child { border-bottom: none; }
+        .partner-row:hover { background: rgba(0,0,0,0.015); }
+        .p-icon {
+            width: 30px; height: 30px; border-radius: 7px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .p-icon svg { width: 14px; height: 14px; stroke-width: 1.75; fill: none; }
+        .p-icon.nsia { background: rgba(14,134,171,0.1); }
+        .p-icon.nsia svg { stroke: var(--teal); }
+        .p-icon.cascador { background: rgba(8,112,58,0.1); }
+        .p-icon.cascador svg { stroke: var(--green); }
+        .p-icon.pvac { background: rgba(220,38,38,0.08); }
+        .p-icon.pvac svg { stroke: #dc2626; }
+        .p-icon.training { background: rgba(131,194,64,0.1); }
+        .p-icon.training svg { stroke: #4a7c10; }
+        .p-name { font-size: .8rem; font-weight: 600; color: var(--ink); line-height: 1.2; }
+        .p-desc { font-size: .68rem; color: var(--muted); }
+        .p-info { flex: 1; min-width: 0; }
+        .p-amount {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem; font-weight: 700; flex-shrink: 0; text-align: right;
+        }
+        .p-amount.nsia-c { color: var(--teal); }
+        .p-amount.cascador-c { color: var(--green); }
+        .p-amount.pvac-c { color: #dc2626; }
+        .p-amount.training-c {
+            font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 600;
+            color: #4a7c10; background: rgba(131,194,64,0.12);
+            border: 1px solid rgba(131,194,64,0.3);
+            padding: .2rem .55rem; border-radius: 100px;
+        }
+
+        /* ══ SECTIONS ══ */
+        section { padding: 7rem 4rem; }
+        .section-label { font-size: .72rem; font-weight: 600; color: var(--teal); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: .6rem; }
+        .section-label::before { content: ''; display: block; width: 24px; height: 2px; background: var(--teal); }
+        .section-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem,3.5vw,3.4rem); font-weight: 700; line-height: 1.1; max-width: 640px; }
+
+        /* ══ ABOUT ══ */
+        .about { background: white; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+        .about-text .section-heading { margin-bottom: 1.5rem; }
+        .about-text p { font-size: .95rem; line-height: 1.85; color: var(--muted); margin-bottom: 1.25rem; }
+        .about-pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2.5rem; }
+        .pillar { padding: 1.25rem; background: var(--cream); border-left: 3px solid transparent; border-radius: 0; }
+        .pillar.p1 { border-left-color: var(--teal); } .pillar.p2 { border-left-color: var(--green); }
+        .pillar.p3 { border-left-color: var(--lime); } .pillar.p4 { border-left-color: var(--teal-dark); }
+        .pillar-name { font-weight: 600; font-size: .85rem; margin-bottom: .25rem; }
+        .pillar-desc { font-size: .75rem; color: var(--muted); line-height: 1.5; }
+        .funds-grid { display: flex; flex-direction: column; gap: 1rem; }
+        .fund-card { padding: 1.5rem; border-radius: 10px; display: flex; align-items: flex-start; gap: 1.1rem; }
+        .fund-card.f1 { background: rgba(14,134,171,0.06); border: 1px solid rgba(14,134,171,0.15); }
+        .fund-card.f2 { background: rgba(8,112,58,0.06); border: 1px solid rgba(8,112,58,0.15); }
+        .fund-card.f3 { background: rgba(131,194,64,0.06); border: 1px solid rgba(131,194,64,0.15); }
+        .fund-icon { width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .f1 .fund-icon { background: rgba(14,134,171,0.12); } .f2 .fund-icon { background: rgba(8,112,58,0.12); } .f3 .fund-icon { background: rgba(131,194,64,0.12); }
+        .fund-name { font-weight: 600; font-size: .88rem; margin-bottom: .3rem; }
+        .fund-desc { font-size: .76rem; color: var(--muted); line-height: 1.55; }
+
+        /* ══ NPI SECTION ══ */
+        .npi-section { background: var(--ink); position: relative; overflow: hidden; }
+        .npi-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 30%, rgba(14,134,171,0.2) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(8,112,58,0.15) 0%, transparent 55%); }
+        .npi-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+
+        /* Programme intro — text above sectors */
+        .programme-intro {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-bottom: 4rem;
+        }
+        .programme-intro-left {}
+        .programme-intro-left .section-label { justify-content: flex-start; }
+        .programme-intro-left .section-label::before { background: rgba(255,255,255,0.4); }
+        .programme-intro-left .section-label { color: rgba(255,255,255,0.5); }
+        .programme-intro-left .section-heading { color: white; }
+        .programme-intro-right { padding-top: .5rem; }
+        .programme-intro-right p { font-size: .95rem; color: rgba(255,255,255,0.55); line-height: 1.85; font-weight: 300; margin-bottom: 1.25rem; }
+        .programme-intro-right p:last-child { margin-bottom: 0; }
+
+        /* Sectors */
+        .sectors-wrap { margin-bottom: 4rem; }
+        .sectors-label { font-size: .7rem; font-weight: 600; color: rgba(255,255,255,0.4); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem; }
+        .sectors-grid {
+            display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
+            background: rgba(255,255,255,0.06); border-radius: 12px; overflow: hidden;
+        }
+        .sector-item { padding: 2rem 1.75rem; background: rgba(255,255,255,0.03); transition: background .25s; display: flex; flex-direction: column; align-items: flex-start; gap: .75rem; }
+        .sector-item:hover { background: rgba(14,134,171,0.12); }
+        .sector-icon { font-size: 1.75rem; }
+        .sector-name { font-weight: 600; font-size: .95rem; color: white; }
+        .sector-desc { font-size: .78rem; color: rgba(255,255,255,0.45); line-height: 1.55; }
+
+        /* Benefits */
+        .npi-benefits { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+        .benefit-card { padding: 2rem; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); transition: border-color .25s, transform .25s; }
+        .benefit-card:hover { border-color: rgba(131,194,64,0.3); transform: translateY(-3px); }
+        .benefit-icon { width: 46px; height: 46px; border-radius: 10px; margin-bottom: 1.1rem; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+        .benefit-card:nth-child(1) .benefit-icon { background: rgba(14,134,171,0.15); }
+        .benefit-card:nth-child(2) .benefit-icon { background: rgba(8,112,58,0.15); }
+        .benefit-card:nth-child(3) .benefit-icon { background: rgba(131,194,64,0.1); }
+        .benefit-title { font-weight: 600; color: white; margin-bottom: .4rem; font-size: .92rem; }
+        .benefit-desc { font-size: .78rem; color: rgba(255,255,255,0.45); line-height: 1.65; }
+
+        /* ══ ELIGIBILITY ══ */
+        .eligibility { background: var(--off-white); display: grid; grid-template-columns: 1fr 1.2fr; gap: 6rem; align-items: start; }
+        .elig-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+        .elig-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; background: white; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); transition: box-shadow .2s; }
+        .elig-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+        .elig-check { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; background: rgba(8,112,58,0.12); display: flex; align-items: center; justify-content: center; }
+        .elig-check svg { width: 12px; height: 12px; stroke: var(--green); stroke-width: 2.5; fill: none; }
+        .elig-text { font-size: .85rem; color: var(--ink); line-height: 1.55; }
+        .steps-list { display: flex; flex-direction: column; gap: 0; margin-top: 2rem; position: relative; }
+        .steps-list::before { content: ''; position: absolute; left: 20px; top: 24px; bottom: 24px; width: 2px; background: linear-gradient(to bottom, var(--teal), var(--green), var(--lime)); }
+        .step { display: flex; gap: 1.5rem; padding: 1.5rem 0; position: relative; }
+        .step-num { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; background: white; border: 2px solid var(--teal); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.1rem; color: var(--teal); z-index: 1; }
+        .step-title { font-weight: 600; font-size: .92rem; margin-bottom: .3rem; }
+        .step-desc { font-size: .8rem; color: var(--muted); line-height: 1.6; }
+
+        /* ══ CTA ══ */
+        .cta-banner { background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 40%, var(--green-dark) 100%); padding: 6rem 4rem; text-align: center; position: relative; overflow: hidden; }
+        .cta-banner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(131,194,64,0.2) 0%, transparent 60%); }
+        .cta-banner > * { position: relative; z-index: 1; }
+        .cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem,4vw,3.8rem); font-weight: 700; color: white; margin-bottom: 1rem; line-height: 1.1; }
+        .cta-sub { font-size: 1rem; color: rgba(255,255,255,0.7); margin-bottom: 2.5rem; max-width: 520px; margin-left: auto; margin-right: auto; }
+        .cta-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .btn-light { background: white; color: var(--green-dark); padding: 1rem 2.5rem; border-radius: 4px; font-size: .9rem; font-weight: 700; text-decoration: none; letter-spacing: .04em; text-transform: uppercase; transition: transform .2s, box-shadow .2s; display: inline-block; }
+        .btn-light:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .btn-outline-light { background: transparent; color: white; padding: 1rem 2.5rem; border-radius: 4px; font-size: .9rem; font-weight: 500; text-decoration: none; border: 1.5px solid rgba(255,255,255,0.5); transition: border-color .2s, background .2s; display: inline-block; }
+        .btn-outline-light:hover { border-color: white; background: rgba(255,255,255,0.08); }
+
+        /* ══ FOOTER ══ */
+        footer { background: var(--ink); color: white; padding: 4rem 4rem 2.5rem; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; }
+        .footer-logo { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem; }
+        @* .footer-logo-icon { width: 38px; height: 38px; border-radius: 7px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; } *@
+        .footer-logo-icon img { width: 160px; height: 40px; fill: white; }
+        .footer-org { font-size: .8rem; font-weight: 700; color: white; letter-spacing: .05em; }
+        .footer-tagline { font-size: .75rem; color: rgba(255,255,255,0.4); line-height: 1.6; max-width: 280px; margin-bottom: 1.5rem; }
+        .footer-badge { display: inline-block; padding: .3rem .75rem; border-radius: 100px; font-size: .65rem; font-weight: 600; letter-spacing: .08em; background: rgba(131,194,64,0.12); border: 1px solid rgba(131,194,64,0.25); color: var(--lime); }
+        .footer-col-title { font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 1.25rem; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+        .footer-links a { font-size: .8rem; color: rgba(255,255,255,0.55); text-decoration: none; transition: color .2s; }
+        .footer-links a:hover { color: var(--lime); }
+        .footer-bottom { grid-column: 1/-1; padding-top: 2rem; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .footer-bottom p { font-size: .72rem; color: rgba(255,255,255,0.3); }
+
+        /* ══ ANIMATIONS ══ */
+        .fade-up { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* ══ RESPONSIVE — TABLET ══ */
+        @@media (max-width: 1024px) {
+            nav { padding: 1rem 2rem; }
+            .nav-links.desktop-only { display: none; }
+            .nav-hamburger { display: flex; }
+            .hero { grid-template-columns: 1fr; }
+            .hero-left { padding: 8rem 2.5rem 4rem; }
+            .hero-right { padding: 4rem 2.5rem; }
+            .hero-right::after { display: none; }
+            section { padding: 5rem 2.5rem; }
+            .about { grid-template-columns: 1fr; gap: 3rem; }
+            .eligibility { grid-template-columns: 1fr; gap: 3rem; }
+            .programme-intro { grid-template-columns: 1fr; gap: 1.5rem; }
+            .sectors-grid { grid-template-columns: repeat(3,1fr); }
+            .npi-benefits { grid-template-columns: 1fr 1fr; }
+            footer { grid-template-columns: 1fr 1fr; gap: 2.5rem; padding: 3rem 2.5rem 2rem; }
+        }
+
+        /* ══ RESPONSIVE — MOBILE ══ */
+        @@media (max-width: 640px) {
+            nav { padding: .9rem 1.25rem; }
+            .nav-logo img { width: 120px; }
+            .hero-left { padding: 7rem 1.25rem 3rem; }
+            .hero-right { padding: 3rem 1.25rem; }
+            .hero-title { font-size: clamp(2.2rem,8vw,3rem); }
+            .hero-sub { font-size: .9rem; margin-bottom: 2rem; }
+            .hero-actions { flex-direction: column; }
+            .hero-actions a { text-align: center; justify-content: center; }
+            .hero-stats { gap: 1.5rem; margin-top: 2.5rem; }
+            .stat-value { font-size: 1.8rem; }
+            section { padding: 4rem 1.25rem; }
+            .section-heading { font-size: clamp(1.6rem,6vw,2.4rem); }
+            .about-pillars { grid-template-columns: 1fr; }
+            .sectors-grid { grid-template-columns: 1fr; }
+            .sector-item { padding: 1.5rem 1.25rem; flex-direction: row; align-items: center; gap: 1rem; }
+            .npi-benefits { grid-template-columns: 1fr; gap: 1rem; }
+            .cta-banner { padding: 4rem 1.25rem; }
+            .cta-actions { flex-direction: column; align-items: center; }
+            .btn-light, .btn-outline-light { width: 100%; text-align: center; }
+            footer { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 1.25rem 2rem; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+            .phase-item { gap: 1rem; padding: .9rem 0; }
+            .partners-card { margin-top: 1.5rem; }
+        }
+
+        @@media (max-width: 400px) {
+            .hero-left { padding: 6rem 1rem 2.5rem; }
+            .hero-right { padding: 2.5rem 1rem; }
+            section { padding: 3.5rem 1rem; }
+            nav { padding: .8rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu-close" id="menuClose">&times;</button>
+    <a href="#about" onclick="closeMenu()">About NSIA</a>
+    <a href="#programme" onclick="closeMenu()">The Programme</a>
+    <a href="#eligibility" onclick="closeMenu()">Eligibility</a>
+    <a href="/Account/Register" class="m-cta" onclick="closeMenu()">Apply Now</a>
+</div>
+
+<!-- NAV -->
+<nav>
+    <div class="nav-brand">
+        <div class="nav-logo"><img src="~/logo.png" alt="NSIA" /></div>
+    </div>
+    <ul class="nav-links desktop-only">
+        <li><a href="#about">About NSIA</a></li>
+        <li><a href="#programme">The Programme</a></li>
+        <li><a href="#eligibility">Eligibility</a></li>
+        <li><a href="/Account/Register" class="nav-cta">Apply Now</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+    <div class="hero-left">
+        <div class="hero-eyebrow">Now Accepting Applications — NPI 4.0</div>
+        <h1 class="hero-title">
+            Fund Your<br />
+            <span class="accent">Breakthrough.</span><br />
+            Build Nigeria.
+        </h1>
+        <p class="hero-sub">
+            The NSIA Prize for Innovation is Nigeria's premier platform for early-stage
+            innovators with digital solutions that drive transformative impact.
+        </p>
+        <div class="hero-actions">
+            <a href="/Account/Register" class="btn-primary">
+                Apply Now
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#programme" class="btn-secondary">Learn More</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-value">$280K+</div>
+                <div class="stat-label">Total Prize Pool</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">5,000+</div>
+                <div class="stat-label">Applicants (NPI 3.0)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">3+</div>
+                <div class="stat-label">Editions Completed</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-right">
+        <div class="timeline-label">Programme Journey</div>
+        <div class="phase-track">
+            <div class="phase-item">
+                <div class="phase-dot active">1</div>
+                <div class="phase-content">
+                    <div class="phase-name">Open Registration</div>
+                    <div class="phase-desc">Submit your application with business concept and innovation brief.</div>
+                </div>
+            </div>
+            <div class="phase-item">
+                <div class="phase-dot upcoming">2</div>
+                <div class="phase-content">
+                    <div class="phase-name">Screening &amp; Due Diligence</div>
+                    <div class="phase-desc">Top 100 startups selected after rigorous evaluation by expert panel.</div>
+                </div>
+            </div>
+            <div class="phase-item">
+                <div class="phase-dot upcoming">3</div>
+                <div class="phase-content">
+                    <div class="phase-name">Accelerator Bootcamp</div>
+                    <div class="phase-desc">Intensive mentorship, training, and network-building sessions.</div>
+                </div>
+            </div>
+            <div class="phase-item">
+                <div class="phase-dot future">4</div>
+                <div class="phase-content">
+                    <div class="phase-name">Demo Day &amp; Awards</div>
+                    <div class="phase-desc">Top 10 finalists pitch live to judges. Winners receive cash and equity.</div>
+                </div>
+            </div>
+            <div class="phase-item">
+                <div class="phase-dot future">5</div>
+                <div class="phase-content">
+                    <div class="phase-name">Silicon Valley Training</div>
+                    <div class="phase-desc">All-expenses-paid 5-week programme at Draper University, USA.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PARTNERS CARD -->
+        <div class="partners-card">
+            <div class="partners-card-header">
+                <span class="partners-card-title">Prize Contributions</span>
+                <span class="partners-total-badge"><span>Total</span>$280,000+</span>
+            </div>
+            <div class="partners-list">
+                <div class="partner-row">
+                    <div class="p-icon nsia">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    </div>
+                    <div class="p-info">
+                        <div class="p-name">NSIA</div>
+                        <div class="p-desc">Prize money — cash &amp; equity</div>
+                    </div>
+                    <div class="p-amount nsia-c">$220,000</div>
+                </div>
+                <div class="partner-row">
+                    <div class="p-icon cascador">
+                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div class="p-info">
+                        <div class="p-name">Cascador</div>
+                        <div class="p-desc">Prize for Impact</div>
+                    </div>
+                    <div class="p-amount cascador-c">$45,000</div>
+                </div>
+                <div class="partner-row">
+                    <div class="p-icon pvac">
+                        <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    </div>
+                    <div class="p-info">
+                        <div class="p-name">PVAC</div>
+                        <div class="p-desc">Healthcare Innovator Prize</div>
+                    </div>
+                    <div class="p-amount pvac-c">$15,000</div>
+                </div>
+                <div class="partner-row">
+                    <div class="p-icon training">
+                        <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    </div>
+                    <div class="p-info">
+                        <div class="p-name">Partner Institution</div>
+                        <div class="p-desc">Fully sponsored training programme</div>
+                    </div>
+                    <div class="p-amount training-c">Sponsored</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT NSIA -->
+<section class="about fade-up" id="about">
+    <div class="about-text">
+        <div class="section-label">About NSIA</div>
+        <h2 class="section-heading">Nigeria's Sovereign Wealth Fund Manager</h2>
+        <p>The Nigeria Sovereign Investment Authority (NSIA) is an independent investment institution of the Federation, established by Act of the National Assembly in May 2011. It manages Nigeria's sovereign wealth fund — investing surplus oil revenues for the long-term benefit of all Nigerians.</p>
+        <p>With over $2.4 billion in assets under management, NSIA is the third largest sovereign wealth fund in Sub-Saharan Africa, operating three ring-fenced funds each serving a distinct national mandate.</p>
+        <div class="about-pillars">
+            <div class="pillar p1"><div class="pillar-name">Financial Sustainability</div><div class="pillar-desc">Maximising risk-adjusted returns on invested assets</div></div>
+            <div class="pillar p2"><div class="pillar-name">Independence</div><div class="pillar-desc">Impartial, merit-based investment decisions</div></div>
+            <div class="pillar p3"><div class="pillar-name">Transparency</div><div class="pillar-desc">Consistent financial reporting and public accountability</div></div>
+            <div class="pillar p4"><div class="pillar-name">National Impact</div><div class="pillar-desc">Driving socioeconomic outcomes across key sectors</div></div>
+        </div>
+    </div>
+    <div class="about-visual">
+        <div class="funds-grid">
+            <div class="fund-card f1"><div class="fund-icon">🏦</div><div><div class="fund-name">Stabilisation Fund</div><div class="fund-desc">Provides budget support and fiscal buffers during periods of economic stress, ensuring government services remain uninterrupted.</div></div></div>
+            <div class="fund-card f2"><div class="fund-icon">🌱</div><div><div class="fund-name">Future Generations Fund</div><div class="fund-desc">An intergenerational savings vehicle investing in long-term assets so future Nigerians benefit from today's oil wealth.</div></div></div>
+            <div class="fund-card f3"><div class="fund-icon">🏗️</div><div><div class="fund-name">Nigeria Infrastructure Fund</div><div class="fund-desc">Finances critical infrastructure — from toll roads and power projects to healthcare centres — that attract investment and create jobs.</div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- NPI PROGRAMME -->
+<section class="npi-section" id="programme">
+    <div class="npi-inner">
+
+        <!-- Intro text — left/right layout -->
+        <div class="programme-intro fade-up">
+            <div class="programme-intro-left">
+                <div class="section-label">The Programme</div>
+                <h2 class="section-heading">NSIA Prize for Innovation</h2>
+            </div>
+            <div class="programme-intro-right">
+                <p>A multi-year programme designed to fund, mentor, and accelerate early-stage Nigerian digital innovations — from first idea to global-ready startup.</p>
+                <p>We back bold innovators solving real problems in three critical sectors. If your solution drives measurable impact in healthcare, agriculture, or climate and ESG, this programme is for you.</p>
+            </div>
+        </div>
+
+        <!-- Sectors -->
+        <div class="sectors-wrap fade-up">
+            <div class="sectors-label">Focus sectors</div>
+            <div class="sectors-grid" id="sectors">
+                <div class="sector-item">
+                    <div class="sector-icon">💊</div>
+                    <div class="sector-name">Healthcare</div>
+                    <div class="sector-desc">Digital diagnostics, telemedicine, health insurance access and patient outcomes</div>
+                </div>
+                <div class="sector-item">
+                    <div class="sector-icon">🌾</div>
+                    <div class="sector-name">Agriculture</div>
+                    <div class="sector-desc">AgriTech, supply chains, smallholder finance and food security solutions</div>
+                </div>
+                <div class="sector-item">
+                    <div class="sector-icon">🌱</div>
+                    <div class="sector-name">Climate &amp; ESG Solutions</div>
+                    <div class="sector-desc">Clean energy, carbon reduction, sustainable finance and environmental impact</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits -->
+        <div class="npi-benefits fade-up">
+            <div class="benefit-card">
+                <div class="benefit-icon">💰</div>
+                <div class="benefit-title">Cash &amp; Equity Prizes</div>
+                <div class="benefit-desc">Winners share a prize pool of over $280,000 through cash awards, equity investment, and partner prizes from Cascador and PVAC.</div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🧭</div>
+                <div class="benefit-title">Mentorship &amp; Training</div>
+                <div class="benefit-desc">Access seasoned mentors from Nigeria's top business and tech ecosystems, plus a fully sponsored training programme at a leading partner institution.</div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🌐</div>
+                <div class="benefit-title">Platform &amp; Visibility</div>
+                <div class="benefit-desc">NPI provides a credible national platform to showcase your innovation and connect with investors, partners, and industry leaders across Nigeria.</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ELIGIBILITY -->
+<section class="eligibility fade-up" id="eligibility">
+    <div>
+        <div class="section-label">Who Can Apply</div>
+        <h2 class="section-heading">Eligibility Criteria</h2>
+        <div class="elig-list">
+            <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Nigerian-owned or Nigerian-registered startup or early-stage company</div></div>
+            <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Technology-enabled digital solution with demonstrable social or economic impact</div></div>
+            <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Solution must address Healthcare, Agriculture, or Climate &amp; ESG</div></div>
+            <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Early-stage — must not have received more than Series A funding</div></div>
+            <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Scalable model with potential for national or continental reach</div></div>
+            <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Founder(s) must be available for the full duration of the programme</div></div>
+        </div>
+    </div>
+    <div class="how-it-works">
+        <div class="section-label">How It Works</div>
+        <h2 class="section-heading">Your Path to the Prize</h2>
+        <div class="steps-list">
+            <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Register &amp; Submit Application</div><div class="step-desc">Complete your online application with your innovation brief, business model, and impact statement.</div></div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Initial Screening</div><div class="step-desc">Applications are reviewed by an expert panel. Top 100 startups advance to the accelerator phase.</div></div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Accelerator Bootcamp</div><div class="step-desc">Intensive physical bootcamp with mentors, training sessions, and networking opportunities.</div></div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Demo Day Finals</div><div class="step-desc">Top 10 finalists pitch to a panel of judges from business and innovation ecosystems in Abuja.</div></div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Win &amp; Scale</div><div class="step-desc">Winners receive cash prizes, equity investment, and a fully sponsored training programme.</div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-banner fade-up" id="apply">
+    <h2 class="cta-title">Ready to Change Nigeria?</h2>
+    <p class="cta-sub">Join thousands of Nigerian innovators competing to transform their ideas into nationally impactful ventures — backed by NSIA.</p>
+    <div class="cta-actions">
+        <a href="/Account/Register" class="btn-light">Start Your Application</a>
+        <a href="#programme" class="btn-outline-light">Programme Details</a>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-brand">
+        <div class="footer-logo">
+            <div class="footer-logo-icon">
+                <img src="~/logo.png" alt="npi">
+            </div>
+            @* <span class="footer-org">NSIA</span> *@
+        </div>
+        <p class="footer-tagline">Nigeria Sovereign Investment Authority — managing Nigeria's sovereign wealth fund to build a better future for all Nigerians.</p>
+        <span class="footer-badge">EST. 2011 · ABUJA, NIGERIA</span>
+    </div>
+    <div>
+        <div class="footer-col-title">Programme</div>
+        <ul class="footer-links">
+            <li><a href="#">About NPI</a></li>
+            <li><a href="#">Eligibility</a></li>
+            <li><a href="#">Prize Structure</a></li>
+            <li><a href="#">Past Winners</a></li>
+            <li><a href="#">FAQ</a></li>
+        </ul>
+    </div>
+    <div>
+        <div class="footer-col-title">NSIA</div>
+        <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Mandate</a></li>
+            <li><a href="#">Investments</a></li>
+            <li><a href="#">News &amp; Press</a></li>
+            <li><a href="#">nsia.com.ng</a></li>
+        </ul>
+    </div>
+    <div>
+        <div class="footer-col-title">Apply</div>
+        <ul class="footer-links">
+            <li><a href="/Account/Register">Create Account</a></li>
+            <li><a href="/Account/Login">Login</a></li>
+            <li><a href="#">Application Guide</a></li>
+            <li><a href="#">Contact Us</a></li>
+        </ul>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 Nigeria Sovereign Investment Authority. All rights reserved.</p>
+        <p>Privacy Policy &nbsp;·&nbsp; Terms of Use</p>
+    </div>
+</footer>
+
+<script>
+    // Fade-up
+    const observer = new IntersectionObserver(
+        entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+        { threshold: 0.1 }
+    );
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Mobile menu
+    const hamburger  = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuClose  = document.getElementById('menuClose');
+    function openMenu()  { mobileMenu.classList.add('open'); hamburger.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeMenu() { mobileMenu.classList.remove('open'); hamburger.classList.remove('open'); document.body.style.overflow = ''; }
+    hamburger.addEventListener('click', () => mobileMenu.classList.contains('open') ? closeMenu() : openMenu());
+    menuClose.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+</script>
+</body>
+</html>

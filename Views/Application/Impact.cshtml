@@ -1,0 +1,1170 @@
+@{
+    ViewData["Title"] = "Impact & Sustainability — NSIA Prize for Innovation";
+    Layout = null;
+    var applicantName = ViewBag.ApplicantName as string ?? "Adaeze Okonkwo";
+    var completedStep = (int)(ViewBag.CompletedStep ?? 5);
+    var initials = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
+
+    var steps = new[] {
+        new { Num = 1, Name = "Profile",                 Action = "Profile"      },
+        new { Num = 2, Name = "Company Info",            Action = "CompanyInfo"  },
+        new { Num = 3, Name = "Team Info",               Action = "TeamInfo"     },
+        new { Num = 4, Name = "Product Info",            Action = "ProductInfo"  },
+        new { Num = 5, Name = "Commercial",              Action = "Commercial"   },
+        new { Num = 6, Name = "Impact & Sustainability", Action = "Impact"       },
+        new { Num = 7, Name = "Additional Information",  Action = "Additional"   },
+    };
+
+    string StepStatus(int num) {
+        if (num <= completedStep) return "completed";
+        if (num == completedStep + 1) return "active";
+        return "locked";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --teal: #0e86ab; --teal-d: #0a6b8a;
+            --green: #08703a; --green-d: #065a2f;
+            --lime: #83c240;
+            --ink: #0d1a12; --cream: #faf8f3; --off: #f4f2ec;
+            --muted: #5a6b60; --border: rgba(0,0,0,0.08);
+            --nav-h: 62px; --step-h: 56px;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
+
+        /* ── NAV ── */
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: var(--ink); display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
+        .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 30% 50%, rgba(14,134,171,0.12) 0%, transparent 60%); }
+        .nav-brand { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
+        @* .nav-brand-icon { width: 34px; height: 34px; border-radius: 7px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; } *@
+        .nav-brand-icon img { width: 130px; height: 30px; stroke: white; stroke-width: 2; fill: none; }
+        .nav-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
+        .nav-brand-text span { display: block; font-size: 10px; color: rgba(255,255,255,0.35); }
+        .nav-right { display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 1; }
+        .nav-deadline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.45); }
+        .nav-deadline svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.35); stroke-width: 1.75; fill: none; }
+        .deadline-val { color: var(--lime); font-weight: 500; }
+        .nav-user { display: flex; align-items: center; gap: 8px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: white; flex-shrink: 0; }
+        .user-name { font-size: 12px; color: rgba(255,255,255,0.7); }
+        .nav-logout { font-size: 11px; color: rgba(255,255,255,0.35); text-decoration: none; padding: .3rem .7rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: color .2s, border-color .2s; white-space: nowrap; }
+        .nav-logout:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.25); }
+        .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 1; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: transform .3s, opacity .3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        /* ── STEP BAR ── */
+        .step-bar { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190; height: var(--step-h); background: white; border-bottom: 1px solid var(--border); display: flex; align-items: stretch; overflow: hidden; }
+        .step-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 0 .5rem; text-decoration: none; color: var(--ink); border-right: 1px solid var(--border); position: relative; transition: background .2s; min-width: 0; }
+        .step-item:last-child { border-right: none; }
+        .step-item::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background .2s; }
+        .step-item:hover { background: var(--off); }
+        .step-item:hover::after { background: rgba(14,134,171,0.3); }
+        .step-item.completed .step-num { background: var(--green); border-color: var(--green); color: white; }
+        .step-item.completed .step-num svg { display: block; }
+        .step-item.completed .step-num span { display: none; }
+        .step-item.completed .step-name { color: var(--green); }
+        .step-item.completed::after { background: var(--green); }
+        .step-item.active { background: rgba(14,134,171,0.04); }
+        .step-item.active .step-num { background: var(--teal); border-color: var(--teal); color: white; }
+        .step-item.active .step-name { color: var(--teal); font-weight: 500; }
+        .step-item.active::after { background: var(--teal); }
+        .step-num { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: var(--muted); transition: background .2s, border-color .2s; }
+        .step-num svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .step-name { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .2s; }
+
+        /* ── DRAWER ── */
+        .drawer-overlay { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity .3s; }
+        .drawer-overlay.open { opacity: 1; }
+        .side-drawer { position: fixed; top: 0; left: -280px; bottom: 0; z-index: 160; width: 280px; background: var(--ink); display: flex; flex-direction: column; transition: left .3s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
+        .side-drawer.open { left: 0; }
+        .drawer-header { padding: 1.25rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .drawer-brand-icon { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .drawer-brand-icon svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+        .drawer-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .07em; text-transform: uppercase; }
+        .drawer-brand-text span { font-size: 10px; color: rgba(255,255,255,0.35); }
+        .drawer-user { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .drawer-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: white; }
+        .drawer-uname { font-size: 13px; font-weight: 500; color: white; }
+        .drawer-uemail { font-size: 11px; color: rgba(255,255,255,0.35); }
+        .drawer-steps { padding: .75rem 0; flex: 1; }
+        .drawer-step-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.3); letter-spacing: .1em; text-transform: uppercase; padding: .5rem 1.25rem .25rem; display: block; }
+        .drawer-item { display: flex; align-items: center; gap: .9rem; padding: .8rem 1.25rem; text-decoration: none; color: rgba(255,255,255,0.55); transition: background .2s, color .2s; position: relative; }
+        .drawer-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.85); }
+        .drawer-item.active { background: rgba(14,134,171,0.12); color: white; }
+        .drawer-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal); border-radius: 0 2px 2px 0; }
+        .drawer-item-num { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; transition: background .2s; }
+        .drawer-item.completed .drawer-item-num { background: var(--green); border-color: var(--green); }
+        .drawer-item.completed .drawer-item-num svg { display: block; }
+        .drawer-item.completed .drawer-item-num span { display: none; }
+        .drawer-item.active .drawer-item-num { background: var(--teal); border-color: var(--teal); }
+        .drawer-item-num svg { width: 11px; height: 11px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .drawer-item-name { font-size: 13px; }
+        .drawer-item-status { font-size: 10px; margin-top: 2px; color: rgba(255,255,255,0.25); }
+        .drawer-item.completed .drawer-item-status { color: #4ade80; }
+        .drawer-item.active .drawer-item-status { color: rgba(14,134,171,0.8); }
+        .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
+        .drawer-logout { display: flex; align-items: center; gap: .6rem; font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; padding: .6rem 0; transition: color .2s; }
+        .drawer-logout svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; }
+        .drawer-logout:hover { color: rgba(255,255,255,0.65); }
+
+        /* ── MAIN ── */
+        .main { padding-top: calc(var(--nav-h) + var(--step-h)); min-height: 100vh; }
+        .content { max-width: 800px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+
+        /* ── PAGE HEADER ── */
+        .page-header { margin-bottom: 2rem; }
+        .breadcrumb { display: flex; align-items: center; gap: .4rem; font-size: 11px; color: var(--muted); margin-bottom: .75rem; flex-wrap: wrap; }
+        .breadcrumb a { color: var(--teal); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); stroke-width: 2; fill: none; }
+        .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
+        .page-sub { font-size: .84rem; color: var(--muted); line-height: 1.65; }
+
+        /* ── STEP MINI ── */
+        .step-mini { display: flex; align-items: center; gap: .75rem; background: white; border-radius: 8px; border: 1px solid var(--border); padding: .85rem 1.25rem; margin-bottom: 2rem; }
+        .step-mini-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+        .step-mini-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+        .step-mini-name { font-size: .85rem; font-weight: 500; color: var(--ink); }
+        .step-mini-spacer { flex: 1; }
+        .step-mini-progress { font-size: 11px; color: var(--muted); white-space: nowrap; }
+        .step-mini-bar { width: 120px; height: 4px; background: var(--off); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--lime)); border-radius: 10px; width: 86%; }
+
+        /* ── FORM CARD ── */
+        .form-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
+        .form-card-header { padding: 1.2rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+        .form-card-icon { width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .form-card-icon.teal { background: rgba(14,134,171,0.1); }
+        .form-card-icon.teal svg { stroke: var(--teal); }
+        .form-card-icon.green { background: rgba(8,112,58,0.1); }
+        .form-card-icon.green svg { stroke: var(--green); }
+        .form-card-icon.lime { background: rgba(131,194,64,0.1); }
+        .form-card-icon.lime svg { stroke: #4d7a14; }
+        .form-card-icon.ink { background: rgba(13,26,18,0.07); }
+        .form-card-icon.ink svg { stroke: var(--ink); }
+        .form-card-icon svg { width: 18px; height: 18px; stroke-width: 1.75; fill: none; }
+        .form-card-title { font-size: .95rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+        .form-card-desc { font-size: .75rem; color: var(--muted); line-height: 1.4; }
+        .form-card-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.35rem; }
+
+        /* ── QUESTION BLOCK ── */
+        .q-block { display: flex; flex-direction: column; gap: .5rem; }
+        .q-label { font-size: .78rem; font-weight: 500; color: var(--ink); letter-spacing: .02em; display: flex; align-items: baseline; gap: .3rem; flex-wrap: wrap; line-height: 1.5; }
+        .q-label .req { color: #e53e3e; }
+        .q-label .opt { font-size: .68rem; color: var(--muted); font-weight: 400; }
+        .field-error { font-size: .71rem; color: #b91c1c; display: none; margin-top: .15rem; }
+        .q-block.invalid .field-error { display: block; }
+
+        /* ── RADIO GRID ── */
+        .radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+        .yn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+        .r-option { position: relative; }
+        .r-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        .r-label { display: flex; align-items: flex-start; gap: .75rem; padding: .8rem 1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
+        .r-label:hover { border-color: rgba(14,134,171,0.3); background: rgba(14,134,171,0.02); }
+        .r-option input:checked + .r-label { border-color: var(--teal); background: rgba(14,134,171,0.05); }
+        .r-radio { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: border-color .2s, background .2s; margin-top: 1px; }
+        .r-option input:checked + .r-label .r-radio { border-color: var(--teal); background: var(--teal); }
+        .r-dot { width: 5px; height: 5px; border-radius: 50%; background: white; opacity: 0; transform: scale(0); transition: opacity .15s, transform .15s; }
+        .r-option input:checked + .r-label .r-dot { opacity: 1; transform: scale(1); }
+        .r-letter { font-size: .7rem; font-weight: 500; color: var(--muted); flex-shrink: 0; min-width: 14px; }
+        .r-option input:checked + .r-label .r-letter { color: var(--teal); }
+        .r-text { font-size: .82rem; color: var(--ink); line-height: 1.45; }
+        .r-option input:checked + .r-label .r-text { color: var(--teal); font-weight: 500; }
+        .q-block.invalid .r-label { border-color: #f87171; }
+
+        /* ── CONDITIONAL FIELD ── */
+        .cond-field { display: none; padding: 1rem 1.1rem; border-radius: 8px; background: rgba(14,134,171,0.04); border: 1px solid rgba(14,134,171,0.15); flex-direction: column; gap: .5rem; }
+        .cond-field.show { display: flex; }
+        .cond-note { font-size: .76rem; color: var(--teal); display: flex; align-items: flex-start; gap: 6px; line-height: 1.55; }
+        .cond-note svg { width: 13px; height: 13px; stroke: var(--teal); stroke-width: 2; fill: none; flex-shrink: 0; margin-top: 1px; }
+
+        /* ── TEXTAREA ── */
+        .ta-wrap { position: relative; }
+        .ta-icon { position: absolute; left: 12px; top: 13px; pointer-events: none; color: var(--muted); }
+        .ta-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; display: block; }
+        textarea {
+            width: 100%; border: 1px solid var(--border); border-radius: 7px;
+            font-size: .85rem; font-family: 'DM Sans', sans-serif;
+            background: white; color: var(--ink);
+            transition: border-color .2s, box-shadow .2s;
+            outline: none; resize: vertical; min-height: 100px; line-height: 1.65;
+            padding: .72rem .9rem .72rem 2.4rem;
+        }
+        textarea::placeholder { color: #aab5af; }
+        textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(14,134,171,0.1); }
+        .char-count { font-size: .7rem; color: var(--muted); text-align: right; margin-top: .2rem; }
+        .char-count.warn { color: #d97706; }
+        .char-count.over { color: #b91c1c; }
+        .q-block.invalid textarea { border-color: #f87171; }
+        .q-block.invalid textarea:focus { box-shadow: 0 0 0 3px rgba(248,113,113,0.12); }
+
+        /* ── AGREEMENT CHECKBOXES ── */
+        .agree-block {
+            display: flex; align-items: flex-start; gap: .9rem;
+            padding: 1.1rem 1.25rem; border-radius: 9px;
+            border: 1.5px solid var(--border); background: white;
+            transition: border-color .2s;
+        }
+        .agree-block.invalid { border-color: #f87171; }
+        .agree-block input[type="checkbox"] { width: 17px; height: 17px; flex-shrink: 0; accent-color: var(--green); cursor: pointer; margin-top: 2px; }
+        .agree-text { font-size: .82rem; color: var(--ink); line-height: 1.6; }
+        .agree-text a { color: var(--teal); text-decoration: none; font-weight: 500; }
+        .agree-text a:hover { text-decoration: underline; }
+        .agree-error { font-size: .71rem; color: #b91c1c; margin-top: .3rem; display: none; }
+        .agree-block.invalid + .agree-error { display: block; }
+
+        /* ── ACTIONS ── */
+        .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
+        .actions-left { display: flex; align-items: center; gap: .75rem; }
+        .btn-back { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.3rem; border-radius: 7px; border: 1px solid var(--border); background: white; font-size: .84rem; font-weight: 400; color: var(--muted); text-decoration: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: border-color .2s, color .2s; }
+        .btn-back:hover { border-color: rgba(0,0,0,0.2); color: var(--ink); }
+        .btn-back svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: .72rem 1.5rem; border-radius: 7px; background: white; border: 1px solid var(--border); font-size: .84rem; font-weight: 500; color: var(--teal); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, border-color .2s; }
+        .btn-save:hover { background: rgba(14,134,171,0.04); border-color: rgba(14,134,171,0.3); }
+        .btn-save svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-next { display: inline-flex; align-items: center; gap: 7px; padding: .76rem 1.75rem; border-radius: 7px; background: var(--green); color: white; border: none; font-size: .88rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, transform .15s; -webkit-tap-highlight-color: transparent; }
+        .btn-next:hover { background: var(--green-d); transform: translateY(-1px); }
+        .btn-next:active { transform: scale(0.98); }
+        .btn-next:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+        .btn-next svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+
+        /* ── TOAST ── */
+        .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--ink); color: white; padding: .75rem 1.25rem; border-radius: 8px; font-size: .8rem; display: flex; align-items: center; gap: .6rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transform: translateY(20px); opacity: 0; transition: transform .3s, opacity .3s; pointer-events: none; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast svg { width: 15px; height: 15px; stroke: var(--lime); stroke-width: 2; fill: none; flex-shrink: 0; }
+
+        /* ── RESPONSIVE ── */
+        @@media (max-width: 900px) {
+            .step-bar { display: none; }
+            .top-nav { padding: 0 1.25rem; }
+            .hamburger { display: flex; }
+            .nav-deadline, .user-name, .nav-logout { display: none; }
+            .main { padding-top: var(--nav-h); }
+            .content { padding: 1.5rem 1rem 3rem; }
+            .step-mini-bar, .step-mini-progress { display: none; }
+        }
+        @@media (max-width: 560px) {
+            .radio-grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.6rem; }
+            .form-card-body { padding: 1.25rem; }
+            .form-actions { flex-direction: column; align-items: stretch; }
+            .actions-left { justify-content: space-between; }
+            .btn-next { justify-content: center; width: 100%; padding: 1rem; }
+            .toast { left: 1rem; right: 1rem; bottom: 1rem; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+    <div class="nav-brand">
+        <div class="nav-brand-icon">
+            <img src="~/logo.png" alt="logo"/> 
+        </div>
+        @* <div class="nav-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div> *@
+    </div>
+    <div class="nav-right">
+        <div class="nav-deadline">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Deadline: <span class="deadline-val">5 June 2026</span>
+        </div>
+        <div class="nav-user">
+            <div class="user-avatar">@initials</div>
+            <span class="user-name">@applicantName</span>
+        </div>
+        <a asp-action="Logout" asp-controller="Account" class="nav-logout">Sign out</a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- STEP BAR -->
+<div class="step-bar">
+    @foreach (var s in steps) {
+        var st = StepStatus(s.Num);
+        <a asp-action="@s.Action" asp-controller="Application" class="step-item @st" title="@s.Name">
+            <div class="step-num">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                <span>@s.Num</span>
+            </div>
+            <span class="step-name">@s.Name</span>
+        </a>
+    }
+</div>
+
+<!-- MOBILE DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+        <div class="drawer-brand-icon"><svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg></div>
+        <div class="drawer-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div>
+    </div>
+    <div class="drawer-user">
+        <div class="drawer-avatar">@initials</div>
+        <div><div class="drawer-uname">@applicantName</div><div class="drawer-uemail">NPI 4.0 Applicant</div></div>
+    </div>
+    <div class="drawer-steps">
+        <span class="drawer-step-label">Application Steps</span>
+        @foreach (var s in steps) {
+            var status = StepStatus(s.Num);
+            var statusLabel = status == "completed" ? "Completed" : status == "active" ? "In progress" : "Locked";
+            <a asp-action="@s.Action"
+                asp-controller="Application"
+                class="drawer-item @status"
+                style="@(status == "locked" ? "pointer-events:none;opacity:.45" : null)">
+                <div class="drawer-item-num">
+                    <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                    <span>@s.Num</span>
+                </div>
+                <div>
+                    <div class="drawer-item-name">@s.Name</div>
+                    <div class="drawer-item-status">@statusLabel</div>
+                </div>
+            </a>
+
+        }
+    </div>
+    <div class="drawer-footer">
+        <a asp-action="Logout" asp-controller="Account" class="drawer-logout">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out of account
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+    <div class="content">
+
+        <div class="page-header">
+            <div class="breadcrumb">
+                <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>Impact &amp; Sustainability</span>
+            </div>
+            <h1 class="page-title">Impact &amp; Sustainability</h1>
+            <p class="page-sub">Tell us how your innovation creates lasting, positive change — socially, environmentally, and systemically.</p>
+        </div>
+
+        <div class="step-mini">
+            <div class="step-mini-dot">6</div>
+            <div>
+                <div class="step-mini-label">Step 6 of 7</div>
+                <div class="step-mini-name">Impact &amp; Sustainability</div>
+            </div>
+            <div class="step-mini-spacer"></div>
+            <span class="step-mini-progress">Step 6 of 7</span>
+            <div class="step-mini-bar"><div class="step-mini-fill"></div></div>
+        </div>
+
+        <form asp-action="SaveImpact" asp-controller="Application" method="post" id="impactForm" novalidate>
+            @Html.AntiForgeryToken()
+
+            @{
+                string R(string key) => ViewData != null && ViewData[key] != null ? (string)ViewData[key] : "";
+                bool IsR(string key, string val) => R(key) == val;
+
+                // Radio question definition helper
+                (string val, string letter)[] YN() => new[]{ ("Yes","A"),("No","B") };
+            }
+
+            <!-- ═══ CARD 1: SDG & Environmental Alignment ═══ -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon green">
+                        <svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">SDG &amp; Environmental Alignment</div>
+                        <div class="form-card-desc">Your alignment with the UN Sustainable Development Goals and environmental impact.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+
+                    <!-- Q1: SDG alignment Yes/No -->
+                    <div class="q-block" id="qb-SDGAligned">
+                        <div class="q-label">Do you align with the UN Sustainable Development Goals (SDGs)? <span class="req">*</span></div>
+                        <div class="yn-grid">
+                            @foreach (var o in YN()) {
+                                <div class="r-option">
+                                    <input type="radio" name="SDGAligned" id="sdga-@o.val" value="@o.val" @(IsR("SDGAligned",o.val)?"checked":"") />
+                                    <label class="r-label" for="sdga-@o.val">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.letter)</span>
+                                        <span class="r-text">@o.val</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q2: How many SDGs -->
+                    <div class="q-block" id="qb-SDGCount">
+                        <div class="q-label">How many UN SDGs does your work address? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("4+","A"),("2–3","B"),("1","C"),("None","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="SDGCount" id="sdgc-@o.Item2" value="@o.Item1" @(IsR("SDGCount",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="sdgc-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q3: Environmental harm -->
+                    <div class="q-block" id="qb-EnvImpact">
+                        <div class="q-label">Does your solution reduce environmental harm? <span class="req">*</span></div>
+                        <div class="yn-grid">
+                            @foreach (var o in YN()) {
+                                <div class="r-option">
+                                    <input type="radio" name="EnvImpact" id="env-@o.val" value="@o.val" @(IsR("EnvImpact",o.val)?"checked":"") />
+                                    <label class="r-label" for="env-@o.val">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.letter)</span>
+                                        <span class="r-text">@o.val</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q3b: Environmental harm — conditional detail -->
+                    <div class="cond-field" id="cond-envdetail">
+                        <div class="cond-note">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            Please describe how your product or service reduces environmental harm.
+                        </div>
+                        <div class="q-block" id="qb-EnvReduction" style="margin-top:.25rem">
+                            <div class="q-label">How does your product / service reduce environmental harm? <span class="req">*</span></div>
+                            <div class="radio-grid">
+                                @foreach (var o in new[]{ ("Net-positive impact (e.g., carbon-negative)","A"),("Neutral (zero waste)","B"),("Reduces harm by 50%+","C"),("No focus","D") }) {
+                                    <div class="r-option">
+                                        <input type="radio" name="EnvReduction" id="er-@o.Item2" value="@o.Item1" @(IsR("EnvReduction",o.Item1)?"checked":"") />
+                                        <label class="r-label" for="er-@o.Item2">
+                                            <div class="r-radio"><div class="r-dot"></div></div>
+                                            <span class="r-letter">@o.Item2)</span>
+                                            <span class="r-text">@o.Item1</span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="field-error">Please select how your solution reduces environmental harm.</div>
+                        </div>
+                    </div>
+
+                    <!-- Q4: Resource optimisation -->
+                    <div class="q-block" id="qb-ResourceUse">
+                        <div class="q-label">How does your solution optimise resource use? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Reduces waste by 70%+","A"),("Reduces waste by 30–70%","B"),("Minimal efficiency gains","C"),("No focus","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="ResourceUse" id="ru-@o.Item2" value="@o.Item1" @(IsR("ResourceUse",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="ru-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ═══ CARD 2: Social Impact ═══ -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon teal">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Social Impact &amp; Inclusion</div>
+                        <div class="form-card-desc">How your solution reaches underserved populations and reduces systemic inequities.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+
+                    <!-- Q5: Underserved market % -->
+                    <div class="q-block" id="qb-UnderservedMarket">
+                        <div class="q-label">What percentage of your market are underserved (low-income, rural, etc.)? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ (">80%","A"),("60–80%","B"),("40–60%","C"),("<40%","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="UnderservedMarket" id="um-@o.Item2" value="@o.Item1" @(IsR("UnderservedMarket",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="um-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q6: Systemic inequities -->
+                    <div class="q-block" id="qb-Inequities">
+                        <div class="q-label">Does your solution actively reduce systemic inequities (gender, income, tribe)? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Targets 2+ inequities","A"),("Addresses 1 inequity","B"),("Indirect benefits","C"),("No focus","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="Inequities" id="ineq-@o.Item2" value="@o.Item1" @(IsR("Inequities",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="ineq-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q7: Gender gaps -->
+                    <div class="q-block" id="qb-GenderGaps">
+                        <div class="q-label">How does your product / service address gender gaps? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("50%+ female leadership/beneficiaries","A"),("Targeted programs for women/girls","B"),("Neutral (no focus)","C"),("Worsens gaps","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="GenderGaps" id="gg-@o.Item2" value="@o.Item1" @(IsR("GenderGaps",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="gg-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q8: Access for underserved -->
+                    <div class="q-block" id="qb-AccessUnderserved">
+                        <div class="q-label">How does your solution improve access for underserved groups? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Free/low-cost for 10k+ users","A"),("Affordable with proven outcomes","B"),("Limited accessibility","C"),("No focus","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="AccessUnderserved" id="au-@o.Item2" value="@o.Item1" @(IsR("AccessUnderserved",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="au-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q9: Jobs created -->
+                    <div class="q-block" id="qb-JobsCreated">
+                        <div class="q-label">How many jobs have you created in your operating regions? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("200+","A"),("50–200","B"),("10–50","C"),("<10","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="JobsCreated" id="jc-@o.Item2" value="@o.Item1" @(IsR("JobsCreated",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="jc-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q10: People impacted -->
+                    <div class="q-block" id="qb-PeopleImpacted">
+                        <div class="q-label">How many people has your product / service impacted? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ (">80% of target market","A"),("60–80% of target market","B"),("40–60% of target market","C"),("<40% of target market","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="PeopleImpacted" id="pi-@o.Item2" value="@o.Item1" @(IsR("PeopleImpacted",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="pi-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q11: User self-reliance -->
+                    <div class="q-block" id="qb-SelfReliance">
+                        <div class="q-label">Does your product / service empower users to be self-reliant? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Fully self-sustaining","A"),("Reduces dependency by 50%+","B"),("Minimal reduction","C"),("Increases dependency","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="SelfReliance" id="sr-@o.Item2" value="@o.Item1" @(IsR("SelfReliance",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="sr-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ═══ CARD 3: Measurement & Governance ═══ -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon lime">
+                        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Measurement &amp; Governance</div>
+                        <div class="form-card-desc">How you track outcomes, engage communities, and ensure ethical practices.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+
+                    <!-- Q12: Social outcome tracking -->
+                    <div class="q-block" id="qb-OutcomeTracking">
+                        <div class="q-label">How do you track social outcomes? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Third-party audited metrics","A"),("Internal KPIs (e.g., lives impacted)","B"),("Surveys / anecdotes","C"),("No tracking","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="OutcomeTracking" id="ot-@o.Item2" value="@o.Item1" @(IsR("OutcomeTracking",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="ot-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q13: Measure social impact -->
+                    <div class="q-block" id="qb-ImpactMeasurement">
+                        <div class="q-label">How do you measure the social impact of your product / service? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Surveys and impact assessments","A"),("Data analytics and usage statistics","B"),("Direct feedback from beneficiaries","C"),("We do not currently measure","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="ImpactMeasurement" id="im-@o.Item2" value="@o.Item1" @(IsR("ImpactMeasurement",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="im-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q14: Share impact data -->
+                    <div class="q-block" id="qb-ImpactSharing">
+                        <div class="q-label">How openly do you share impact data? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Public reports with audits","A"),("Regular stakeholder updates","B"),("Internal reports only","C"),("No sharing","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="ImpactSharing" id="is-@o.Item2" value="@o.Item1" @(IsR("ImpactSharing",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="is-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q15: Beneficiary involvement -->
+                    <div class="q-block" id="qb-BeneficiaryInvolvement">
+                        <div class="q-label">How involved are beneficiaries in designing your solution? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Co-created with community input","A"),("Piloted with user feedback","B"),("Minimal involvement","C"),("No involvement","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="BeneficiaryInvolvement" id="bi-@o.Item2" value="@o.Item1" @(IsR("BeneficiaryInvolvement",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="bi-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q16: Local context -->
+                    <div class="q-block" id="qb-LocalContext">
+                        <div class="q-label">Is your solution tailored to local contexts? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Co-designed with communities","A"),("Adapted from global models","B"),("Minimal localisation","C"),("One-size-fits-all","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="LocalContext" id="lc-@o.Item2" value="@o.Item1" @(IsR("LocalContext",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="lc-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q17: Ethical practices -->
+                    <div class="q-block" id="qb-Ethics">
+                        <div class="q-label">How do you ensure ethical practices? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Third-party certifications/audits","A"),("Internal policies enforced","B"),("Ad-hoc compliance","C"),("No policies","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="Ethics" id="eth-@o.Item2" value="@o.Item1" @(IsR("Ethics",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="eth-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q18: Data protection -->
+                    <div class="q-block" id="qb-DataProtection">
+                        <div class="q-label">How do you protect user / customer data? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("NDPR/ISO-certified compliance","A"),("Internal encryption/policies","B"),("Basic safeguards","C"),("No protection","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="DataProtection" id="dp-@o.Item2" value="@o.Item1" @(IsR("DataProtection",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="dp-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q19: Trust building -->
+                    <div class="q-block" id="qb-TrustBuilding">
+                        <div class="q-label">How do you build trust with beneficiaries? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Transparent reporting and accountability","A"),("Regular community engagement","B"),("Limited communication","C"),("No effort","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="TrustBuilding" id="tb-@o.Item2" value="@o.Item1" @(IsR("TrustBuilding",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="tb-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ═══ CARD 4: Scalability & Longevity ═══ -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon ink">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Scalability &amp; Long-term Durability</div>
+                        <div class="form-card-desc">How your impact will replicate and endure beyond your current phase.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+
+                    <!-- Q20: Replicability -->
+                    <div class="q-block" id="qb-Replicability">
+                        <div class="q-label">Can your model be replicated in new regions? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Already scaled to 5+ regions","A"),("Designed for easy replication","B"),("Needs adaptation","C"),("Not replicable","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="Replicability" id="rep-@o.Item2" value="@o.Item1" @(IsR("Replicability",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="rep-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q21: Impact durability -->
+                    <div class="q-block" id="qb-ImpactDurability">
+                        <div class="q-label">How will impact endure beyond 5 years? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Locals trained to lead independently","A"),("Partnerships with governments/NGOs","B"),("Reliant on external funding","C"),("No plan","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="ImpactDurability" id="id-@o.Item2" value="@o.Item1" @(IsR("ImpactDurability",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="id-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q22: Crisis performance -->
+                    <div class="q-block" id="qb-CrisisPerformance">
+                        <div class="q-label">How does your solution perform during crises (e.g., offline access, supply chain disruptions)? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Built for crisis response","A"),("Adaptable to disruptions","B"),("No specific features","C"),("Vulnerable","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="CrisisPerformance" id="cp-@o.Item2" value="@o.Item1" @(IsR("CrisisPerformance",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="cp-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q23: Policy advocacy -->
+                    <div class="q-block" id="qb-PolicyAdvocacy">
+                        <div class="q-label">Do you advocate for policy / industry reforms? <span class="req">*</span></div>
+                        <div class="radio-grid">
+                            @foreach (var o in new[]{ ("Lead campaigns/coalitions","A"),("Partner with advocacy groups","B"),("Informal knowledge-sharing","C"),("No advocacy","D") }) {
+                                <div class="r-option">
+                                    <input type="radio" name="PolicyAdvocacy" id="pa-@o.Item2" value="@o.Item1" @(IsR("PolicyAdvocacy",o.Item1)?"checked":"") />
+                                    <label class="r-label" for="pa-@o.Item2">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-letter">@o.Item2)</span>
+                                        <span class="r-text">@o.Item1</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ═══ CARD 5: Impact Evidence (Open Text) ═══ -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon teal">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Impact Evidence</div>
+                        <div class="form-card-desc">Share data and specific examples that demonstrate the real-world difference your innovation has made.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+
+                    <!-- Impact data / statistics -->
+                    <div class="q-block" id="qb-ImpactData">
+                        <div class="q-label">Can you share data or statistics that demonstrate the impact your product / service has had so far? <span class="req">*</span></div>
+                        <div class="ta-wrap">
+                            <span class="ta-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+                            <textarea id="ImpactData" name="ImpactData" rows="4"
+                                      placeholder="e.g. We have served 12,000 patients across 3 states, reducing average diagnosis time from 7 days to 48 hours.">@ViewBag.ImpactData</textarea>
+                        </div>
+                        <div class="char-count" id="impactDataCount">0 / 300 words</div>
+                        <div class="field-error">Please provide some impact data or statistics.</div>
+                    </div>
+
+                    <!-- Specific impact examples -->
+                    <div class="q-block" id="qb-ImpactExamples">
+                        <div class="q-label">Can you share specific examples where your product / service has made a measurable difference in the community or environment? <span class="req">*</span></div>
+                        <div class="ta-wrap">
+                            <span class="ta-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></span>
+                            <textarea id="ImpactExamples" name="ImpactExamples" rows="4"
+                                      placeholder="e.g. In Kano State, our platform helped 200 smallholder farmers increase yields by 40% in one growing season.">@ViewBag.ImpactExamples</textarea>
+                        </div>
+                        <div class="char-count" id="impactExamplesCount">0 / 300 words</div>
+                        <div class="field-error">Please provide at least one specific impact example.</div>
+                    </div>
+
+                    <!-- Top 3/10/25/100 details -->
+                    <div class="q-block" id="qb-TopDetails">
+                        <div class="q-label">If applicable, please provide details of your top impact milestones (Top 3, 10, 25 or 100) <span class="opt">(optional)</span></div>
+                        <div class="ta-wrap">
+                            <span class="ta-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+                            <textarea id="TopDetails" name="TopDetails" rows="4"
+                                      placeholder="e.g. Top 3: (1) First NGO partnership — Red Cross Nigeria, 2023. (2) Featured in TechCabal Top 50 African Startups. (3) Pilot with Lagos State Ministry of Health...">@ViewBag.TopDetails</textarea>
+                        </div>
+                        <div class="char-count" id="topDetailsCount">0 / 300 words</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ═══ CARD 6: Declarations & Agreements ═══ -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon green">
+                        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Declarations &amp; Agreements</div>
+                        <div class="form-card-desc">Please read and agree to the following before submitting this step.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+
+                    <div>
+                        <div class="agree-block" id="agree-privacy">
+                            <input type="checkbox" id="AgreePrivacy" name="AgreePrivacy" value="true" @(ViewBag.AgreePrivacy == true ? "checked" : "") />
+                            <div class="agree-text">
+                                I agree to the terms and conditions outlined in the
+                                <a href="~/NPI_4_0_Privacy_Policy.pdf" target="_blank">NSIA Data Protection and Privacy Policy</a>.
+                                I understand that my personal and business information will be processed
+                                in accordance with the Nigeria Data Protection Regulation (NDPR).
+                            </div>
+                        </div>
+                        <div class="agree-error" id="err-privacy">You must agree to the NSIA Privacy Policy to continue.</div>
+                    </div>
+
+                    <div>
+                        <div class="agree-block" id="agree-competition">
+                            <input type="checkbox" id="AgreeCompetition" name="AgreeCompetition" value="true" @(ViewBag.AgreeCompetition == true ? "checked" : "") />
+                            <div class="agree-text">
+                                I agree to the terms and conditions of the
+                                <a href="/competition-agreement" target="_blank">NPI 4.0 Competition Submission Agreement</a>.
+                                I confirm that all information submitted is accurate and that I am authorised
+                                to submit this application on behalf of my company.
+                            </div>
+                        </div>
+                        <div class="agree-error" id="err-competition">You must agree to the Competition Submission Agreement to continue.</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <div class="actions-left">
+                    <a asp-action="Commercial" asp-controller="Application" class="btn-back">
+                        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                        Back
+                    </a>
+                    <button type="button" class="btn-save" id="saveBtn">
+                        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Save draft
+                    </button>
+                </div>
+                <button type="submit" class="btn-next" id="nextBtn">
+                    Save &amp; Continue
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<div class="toast" id="toast">
+    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <span id="toastMsg">Draft saved successfully</span>
+</div>
+
+<script>
+    // ── Drawer
+    const hamburger = document.getElementById('hamburger');
+    const sideDrawer = document.getElementById('sideDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const openDrawer = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display='block'; setTimeout(()=>drawerOverlay.classList.add('open'),10); hamburger.classList.add('open'); document.body.style.overflow='hidden'; };
+    const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(()=>drawerOverlay.style.display='',300); hamburger.classList.remove('open'); document.body.style.overflow=''; };
+    hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
+    drawerOverlay.addEventListener('click', closeDrawer);
+
+    // ── Conditional: env harm detail
+    document.querySelectorAll('input[name="EnvImpact"]').forEach(r => {
+        r.addEventListener('change', () => {
+            document.getElementById('cond-envdetail').classList.toggle('show', r.value === 'Yes' && r.checked);
+        });
+    });
+    if (document.querySelector('input[name="EnvImpact"]:checked')?.value === 'Yes') {
+        document.getElementById('cond-envdetail').classList.add('show');
+    }
+
+    // ── Word count helper
+    function countWords(str) { return str.trim() === '' ? 0 : str.trim().split(/\s+/).length; }
+    function watchWordCount(taId, countId, max) {
+        const ta = document.getElementById(taId);
+        const ct = document.getElementById(countId);
+        function update() {
+            let words = countWords(ta.value);
+            if (words > max) {
+                ta.value = ta.value.trim().split(/\s+/).slice(0, max).join(' ');
+                words = max;
+            }
+            ct.textContent = words + ' / ' + max + ' words';
+            ct.className = 'char-count' + (words >= max ? ' over' : words >= max * 0.9 ? ' warn' : '');
+        }
+        ta.addEventListener('input', () => { update(); clearInvalid('qb-' + taId.charAt(0).toUpperCase() + taId.slice(1)); });
+        update();
+    }
+    watchWordCount('ImpactData', 'impactDataCount', 300);
+    watchWordCount('ImpactExamples', 'impactExamplesCount', 300);
+    watchWordCount('TopDetails', 'topDetailsCount', 300);
+
+    // ── All radio question names
+    const radioQs = [
+        'SDGAligned','SDGCount','EnvImpact','ResourceUse',
+        'UnderservedMarket','Inequities','GenderGaps','AccessUnderserved','JobsCreated','PeopleImpacted','SelfReliance',
+        'OutcomeTracking','ImpactMeasurement','ImpactSharing','BeneficiaryInvolvement','LocalContext','Ethics','DataProtection','TrustBuilding',
+        'Replicability','ImpactDurability','CrisisPerformance','PolicyAdvocacy'
+    ];
+
+    // ── Helpers
+    function setInvalid(id) { document.getElementById(id)?.classList.add('invalid'); }
+    function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
+
+    radioQs.forEach(name => {
+        document.querySelectorAll(`input[name="${name}"]`).forEach(r =>
+            r.addEventListener('change', () => clearInvalid('qb-' + name))
+        );
+    });
+
+    // Conditional env radio
+    document.querySelectorAll('input[name="EnvReduction"]').forEach(r =>
+        r.addEventListener('change', () => clearInvalid('qb-EnvReduction'))
+    );
+
+    // Agreement checkboxes
+    document.getElementById('AgreePrivacy').addEventListener('change', () => {
+        document.getElementById('agree-privacy').classList.remove('invalid');
+        document.getElementById('err-privacy').style.display = 'none';
+    });
+    document.getElementById('AgreeCompetition').addEventListener('change', () => {
+        document.getElementById('agree-competition').classList.remove('invalid');
+        document.getElementById('err-competition').style.display = 'none';
+    });
+
+    function validate() {
+        let ok = true;
+        let firstInvalid = null;
+
+        radioQs.forEach(name => {
+            const block = document.getElementById('qb-' + name);
+            if (!document.querySelector(`input[name="${name}"]:checked`)) {
+                block?.classList.add('invalid');
+                if (!firstInvalid) firstInvalid = block;
+                ok = false;
+            } else {
+                block?.classList.remove('invalid');
+            }
+        });
+
+        // Conditional: if EnvImpact = Yes, EnvReduction is required
+        const envYes = document.querySelector('input[name="EnvImpact"]:checked')?.value === 'Yes';
+        if (envYes && !document.querySelector('input[name="EnvReduction"]:checked')) {
+            setInvalid('qb-EnvReduction');
+            if (!firstInvalid) firstInvalid = document.getElementById('qb-EnvReduction');
+            ok = false;
+        } else if (!envYes) { clearInvalid('qb-EnvReduction'); }
+
+        // Text fields
+        if (!document.getElementById('ImpactData').value.trim()) {
+            setInvalid('qb-ImpactData');
+            if (!firstInvalid) firstInvalid = document.getElementById('qb-ImpactData');
+            ok = false;
+        } else clearInvalid('qb-ImpactData');
+
+        if (!document.getElementById('ImpactExamples').value.trim()) {
+            setInvalid('qb-ImpactExamples');
+            if (!firstInvalid) firstInvalid = document.getElementById('qb-ImpactExamples');
+            ok = false;
+        } else clearInvalid('qb-ImpactExamples');
+
+        // Agreements
+        if (!document.getElementById('AgreePrivacy').checked) {
+            document.getElementById('agree-privacy').classList.add('invalid');
+            document.getElementById('err-privacy').style.display = 'block';
+            if (!firstInvalid) firstInvalid = document.getElementById('agree-privacy');
+            ok = false;
+        }
+        if (!document.getElementById('AgreeCompetition').checked) {
+            document.getElementById('agree-competition').classList.add('invalid');
+            document.getElementById('err-competition').style.display = 'block';
+            if (!firstInvalid) firstInvalid = document.getElementById('agree-competition');
+            ok = false;
+        }
+
+        if (!ok && firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return ok;
+    }
+
+    // ── Toast
+    function showToast(msg, isError) {
+        const toast = document.getElementById('toast');
+        toast.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--lime)';
+        document.getElementById('toastMsg').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ── Save draft
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('saveBtn');
+        btn.textContent = 'Saving...'; btn.disabled = true;
+        try {
+            const res = await fetch('/Application/SaveImpactDraft', { method: 'POST', body: new FormData(document.getElementById('impactForm')) });
+            showToast(res.ok ? 'Draft saved successfully' : 'Could not save draft', !res.ok);
+        } catch { showToast('Could not save draft', true); }
+        finally {
+            btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save draft';
+            btn.disabled = false;
+        }
+    });
+
+    // ── Submit
+    document.getElementById('impactForm').addEventListener('submit', function (e) {
+        if (!validate()) { e.preventDefault(); return; }
+        const btn = document.getElementById('nextBtn');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Saving...';
+        btn.disabled = true;
+    });
+</script>
+</body>
+</html>

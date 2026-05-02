@@ -1,0 +1,672 @@
+@{
+    ViewData["Title"] = "Profile — NSIA Prize for Innovation";
+    Layout = null;
+    var applicantName = ViewBag.ApplicantName as string ?? "Adaeze Okonkwo";
+    var completedStep = (int)(ViewBag.CompletedStep ?? 2);
+    var initials = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
+    var totalSteps = 7;
+
+    var steps = new[] {
+        new { Num = 1, Name = "Profile",                 Action = "Profile"      },
+        new { Num = 2, Name = "Company Info",            Action = "CompanyInfo"  },
+        new { Num = 3, Name = "Team Info",               Action = "TeamInfo"     },
+        new { Num = 4, Name = "Product Info",            Action = "ProductInfo"  },
+        new { Num = 5, Name = "Commercial",              Action = "Commercial"   },
+        new { Num = 6, Name = "Impact & Sustainability", Action = "Impact"       },
+        new { Num = 7, Name = "Additional Information",  Action = "Additional"   },
+    };
+
+    string StepStatus(int num) {
+        if (num <= completedStep) return "completed";
+        if (num == completedStep + 1) return "active";
+        return num == 1 ? "pending" : "locked";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --teal: #0e86ab; --teal-d: #0a6b8a;
+            --green: #08703a; --green-d: #065a2f;
+            --lime: #83c240;
+            --ink: #0d1a12; --cream: #faf8f3; --off: #f4f2ec;
+            --muted: #5a6b60; --border: rgba(0,0,0,0.08);
+            --nav-h: 62px; --step-h: 56px;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
+
+        /* ── TOP NAV ── */
+        .top-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+            height: var(--nav-h); background: var(--ink);
+            display: flex; align-items: center; padding: 0 2rem;
+            justify-content: space-between;
+        }
+        .top-nav::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: radial-gradient(ellipse at 30% 50%, rgba(14,134,171,0.12) 0%, transparent 60%);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
+        @* .nav-brand-icon {
+            width: 34px; height: 34px; border-radius: 7px;
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        } *@
+        .nav-brand-icon img { width: 130px; height: 30px; stroke: white; stroke-width: 2; fill: none; }
+        .nav-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
+        .nav-brand-text span { display: block; font-size: 10px; color: rgba(255,255,255,0.35); }
+        .nav-right { display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 1; }
+        .nav-deadline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.45); }
+        .nav-deadline svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.35); stroke-width: 1.75; fill: none; }
+        .deadline-val { color: var(--lime); font-weight: 500; }
+        .nav-user { display: flex; align-items: center; gap: 8px; }
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 500; color: white; flex-shrink: 0;
+        }
+        .user-name { font-size: 12px; color: rgba(255,255,255,0.7); }
+        .nav-logout { font-size: 11px; color: rgba(255,255,255,0.35); text-decoration: none; padding: .3rem .7rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: color .2s, border-color .2s; white-space: nowrap; }
+        .nav-logout:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.25); }
+        .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 1; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: transform .3s, opacity .3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        /* ── STEP BAR ── */
+        .step-bar {
+            position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190;
+            height: var(--step-h); background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: stretch; overflow: hidden;
+        }
+        .step-item {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            gap: 7px; padding: 0 .5rem; text-decoration: none; color: var(--ink);
+            border-right: 1px solid var(--border); position: relative;
+            transition: background .2s; min-width: 0;
+        }
+        .step-item:last-child { border-right: none; }
+        .step-item::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background .2s; }
+        .step-item:hover { background: var(--off); }
+        .step-item:hover::after { background: rgba(14,134,171,0.3); }
+        .step-item.completed .step-num { background: var(--green); border-color: var(--green); color: white; }
+        .step-item.completed .step-num svg { display: block; }
+        .step-item.completed .step-num span { display: none; }
+        .step-item.completed .step-name { color: var(--green); }
+        .step-item.completed::after { background: var(--green); }
+        .step-item.active { background: rgba(14,134,171,0.04); }
+        .step-item.active .step-num { background: var(--teal); border-color: var(--teal); color: white; }
+        .step-item.active .step-name { color: var(--teal); font-weight: 500; }
+        .step-item.active::after { background: var(--teal); }
+        .step-num {
+            width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+            border: 1.5px solid rgba(0,0,0,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 500; color: var(--muted); transition: background .2s, border-color .2s;
+        }
+        .step-num svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .step-name { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .2s; }
+
+        /* ── SIDE DRAWER ── */
+        .drawer-overlay { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity .3s; }
+        .drawer-overlay.open { opacity: 1; }
+        .side-drawer { position: fixed; top: 0; left: -280px; bottom: 0; z-index: 160; width: 280px; background: var(--ink); display: flex; flex-direction: column; transition: left .3s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
+        .side-drawer.open { left: 0; }
+        .drawer-header { padding: 1.25rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .drawer-brand-icon { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .drawer-brand-icon svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+        .drawer-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .07em; text-transform: uppercase; }
+        .drawer-brand-text span { font-size: 10px; color: rgba(255,255,255,0.35); }
+        .drawer-user { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .drawer-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: white; }
+        .drawer-uname { font-size: 13px; font-weight: 500; color: white; }
+        .drawer-uemail { font-size: 11px; color: rgba(255,255,255,0.35); }
+        .drawer-steps { padding: .75rem 0; flex: 1; }
+        .drawer-step-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.3); letter-spacing: .1em; text-transform: uppercase; padding: .5rem 1.25rem .25rem; display: block; }
+        .drawer-item { display: flex; align-items: center; gap: .9rem; padding: .8rem 1.25rem; text-decoration: none; color: rgba(255,255,255,0.55); transition: background .2s, color .2s; position: relative; }
+        .drawer-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.85); }
+        .drawer-item.active { background: rgba(14,134,171,0.12); color: white; }
+        .drawer-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal); border-radius: 0 2px 2px 0; }
+        .drawer-item-num { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; transition: background .2s; }
+        .drawer-item.completed .drawer-item-num { background: var(--green); border-color: var(--green); }
+        .drawer-item.completed .drawer-item-num svg { display: block; }
+        .drawer-item.completed .drawer-item-num span { display: none; }
+        .drawer-item.active .drawer-item-num { background: var(--teal); border-color: var(--teal); }
+        .drawer-item-num svg { width: 11px; height: 11px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .drawer-item-name { font-size: 13px; }
+        .drawer-item-status { font-size: 10px; margin-top: 2px; color: rgba(255,255,255,0.25); }
+        .drawer-item.completed .drawer-item-status { color: #4ade80; }
+        .drawer-item.active .drawer-item-status { color: rgba(14,134,171,0.8); }
+        .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
+        .drawer-logout { display: flex; align-items: center; gap: .6rem; font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; padding: .6rem 0; transition: color .2s; }
+        .drawer-logout svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; }
+        .drawer-logout:hover { color: rgba(255,255,255,0.65); }
+
+        /* ── MAIN LAYOUT ── */
+        .main { padding-top: calc(var(--nav-h) + var(--step-h)); min-height: 100vh; }
+        .content { max-width: 760px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+
+        /* ── PAGE HEADER ── */
+        .page-header { margin-bottom: 2rem; }
+        .breadcrumb { display: flex; align-items: center; gap: .4rem; font-size: 11px; color: var(--muted); margin-bottom: .75rem; }
+        .breadcrumb a { color: var(--teal); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); stroke-width: 2; fill: none; }
+        .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
+        .page-sub { font-size: .84rem; color: var(--muted); line-height: 1.65; }
+
+        /* ── STEP PROGRESS MINI ── */
+        .step-mini {
+            display: flex; align-items: center; gap: .5rem;
+            background: white; border-radius: 8px; border: 1px solid var(--border);
+            padding: .85rem 1.25rem; margin-bottom: 2rem;
+        }
+        .step-mini-dot {
+            width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+            background: var(--teal); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 500;
+        }
+        .step-mini-text { display: flex; flex-direction: column; }
+        .step-mini-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+        .step-mini-name { font-size: .85rem; font-weight: 500; color: var(--ink); }
+        .step-mini-spacer { flex: 1; }
+        .step-mini-progress { font-size: 11px; color: var(--muted); white-space: nowrap; }
+        .step-mini-bar { width: 120px; height: 4px; background: var(--off); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--lime)); border-radius: 10px; width: 14%; }
+
+        /* ── FORM CARD ── */
+        .form-card {
+            background: white; border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden; margin-bottom: 1.25rem;
+        }
+        .form-card-header {
+            padding: 1.25rem 1.75rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .form-card-icon {
+            width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0;
+            background: rgba(14,134,171,0.1);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .form-card-icon svg { width: 18px; height: 18px; stroke: var(--teal); stroke-width: 1.75; fill: none; }
+        .form-card-title { font-size: .95rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+        .form-card-desc { font-size: .75rem; color: var(--muted); line-height: 1.4; }
+        .form-card-body { padding: 1.75rem; }
+
+        /* ── FORM ELEMENTS ── */
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+        .form-group { display: flex; flex-direction: column; gap: .38rem; }
+        .form-group.full { grid-column: 1 / -1; }
+        label { font-size: .75rem; font-weight: 500; color: var(--ink); letter-spacing: .02em; }
+        .label-req { color: #e53e3e; margin-left: 2px; }
+        .input-wrap { position: relative; }
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); }
+        .input-icon svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.75; fill: none; display: block; }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            width: 100%; padding: .72rem .9rem .72rem 2.5rem;
+            border: 1px solid var(--border); border-radius: 7px;
+            font-size: .85rem; font-family: 'DM Sans', sans-serif;
+            background: white; color: var(--ink);
+            transition: border-color .2s, box-shadow .2s;
+            outline: none; -webkit-appearance: none; appearance: none;
+        }
+        input[type="text"]:focus, input[type="email"]:focus,
+        input[type="tel"]:focus, select:focus {
+            border-color: var(--teal); box-shadow: 0 0 0 3px rgba(14,134,171,0.1);
+        }
+        input::placeholder { color: #aab5af; }
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6b60' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 12px center; padding-right: 2.25rem;
+        }
+
+        /* Gender radio cards */
+        .gender-options { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+        .gender-option { position: relative; }
+        .gender-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        .gender-label {
+            display: flex; align-items: center; gap: .75rem;
+            padding: .85rem 1.1rem; border-radius: 8px;
+            border: 1.5px solid var(--border); background: white;
+            cursor: pointer; transition: border-color .2s, background .2s;
+            user-select: none;
+        }
+        .gender-label:hover { border-color: rgba(14,134,171,0.3); background: rgba(14,134,171,0.02); }
+        .gender-option input:checked + .gender-label {
+            border-color: var(--teal); background: rgba(14,134,171,0.05);
+        }
+        .gender-radio {
+            width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+            border: 1.5px solid rgba(0,0,0,0.2);
+            display: flex; align-items: center; justify-content: center;
+            transition: border-color .2s, background .2s;
+        }
+        .gender-option input:checked + .gender-label .gender-radio {
+            border-color: var(--teal); background: var(--teal);
+        }
+        .gender-radio-dot {
+            width: 6px; height: 6px; border-radius: 50%; background: white;
+            opacity: 0; transform: scale(0); transition: opacity .15s, transform .15s;
+        }
+        .gender-option input:checked + .gender-label .gender-radio-dot { opacity: 1; transform: scale(1); }
+        .gender-icon { font-size: 1.1rem; }
+        .gender-text { font-size: .85rem; font-weight: 400; color: var(--ink); }
+        .gender-option input:checked + .gender-label .gender-text { color: var(--teal); font-weight: 500; }
+
+        /* Validation */
+        .field-error { font-size: .71rem; color: #b91c1c; display: none; }
+        .form-group.invalid input,
+        .form-group.invalid select { border-color: #f87171; }
+        .form-group.invalid input:focus,
+        .form-group.invalid select:focus { box-shadow: 0 0 0 3px rgba(248,113,113,0.12); }
+        .form-group.invalid .field-error { display: block; }
+        .form-group.invalid .gender-label { border-color: #f87171; }
+
+        /* Read-only (pre-filled from registration) */
+        input[readonly] {
+            background: var(--off); color: var(--muted); cursor: not-allowed;
+        }
+        input[readonly]:focus { border-color: var(--border); box-shadow: none; }
+        .readonly-note {
+            font-size: .7rem; color: var(--muted);
+            display: flex; align-items: center; gap: 4px; margin-top: .2rem;
+        }
+        .readonly-note svg { width: 11px; height: 11px; stroke: var(--muted); stroke-width: 1.75; fill: none; }
+
+        /* ── SAVE / NAV BUTTONS ── */
+        .form-actions {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 1rem; flex-wrap: wrap;
+        }
+        .actions-left { display: flex; align-items: center; gap: .75rem; }
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: .72rem 1.3rem; border-radius: 7px;
+            border: 1px solid var(--border); background: white;
+            font-size: .84rem; font-weight: 400; color: var(--muted);
+            text-decoration: none; cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color .2s, color .2s;
+        }
+        .btn-back:hover { border-color: rgba(0,0,0,0.2); color: var(--ink); }
+        .btn-back svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-save {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: .72rem 1.5rem; border-radius: 7px;
+            background: white; border: 1px solid var(--border);
+            font-size: .84rem; font-weight: 500; color: var(--teal);
+            cursor: pointer; font-family: 'DM Sans', sans-serif;
+            transition: background .2s, border-color .2s;
+        }
+        .btn-save:hover { background: rgba(14,134,171,0.04); border-color: rgba(14,134,171,0.3); }
+        .btn-save svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-next {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: .76rem 1.75rem; border-radius: 7px;
+            background: var(--green); color: white; border: none;
+            font-size: .88rem; font-weight: 500;
+            cursor: pointer; font-family: 'DM Sans', sans-serif;
+            transition: background .2s, transform .15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-next:hover { background: var(--green-d); transform: translateY(-1px); }
+        .btn-next:active { transform: scale(0.98); }
+        .btn-next svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+
+        /* ── AUTOSAVE TOAST ── */
+        .toast {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 300;
+            background: var(--ink); color: white;
+            padding: .75rem 1.25rem; border-radius: 8px;
+            font-size: .8rem; display: flex; align-items: center; gap: .6rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transform: translateY(20px); opacity: 0;
+            transition: transform .3s, opacity .3s; pointer-events: none;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast svg { width: 15px; height: 15px; stroke: var(--lime); stroke-width: 2; fill: none; flex-shrink: 0; }
+
+        /* ── RESPONSIVE ── */
+        @@media (max-width: 900px) {
+            .step-bar { display: none; }
+            .top-nav { padding: 0 1.25rem; }
+            .hamburger { display: flex; }
+            .nav-deadline, .user-name, .nav-logout { display: none; }
+            .main { padding-top: var(--nav-h); }
+            .content { padding: 1.5rem 1rem 3rem; }
+            .form-grid-2 { grid-template-columns: 1fr; }
+            .step-mini-bar, .step-mini-progress { display: none; }
+        }
+        @@media (max-width: 480px) {
+            .form-card-body { padding: 1.25rem; }
+            .page-title { font-size: 1.6rem; }
+            .gender-options { grid-template-columns: 1fr 1fr; }
+            .form-actions { flex-direction: column; align-items: stretch; }
+            .actions-left { justify-content: space-between; }
+            .btn-next { justify-content: center; width: 100%; padding: 1rem; }
+            .toast { left: 1rem; right: 1rem; bottom: 1rem; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+    <div class="nav-brand">
+        <div class="nav-brand-icon">
+            <img src="~/logo.png" alt="logo"/> 
+        </div>
+        @* <div class="nav-brand-text">
+            <strong>NSIA</strong>
+            <span>Prize for Innovation</span>
+        </div> *@
+    </div>
+    <div class="nav-right">
+        <div class="nav-deadline">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Deadline: <span class="deadline-val">5 June 2026</span>
+        </div>
+        <div class="nav-user">
+            <div class="user-avatar">@initials</div>
+            <span class="user-name">@applicantName</span>
+        </div>
+        <a asp-action="Logout" asp-controller="Account" class="nav-logout">Sign out</a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- STEP BAR -->
+<div class="step-bar">
+    @foreach (var s in steps) {
+        var status = StepStatus(s.Num);
+        <a asp-action="@s.Action" asp-controller="Application" class="step-item @status" title="@s.Name">
+            <div class="step-num">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                <span>@s.Num</span>
+            </div>
+            <span class="step-name">@s.Name</span>
+        </a>
+    }
+</div>
+
+<!-- MOBILE OVERLAY + DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+        <div class="drawer-brand-icon">
+            <svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg>
+        </div>
+        <div class="drawer-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div>
+    </div>
+    <div class="drawer-user">
+        <div class="drawer-avatar">@initials</div>
+        <div><div class="drawer-uname">@applicantName</div><div class="drawer-uemail">NPI 4.0 Applicant</div></div>
+    </div>
+    <div class="drawer-steps">
+        <span class="drawer-step-label">Application Steps</span>
+        @foreach (var s in steps) {
+            var status = StepStatus(s.Num);
+            var statusLabel = status == "completed" ? "Completed" : status == "active" ? "In progress" : status == "locked" ? "Locked" : "Not started";
+            <a href=""
+               class="drawer-item @status"
+               @(status == "locked" ? "style=pointer-events:none;opacity:.45" : "")>
+                <div class="drawer-item-num">
+                    <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                    <span>@s.Num</span>
+                </div>
+                <div>
+                    <div class="drawer-item-name">@s.Name</div>
+                    <div class="drawer-item-status">@statusLabel</div>
+                </div>
+            </a>
+        }
+    </div>
+    <div class="drawer-footer">
+        <a asp-action="Logout" asp-controller="Account" class="drawer-logout">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out of account
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+    <div class="content">
+
+        <!-- Breadcrumb + Header -->
+        <div class="page-header">
+            <div class="breadcrumb">
+                <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>Profile</span>
+            </div>
+            <h1 class="page-title">Applicant Profile</h1>
+            <p class="page-sub">Tell us about yourself. This information helps us understand who is behind the innovation.</p>
+        </div>
+
+        <!-- Step mini indicator -->
+        <div class="step-mini">
+            <div class="step-mini-dot">1</div>
+            <div class="step-mini-text">
+                <span class="step-mini-label">Step 1 of 7</span>
+                <span class="step-mini-name">Profile</span>
+            </div>
+            <div class="step-mini-spacer"></div>
+            <span class="step-mini-progress">Step 1 of 7</span>
+            <div class="step-mini-bar"><div class="step-mini-fill"></div></div>
+        </div>
+
+        <form asp-action="SaveProfile" asp-controller="Application" method="post" id="profileForm" novalidate>
+            @Html.AntiForgeryToken()
+
+            <!-- Personal Details Card -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon">
+                        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Personal Details</div>
+                        <div class="form-card-desc">Your basic contact and identification information.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+                    <div class="form-grid-2">
+
+                        <!-- Full Name -->
+                        <div class="form-group full" id="grp-fullname">
+                            <label for="FullName">Full name of applicant <span class="label-req">*</span></label>
+                            <div class="input-wrap">
+                                <span class="input-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                </span>
+                                <input type="text" id="FullName" name="FullName"
+                                       placeholder="e.g. Adaeze Chinyere Okonkwo"
+                                       value="@ViewBag.FullName"
+                                       autocomplete="name" inputmode="text" />
+                            </div>
+                            <div class="field-error">Please enter your full name.</div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group" id="grp-email">
+                            <label for="Email">Email address <span class="label-req">*</span></label>
+                            <div class="input-wrap">
+                                <span class="input-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                </span>
+                                <input type="email" id="Email" name="Email"
+                                       value="@ViewBag.Email"
+                                       placeholder="you@example.com"
+                                       readonly
+                                       autocomplete="email" inputmode="email" />
+                            </div>
+                            <div class="readonly-note">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                This is the email you registered with and cannot be changed here.
+                            </div>
+                            <div class="field-error">Please enter a valid email address.</div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-group" id="grp-phone">
+                            <label for="PhoneNumber">Phone number <span class="label-req">*</span></label>
+                            <div class="input-wrap">
+                                <span class="input-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                </span>
+                                <input type="tel" id="PhoneNumber" name="PhoneNumber"
+                                       placeholder="+234 800 000 0000"
+                                       value="@ViewBag.PhoneNumber"
+                                       autocomplete="tel" inputmode="tel" />
+                            </div>
+                            <div class="field-error">Please enter a valid phone number.</div>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="form-group" id="grp-gender">
+                            <label>Gender <span class="label-req">*</span></label>
+                            <div class="gender-options">
+                                <div class="gender-option">
+                                    <input type="radio" name="Gender" id="gender-male" value="Male"
+                                           @(ViewBag.Gender == "Male" ? "checked" : "") />
+                                    <label class="gender-label" for="gender-male">
+                                        <div class="gender-radio"><div class="gender-radio-dot"></div></div>
+                                        <span class="gender-text">Male</span>
+                                    </label>
+                                </div>
+                                <div class="gender-option">
+                                    <input type="radio" name="Gender" id="gender-female" value="Female"
+                                           @(ViewBag.Gender == "Female" ? "checked" : "") />
+                                    <label class="gender-label" for="gender-female">
+                                        <div class="gender-radio"><div class="gender-radio-dot"></div></div>
+                                        <span class="gender-text">Female</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="field-error">Please select your gender.</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <div class="actions-left">
+                    <a asp-action="Dashboard" asp-controller="Application" class="btn-back">
+                        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                        Dashboard
+                    </a>
+                    <button type="button" class="btn-save" id="saveBtn">
+                        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Save draft
+                    </button>
+                </div>
+                <button type="submit" class="btn-next" id="nextBtn">
+                    Save &amp; Continue
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<!-- Toast notification -->
+<div class="toast" id="toast">
+    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <span id="toastMsg">Draft saved successfully</span>
+</div>
+
+<script>
+    // ── Drawer
+    const hamburger     = document.getElementById('hamburger');
+    const sideDrawer    = document.getElementById('sideDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const openDrawer  = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display='block'; setTimeout(()=>drawerOverlay.classList.add('open'),10); hamburger.classList.add('open'); document.body.style.overflow='hidden'; };
+    const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(()=>drawerOverlay.style.display='',300); hamburger.classList.remove('open'); document.body.style.overflow=''; };
+    hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
+    drawerOverlay.addEventListener('click', closeDrawer);
+
+    // ── Toast
+    function showToast(msg, isError) {
+        const toast = document.getElementById('toast');
+        const icon  = toast.querySelector('svg');
+        document.getElementById('toastMsg').textContent = msg || 'Draft saved successfully';
+        icon.style.stroke = isError ? '#f87171' : 'var(--lime)';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ── Validation helpers
+    @* function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+    function isValidPhone(v) { return /^[+\d][\d\s\-(). ]{6,19}$/.test(v.trim()); } *@
+    function setInvalid(id) { document.getElementById(id).classList.add('invalid'); }
+    function clearInvalid(id) { document.getElementById(id).classList.remove('invalid'); }
+
+    function validate() {
+        let ok = true;
+        const fn = document.getElementById('FullName').value.trim();
+        if (fn.length < 2) { setInvalid('grp-fullname'); ok = false; } else clearInvalid('grp-fullname');
+        const ph = document.getElementById('PhoneNumber').value;
+        if (!isValidPhone(ph)) { setInvalid('grp-phone'); ok = false; } else clearInvalid('grp-phone');
+        const gn = document.querySelector('input[name="Gender"]:checked');
+        if (!gn) { setInvalid('grp-gender'); ok = false; } else clearInvalid('grp-gender');
+        return ok;
+    }
+
+    // Clear on input
+    document.getElementById('FullName').addEventListener('input', () => clearInvalid('grp-fullname'));
+    document.getElementById('PhoneNumber').addEventListener('input', () => clearInvalid('grp-phone'));
+    document.querySelectorAll('input[name="Gender"]').forEach(r => r.addEventListener('change', () => clearInvalid('grp-gender')));
+
+    // ── Save draft
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('saveBtn');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Saving...';
+        btn.disabled = true;
+        try {
+            const fd = new FormData(document.getElementById('profileForm'));
+            const res = await fetch('/Application/SaveProfileDraft', { method: 'POST', body: fd });
+            if (res.ok) showToast('Draft saved successfully');
+            else showToast('Could not save draft', true);
+        } catch { showToast('Could not save draft', true); }
+        finally {
+            btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save draft';
+            btn.disabled = false;
+        }
+    });
+
+    // ── Submit
+    document.getElementById('profileForm').addEventListener('submit', function (e) {
+        if (!validate()) { e.preventDefault(); return; }
+        const btn = document.getElementById('nextBtn');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Saving...';
+        btn.disabled = true;
+    });
+</script>
+</body>
+</html>

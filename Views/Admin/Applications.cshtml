@@ -1,0 +1,279 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Applications — NSIA Admin";
+    var apps       = ViewBag.Applications as List<nsia.Models.Application> ?? new();
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var page       = (int)(ViewBag.Page ?? 1);
+    var total      = (int)(ViewBag.Total ?? 0);
+    var adminName  = ViewBag.AdminName as string ?? "Admin";
+    var adminInit  = string.Join("", (adminName).Split(' ').Take(2).Select(w => w[0]));
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Cormorant+Garamond:wght@700&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{--teal:#0e86ab;--green:#08703a;--lime:#83c240;--ink:#0d1a12;--cream:#faf8f3;--off:#f4f2ec;--muted:#5a6b60;--border:rgba(0,0,0,0.08);--nav:220px}
+        html,body{height:100%}
+        body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--ink);display:flex}
+        /* SIDEBAR — same as dashboard */
+        .sidebar{width:var(--nav);background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;bottom:0;left:0;z-index:100;overflow-y:auto}
+        .sidebar::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(14,134,171,0.15) 0%,transparent 55%);pointer-events:none}
+        .sidebar>*{position:relative;z-index:1}
+        .sb-brand{padding:1.5rem 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07)}
+        .sb-brand-inner{display:flex;align-items:center;gap:.65rem}
+        .sb-icon{width:32px;height:32px;border-radius:7px;background:linear-gradient(135deg,var(--teal),var(--green));display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .sb-icon svg{width:14px;height:14px;stroke:white;stroke-width:2;fill:none}
+        .sb-title{font-size:11px;font-weight:500;color:var(--teal);letter-spacing:.07em;text-transform:uppercase}
+        .sb-sub{font-size:10px;color:rgba(255,255,255,0.3)}
+        .sb-section{padding:.75rem 0}
+        .sb-label{font-size:9px;font-weight:500;color:rgba(255,255,255,0.25);letter-spacing:.1em;text-transform:uppercase;padding:.4rem 1.25rem .2rem;display:block}
+        .sb-link{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.25rem;text-decoration:none;color:rgba(255,255,255,0.5);font-size:.8rem;transition:background .15s,color .15s;position:relative}
+        .sb-link:hover{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.85)}
+        .sb-link.active{background:rgba(14,134,171,0.12);color:white}
+        .sb-link.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2.5px;background:var(--teal);border-radius:0 2px 2px 0}
+        .sb-link svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.75;fill:none;flex-shrink:0}
+        .sb-badge{margin-left:auto;background:rgba(131,194,64,0.15);border:1px solid rgba(131,194,64,0.25);color:var(--lime);font-size:.62rem;font-weight:600;padding:.15rem .5rem;border-radius:100px}
+        .sb-footer{margin-top:auto;padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,0.07)}
+        .sb-user{display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem}
+        .sb-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--green));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:white;flex-shrink:0}
+        .sb-uname{font-size:.78rem;font-weight:500;color:rgba(255,255,255,0.75)}
+        .sb-urole{font-size:.65rem;color:rgba(255,255,255,0.3)}
+        .sb-logout{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:rgba(255,255,255,0.35);text-decoration:none;transition:color .2s}
+        .sb-logout svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.75;fill:none}
+        .sb-logout:hover{color:rgba(255,255,255,0.65)}
+        /* MAIN */
+        .main{margin-left:var(--nav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+        .topbar{background:white;border-bottom:1px solid var(--border);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:1rem;flex-wrap:wrap}
+        .topbar-title{font-size:.95rem;font-weight:500;color:var(--ink)}
+        .topbar-actions{display:flex;align-items:center;gap:.75rem}
+        .btn-export{display:inline-flex;align-items:center;gap:6px;padding:.5rem 1.1rem;background:var(--green);color:white;border:none;border-radius:6px;font-size:.78rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:none;transition:background .2s}
+        .btn-export:hover{background:#065a2f}
+        .btn-export svg{width:13px;height:13px;stroke:white;stroke-width:2;fill:none}
+        .content{padding:1.5rem 2rem 2rem;flex:1}
+        /* FILTERS */
+        .filters{background:white;border-radius:10px;border:1px solid var(--border);padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+        .filter-search{display:flex;align-items:center;gap:.5rem;background:var(--off);border:1px solid var(--border);border-radius:6px;padding:.45rem .75rem;flex:1;min-width:200px}
+        .filter-search svg{width:14px;height:14px;stroke:var(--muted);stroke-width:1.75;fill:none;flex-shrink:0}
+        .filter-search input{border:none;background:none;outline:none;font-family:'DM Sans',sans-serif;font-size:.82rem;color:var(--ink);width:100%}
+        .filter-search input::placeholder{color:#aab5af}
+        select.filter-sel{padding:.45rem .75rem;border:1px solid var(--border);border-radius:6px;font-size:.8rem;font-family:'DM Sans',sans-serif;background:white;color:var(--ink);outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;padding-right:1.75rem;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%235a6b60' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+        .btn-filter{padding:.45rem 1rem;border:1px solid var(--border);border-radius:6px;font-size:.78rem;font-family:'DM Sans',sans-serif;background:var(--teal);color:white;cursor:pointer}
+        .btn-reset{padding:.45rem .9rem;border:1px solid var(--border);border-radius:6px;font-size:.78rem;font-family:'DM Sans',sans-serif;background:white;color:var(--muted);text-decoration:none;cursor:pointer}
+        /* TABLE */
+        .panel{background:white;border-radius:10px;border:1px solid var(--border);overflow:hidden}
+        .panel-header{padding:.9rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+        .panel-title{font-size:.85rem;font-weight:500;color:var(--ink)}
+        .table-wrap{overflow-x:auto}
+        table{width:100%;border-collapse:collapse;font-size:.8rem}
+        thead tr{border-bottom:1px solid var(--border);background:rgba(0,0,0,0.015)}
+        th{text-align:left;font-size:.67rem;font-weight:500;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;padding:.7rem .9rem;white-space:nowrap}
+        td{padding:.8rem .9rem;border-bottom:1px solid rgba(0,0,0,0.04);color:var(--ink);vertical-align:middle}
+        tbody tr:last-child td{border-bottom:none}
+        tbody tr:hover td{background:rgba(0,0,0,0.012)}
+        .status-pill{display:inline-block;padding:.18rem .6rem;border-radius:100px;font-size:.66rem;font-weight:500}
+        .sp-draft{background:var(--off);color:var(--muted)}
+        .sp-submitted{background:rgba(14,134,171,0.1);color:var(--teal)}
+        .sp-review{background:rgba(245,158,11,0.1);color:#b45309}
+        .sp-shortlisted{background:rgba(8,112,58,0.1);color:var(--green)}
+        .sp-rejected{background:rgba(239,68,68,0.08);color:#dc2626}
+        .sp-winner{background:rgba(131,194,64,0.12);color:#4a7c10}
+        .tbl-link{color:var(--teal);text-decoration:none;font-weight:500;font-size:.75rem}
+        .tbl-link:hover{text-decoration:underline}
+        /* PAGINATION */
+        .pagination{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-top:1px solid var(--border)}
+        .page-info{font-size:.76rem;color:var(--muted)}
+        .page-btns{display:flex;gap:.4rem}
+        .page-btn{padding:.35rem .75rem;border:1px solid var(--border);border-radius:5px;font-size:.76rem;color:var(--ink);text-decoration:none;background:white;transition:background .15s}
+        .page-btn:hover{background:var(--off)}
+        .page-btn.active{background:var(--teal);color:white;border-color:var(--teal)}
+        .page-btn.disabled{opacity:.4;pointer-events:none}
+        @@media(max-width:900px){.sidebar{display:none}.main{margin-left:0}}
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sb-brand">
+        <div class="sb-brand-inner">
+            <div class="sb-icon"><svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg></div>
+            <div><div class="sb-title">NSIA</div><div class="sb-sub">Prize for Innovation</div></div>
+        </div>
+    </div>
+    <div class="sb-section">
+        <span class="sb-label">Overview</span>
+        <a href="/admin/dashboard" class="sb-link">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Dashboard
+        </a>
+        <a href="/admin/applications" class="sb-link active">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Applications
+            <span class="sb-badge">@total</span>
+        </a>
+    </div>
+    <div class="sb-section">
+        <span class="sb-label">Export</span>
+        <a href="/admin/export" class="sb-link">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export All CSV
+        </a>
+        <a href="/admin/export?status=Submitted" class="sb-link">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export Submitted
+        </a>
+    </div>
+    <div class="sb-footer">
+        <div class="sb-user">
+            <div class="sb-avatar">@adminInit</div>
+            <div><div class="sb-uname">@adminName</div><div class="sb-urole">@(ViewBag.AdminRole ?? "Admin")</div></div>
+        </div>
+        <a href="/admin/logout" class="sb-logout">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out
+        </a>
+    </div>
+</aside>
+
+<div class="main">
+    <div class="topbar">
+        <span class="topbar-title">Applications <span style="color:var(--muted);font-weight:400">(@total)</span></span>
+        <div class="topbar-actions">
+            <a href="/admin/export?status=@(ViewBag.StatusFilter)&sector=@(ViewBag.SectorFilter)&stage=@(ViewBag.StageFilter)" class="btn-export">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export Current View
+            </a>
+            <a href="/admin/export" class="btn-export" style="background:var(--teal)">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export All
+            </a>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- Filters -->
+        <form method="get" action="/admin/applications">
+            <div class="filters">
+                <div class="filter-search">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" name="search" placeholder="Search name, email, company, reference…" value="@ViewBag.Search" />
+                </div>
+                <select name="status" class="filter-sel">
+                    <option value="">All Statuses</option>
+                    @foreach (var s in new[]{"Draft","Submitted","Under Review","Shortlisted","Rejected","Winner"}) {
+                        <option value="@s" selected="@(ViewBag.StatusFilter == s)">@s</option>
+                    }
+                </select>
+
+                <select name="sector" class="filter-sel">
+                    <option value="">All Sectors</option>
+                    @foreach (var s in (ViewBag.Sectors as List<string> ?? new())) {
+                        <option value="@s" selected="@(ViewBag.SectorFilter == s)">@s</option>
+                    }
+                </select>
+
+                <select name="stage" class="filter-sel">
+                    <option value="">All Stages</option>
+                    @foreach (var s in (ViewBag.Stages as List<string> ?? new())) {
+                        <option value="@s" selected="@(ViewBag.StageFilter == s)">@s</option>
+                    }
+                </select>
+                <button type="submit" class="btn-filter">Filter</button>
+                <a href="/admin/applications" class="btn-reset">Reset</a>
+            </div>
+        </form>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">@total application@(total != 1 ? "s" : "") found</span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Applicant</th>
+                            <th>Reference</th>
+                            <th>Company</th>
+                            <th>Sector</th>
+                            <th>Stage</th>
+                            <th>Step</th>
+                            <th>Status</th>
+                            <th>Verified</th>
+                            <th>Registered</th>
+                            <th>Submitted</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var a in apps) {
+                            var spCls = a.Status switch {
+                                "Submitted"    => "sp-submitted",
+                                "Under Review" => "sp-review",
+                                "Shortlisted"  => "sp-shortlisted",
+                                "Rejected"     => "sp-rejected",
+                                "Winner"       => "sp-winner",
+                                _              => "sp-draft"
+                            };
+                            <tr>
+                                <td>
+                                    <div style="font-weight:500;font-size:.82rem">@a.FullName</div>
+                                    <div style="font-size:.7rem;color:var(--muted)">@a.Email</div>
+                                </td>
+                                <td style="font-size:.76rem;color:var(--muted);white-space:nowrap">@(a.ReferenceNumber ?? "—")</td>
+                                <td style="font-size:.8rem;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@(a.CompanyName ?? "—")</td>
+                                <td style="font-size:.76rem;color:var(--muted)">@(a.Sector ?? "—")</td>
+                                <td style="font-size:.76rem;color:var(--muted)">@(a.GrowthStage ?? "—")</td>
+                                @if(@a.ApplicationStep == 8){
+                                    <td style="font-size:.78rem;text-align:center">7 / 7</td>
+                                }else{
+                                    <td style="font-size:.78rem;text-align:center">@a.ApplicationStep / 7</td>
+                                }
+                                <td><span class="status-pill @spCls">@a.Status</span></td>
+                                <td style="text-align:center">
+                                    @if (a.IsEmailVerified) {
+                                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--green)" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                                    } else {
+                                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="#dc2626" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                    }
+                                </td>
+                                <td style="font-size:.72rem;color:var(--muted);white-space:nowrap">@a.CreatedAt.ToString("dd MMM yy")</td>
+                                <td style="font-size:.72rem;color:var(--muted);white-space:nowrap">@(a.SubmittedAt?.ToString("dd MMM yy") ?? "—")</td>
+                                <td><a href="/admin/applications/@a.Id" class="tbl-link">View →</a></td>
+                            </tr>
+                        }
+                        @if (apps.Count == 0) {
+                            <tr><td colspan="11" style="text-align:center;padding:3rem;color:var(--muted);font-size:.82rem">No applications found matching your filters.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (totalPages > 1) {
+                <div class="pagination">
+                    <span class="page-info">
+                        Showing @(((int)(ViewBag.Page)-1) * (int)(ViewBag.PageSize) + 1)–@(Math.Min((int)ViewBag.Page * (int)ViewBag.PageSize, total)) of @total
+                    </span>
+                    <div class="page-btns">
+                        @if (page > 1) {
+                            <a href="?page=@(page-1)&search=@ViewBag.Search&status=@ViewBag.StatusFilter&sector=@ViewBag.SectorFilter&stage=@ViewBag.StageFilter" class="page-btn">← Prev</a>
+                        }
+                        @for (int p = Math.Max(1, page-2); p <= Math.Min(totalPages, page+2); p++) {
+                            <a href="?page=@p&search=@ViewBag.Search&status=@ViewBag.StatusFilter&sector=@ViewBag.SectorFilter&stage=@ViewBag.StageFilter" class="page-btn @(p == page ? "active" : "")">@p</a>
+                        }
+                        @if (page < totalPages) {
+                            <a href="?page=@(page+1)&search=@ViewBag.Search&status=@ViewBag.StatusFilter&sector=@ViewBag.SectorFilter&stage=@ViewBag.StageFilter" class="page-btn">Next →</a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+</body>
+</html>

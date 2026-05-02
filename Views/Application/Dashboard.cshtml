@@ -1,0 +1,722 @@
+@{
+    ViewData["Title"] = "Application Dashboard — NSIA Prize for Innovation";
+    Layout = null;
+    // Pass these from your controller
+    // ViewBag.ApplicantName = "Adaeze Okonkwo";
+    // ViewBag.CompletedStep = 2; // how many steps completed so far
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --teal: #0e86ab; --teal-d: #0a6b8a;
+            --green: #08703a; --green-d: #065a2f;
+            --lime: #83c240;
+            --ink: #0d1a12; --cream: #faf8f3; --off: #f4f2ec;
+            --muted: #5a6b60; --border: rgba(0,0,0,0.08);
+            --nav-h: 62px; --step-h: 56px;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--off);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        /* ══════════════════════════════════════
+           TOP NAVBAR
+        ══════════════════════════════════════ */
+        .top-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+            height: var(--nav-h);
+            background: var(--ink);
+            display: flex; align-items: center;
+            padding: 0 2rem;
+            justify-content: space-between;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(14,134,171,0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
+        @* .nav-brand-icon {
+            width: 34px; height: 34px; border-radius: 7px;
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        } *@
+        .nav-brand-icon img { width: 130px; height: 30px; stroke: white; stroke-width: 2; fill: none; }
+        .nav-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
+        .nav-brand-text span { display: block; font-size: 10px; color: rgba(255,255,255,0.35); }
+
+        .nav-right { display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 1; }
+        .nav-deadline {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: .03em;
+        }
+        .nav-deadline svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.35); stroke-width: 1.75; fill: none; }
+        .deadline-val { color: var(--lime); font-weight: 500; }
+        .nav-user { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 500; color: white; flex-shrink: 0;
+        }
+        .user-name { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 400; }
+        .nav-logout {
+            font-size: 11px; color: rgba(255,255,255,0.35);
+            text-decoration: none; padding: .3rem .7rem;
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
+            transition: color .2s, border-color .2s; white-space: nowrap;
+        }
+        .nav-logout:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.25); }
+
+        /* Hamburger (mobile) */
+        .hamburger {
+            display: none; flex-direction: column; gap: 4px;
+            background: none; border: none; cursor: pointer; padding: 4px;
+            position: relative; z-index: 1;
+        }
+        .hamburger span {
+            display: block; width: 22px; height: 2px;
+            background: white; border-radius: 2px;
+            transition: transform .3s, opacity .3s;
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        /* ══════════════════════════════════════
+           STEP PROGRESS BAR
+        ══════════════════════════════════════ */
+        .step-bar {
+            position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190;
+            height: var(--step-h);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: stretch;
+            overflow: hidden;
+        }
+        .step-item {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            gap: 7px; padding: 0 .5rem;
+            text-decoration: none; color: var(--ink);
+            border-right: 1px solid var(--border);
+            position: relative; cursor: pointer;
+            transition: background .2s;
+            min-width: 0;
+        }
+        .step-item:last-child { border-right: none; }
+        .step-item::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+            height: 2px; background: transparent; transition: background .2s;
+        }
+        .step-item:hover { background: var(--off); }
+        .step-item:hover::after { background: rgba(14,134,171,0.3); }
+
+        /* completed */
+        .step-item.completed .step-num {
+            background: var(--green); border-color: var(--green); color: white;
+        }
+        .step-item.completed .step-num svg { display: block; }
+        .step-item.completed .step-num span { display: none; }
+        .step-item.completed .step-name { color: var(--green); }
+        .step-item.completed::after { background: var(--green); }
+
+        /* active */
+        .step-item.active { background: rgba(14,134,171,0.04); }
+        .step-item.active .step-num { background: var(--teal); border-color: var(--teal); color: white; }
+        .step-item.active .step-name { color: var(--teal); font-weight: 500; }
+        .step-item.active::after { background: var(--teal); }
+
+        .step-num {
+            width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+            border: 1.5px solid rgba(0,0,0,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 500; color: var(--muted);
+            transition: background .2s, border-color .2s;
+        }
+        .step-num svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .step-name {
+            font-size: 11.5px; font-weight: 400; color: var(--muted);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            transition: color .2s;
+        }
+
+        /* ══════════════════════════════════════
+           MOBILE SIDE DRAWER
+        ══════════════════════════════════════ */
+        .drawer-overlay {
+            display: none; position: fixed; inset: 0; z-index: 150;
+            background: rgba(0,0,0,0.5); opacity: 0;
+            transition: opacity .3s;
+        }
+        .drawer-overlay.open { opacity: 1; }
+
+        .side-drawer {
+            position: fixed; top: 0; left: -280px; bottom: 0; z-index: 160;
+            width: 280px; background: var(--ink);
+            display: flex; flex-direction: column;
+            transition: left .3s cubic-bezier(0.4,0,0.2,1);
+            overflow-y: auto;
+        }
+        .side-drawer.open { left: 0; }
+
+        .drawer-header {
+            padding: 1.25rem 1.25rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .drawer-brand-icon {
+            width: 32px; height: 32px; border-radius: 6px;
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .drawer-brand-icon img { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+        .drawer-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .07em; text-transform: uppercase; }
+        .drawer-brand-text span { font-size: 10px; color: rgba(255,255,255,0.35); }
+
+        .drawer-user {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .drawer-avatar {
+            width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 500; color: white;
+        }
+        .drawer-uname { font-size: 13px; font-weight: 500; color: white; }
+        .drawer-uemail { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+        .drawer-steps { padding: .75rem 0; flex: 1; }
+        .drawer-step-label {
+            font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.3);
+            letter-spacing: .1em; text-transform: uppercase;
+            padding: .5rem 1.25rem .25rem; display: block;
+        }
+        .drawer-item {
+            display: flex; align-items: center; gap: .9rem;
+            padding: .8rem 1.25rem; text-decoration: none; color: rgba(255,255,255,0.55);
+            transition: background .2s, color .2s; position: relative;
+        }
+        .drawer-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.85); }
+        .drawer-item.active { background: rgba(14,134,171,0.12); color: white; }
+        .drawer-item.active::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 3px; background: var(--teal); border-radius: 0 2px 2px 0;
+        }
+        .drawer-item.completed { color: rgba(255,255,255,0.65); }
+        .drawer-item-num {
+            width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 500; transition: background .2s;
+        }
+        .drawer-item.completed .drawer-item-num { background: var(--green); border-color: var(--green); }
+        .drawer-item.completed .drawer-item-num svg { display: block; }
+        .drawer-item.completed .drawer-item-num span { display: none; }
+        .drawer-item.active .drawer-item-num { background: var(--teal); border-color: var(--teal); }
+        .drawer-item-num svg { width: 11px; height: 11px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .drawer-item-text { display: flex; flex-direction: column; min-width: 0; }
+        .drawer-item-name { font-size: 13px; line-height: 1.2; }
+        .drawer-item-status { font-size: 10px; margin-top: 2px; }
+        .drawer-item.completed .drawer-item-status { color: #4ade80; }
+        .drawer-item.active .drawer-item-status { color: rgba(14,134,171,0.8); }
+        .drawer-item-status { color: rgba(255,255,255,0.25); }
+
+        .drawer-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .drawer-logout {
+            display: flex; align-items: center; gap: .6rem;
+            font-size: 12px; color: rgba(255,255,255,0.35);
+            text-decoration: none; padding: .6rem 0;
+            transition: color .2s;
+        }
+        .drawer-logout svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; }
+        .drawer-logout:hover { color: rgba(255,255,255,0.65); }
+
+        /* ══════════════════════════════════════
+           MAIN CONTENT
+        ══════════════════════════════════════ */
+        .main {
+            padding-top: calc(var(--nav-h) + var(--step-h));
+            min-height: 100vh;
+        }
+        .content { max-width: 900px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+        /* ── Welcome banner ── */
+        .welcome-banner {
+            background: var(--ink); border-radius: 12px;
+            padding: 2rem 2.5rem; margin-bottom: 2rem;
+            position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+        }
+        .welcome-banner::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 10% 50%, rgba(14,134,171,0.2) 0%, transparent 55%),
+                        radial-gradient(ellipse at 90% 30%, rgba(8,112,58,0.15) 0%, transparent 50%);
+        }
+        .welcome-banner > * { position: relative; z-index: 1; }
+        .wb-eyebrow {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(131,194,64,0.12); border: 1px solid rgba(131,194,64,0.25);
+            padding: .22rem .65rem; border-radius: 100px;
+            font-size: 10px; font-weight: 500; color: var(--lime);
+            letter-spacing: .08em; text-transform: uppercase; margin-bottom: .75rem; width: fit-content;
+        }
+        .wb-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--lime); animation: pulse 2s ease-in-out infinite; }
+        @@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+        .wb-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.7rem; font-weight: 700; color: white; line-height: 1.1; margin-bottom: .4rem;
+        }
+        .wb-title em { color: var(--lime); font-style: italic; }
+        .wb-sub { font-size: .82rem; color: rgba(255,255,255,0.5); font-weight: 300; max-width: 380px; line-height: 1.65; }
+        .wb-progress { flex-shrink: 0; text-align: center; }
+        .progress-ring { width: 80px; height: 80px; transform: rotate(-90deg); }
+        .ring-bg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 5; }
+        .ring-fill {
+            fill: none; stroke: var(--lime); stroke-width: 5;
+            stroke-linecap: round; stroke-dasharray: 220;
+            stroke-dashoffset: 220;
+            transition: stroke-dashoffset 1s ease;
+        }
+        .ring-label {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .ring-pct { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: white; line-height: 1; }
+        .ring-sub { font-size: 9px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+        .ring-wrap { position: relative; width: 80px; height: 80px; }
+
+        /* ── Step cards grid ── */
+        .section-label {
+            font-size: 11px; font-weight: 500; color: var(--muted);
+            letter-spacing: .1em; text-transform: uppercase;
+            margin-bottom: 1rem; margin-top: .25rem;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .steps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+
+        .step-card {
+            background: white; border-radius: 10px;
+            border: 1px solid var(--border); padding: 1.4rem;
+            text-decoration: none; color: var(--ink);
+            display: flex; flex-direction: column; gap: .75rem;
+            transition: box-shadow .2s, transform .2s, border-color .2s;
+            position: relative; overflow: hidden;
+        }
+        .step-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); transform: translateY(-2px); }
+        .step-card.completed { border-color: rgba(8,112,58,0.2); }
+        .step-card.active { border-color: rgba(14,134,171,0.3); box-shadow: 0 0 0 3px rgba(14,134,171,0.06); }
+        .step-card.locked { opacity: .55; cursor: not-allowed; pointer-events: none; }
+        .step-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 2px; background: transparent; transition: background .2s;
+        }
+        .step-card.completed::before { background: var(--green); }
+        .step-card.active::before { background: var(--teal); }
+
+        .card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+        .card-icon {
+            width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .card-icon svg { width: 18px; height: 18px; stroke-width: 1.75; fill: none; }
+        .step-card.completed .card-icon { background: rgba(8,112,58,0.1); }
+        .step-card.completed .card-icon svg { stroke: var(--green); }
+        .step-card.active .card-icon { background: rgba(14,134,171,0.1); }
+        .step-card.active .card-icon svg { stroke: var(--teal); }
+        .step-card.pending .card-icon { background: var(--off); }
+        .step-card.pending .card-icon svg { stroke: var(--muted); }
+        .step-card.locked .card-icon { background: var(--off); }
+        .step-card.locked .card-icon svg { stroke: #ccc; }
+
+        .card-badge {
+            font-size: 10px; font-weight: 500; padding: .2rem .6rem; border-radius: 100px;
+            letter-spacing: .05em; text-transform: uppercase; flex-shrink: 0;
+        }
+        .badge-done { background: rgba(8,112,58,0.1); color: var(--green); }
+        .badge-active { background: rgba(14,134,171,0.1); color: var(--teal); }
+        .badge-pending { background: var(--off); color: var(--muted); }
+        .badge-locked { background: var(--off); color: #bbb; }
+
+        .card-num { font-size: 10px; color: var(--muted); font-weight: 400; }
+        .card-name { font-size: .92rem; font-weight: 500; color: var(--ink); line-height: 1.2; }
+        .card-desc { font-size: .76rem; color: var(--muted); line-height: 1.55; flex: 1; }
+
+        .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: .25rem; }
+        .card-action {
+            font-size: .76rem; font-weight: 500; display: flex; align-items: center; gap: 4px;
+        }
+        .step-card.completed .card-action { color: var(--green); }
+        .step-card.active .card-action { color: var(--teal); }
+        .step-card.pending .card-action { color: var(--muted); }
+        .card-action svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        /* ── Info row ── */
+        .info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+        .info-card {
+            background: white; border-radius: 10px; border: 1px solid var(--border);
+            padding: 1.25rem 1.5rem; display: flex; align-items: flex-start; gap: 1rem;
+        }
+        .info-icon {
+            width: 38px; height: 38px; border-radius: 8px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .info-icon.teal { background: rgba(14,134,171,0.1); }
+        .info-icon.teal svg { stroke: var(--teal); }
+        .info-icon.green { background: rgba(8,112,58,0.1); }
+        .info-icon.green svg { stroke: var(--green); }
+        .info-icon svg { width: 17px; height: 17px; stroke-width: 1.75; fill: none; }
+        .info-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .25rem; }
+        .info-value { font-size: .9rem; font-weight: 500; color: var(--ink); }
+        .info-sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+
+        /* ── Submission CTA ── */
+        .submit-cta {
+            background: white; border-radius: 10px; border: 1px solid var(--border);
+            padding: 1.75rem 2rem;
+            display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+        }
+        .submit-cta-text h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem; font-weight: 700; margin-bottom: .3rem;
+        }
+        .submit-cta-text p { font-size: .82rem; color: var(--muted); line-height: 1.6; max-width: 440px; }
+        .btn-submit-app {
+            flex-shrink: 0; background: var(--green); color: white;
+            padding: .8rem 1.75rem; border-radius: 6px;
+            font-size: .85rem; font-weight: 500; text-decoration: none;
+            display: flex; align-items: center; gap: 7px;
+            transition: background .2s, transform .15s; white-space: nowrap;
+            border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+        }
+        .btn-submit-app:hover { background: var(--green-d); transform: translateY(-1px); }
+        .btn-submit-app:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+        .btn-submit-app svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+
+        /* ══════════════════════════════════════
+           RESPONSIVE
+        ══════════════════════════════════════ */
+        @@media (max-width: 900px) {
+            .step-bar { display: none; }
+            .top-nav { padding: 0 1.25rem; }
+            .hamburger { display: flex; }
+            .nav-deadline, .nav-user .user-name, .nav-logout { display: none; }
+            .main { padding-top: var(--nav-h); }
+            .content { padding: 1.5rem 1rem; }
+            .welcome-banner { flex-direction: column; align-items: flex-start; padding: 1.5rem; }
+            .info-row { grid-template-columns: 1fr; }
+            .submit-cta { flex-direction: column; align-items: flex-start; }
+            .btn-submit-app { width: 100%; justify-content: center; }
+        }
+
+        @@media (max-width: 480px) {
+            .steps-grid { grid-template-columns: 1fr; }
+            .welcome-banner { padding: 1.25rem; }
+            .wb-title { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+@{
+    var applicantName = ViewBag.ApplicantName as string ?? "Adaeze Okonkwo";
+    var completedStep = (int)(ViewBag.CompletedStep ?? 3);
+    var initials = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
+    var totalSteps = 7;
+    var progressPct = (int)Math.Round((completedStep / (double)totalSteps) * 100);
+    var ringOffset = (int)(220 - (220 * completedStep / totalSteps));
+
+    var steps = new[] {
+        new { Num = 1, Name = "Profile",                   Desc = "Personal details, bio and contact information.",               Action = "Profile",         Icon = "user"     },
+        new { Num = 2, Name = "Company Info",               Desc = "Business registration, sector and company overview.",         Action = "CompanyInfo",     Icon = "building" },
+        new { Num = 3, Name = "Team Info",                  Desc = "Founders, co-founders and key team members.",                 Action = "TeamInfo",        Icon = "users"    },
+        new { Num = 4, Name = "Product Info",               Desc = "Product description, stage, and technology overview.",       Action = "ProductInfo",     Icon = "box"      },
+        new { Num = 5, Name = "Commercial",                 Desc = "Revenue model, traction, and market opportunity.",           Action = "Commercial",      Icon = "trending" },
+        new { Num = 6, Name = "Impact & Sustainability",    Desc = "Social impact, SDG alignment, and sustainability plan.",     Action = "Impact",          Icon = "leaf"     },
+        new { Num = 7, Name = "Additional Information",     Desc = "Supporting documents, references and final declarations.",   Action = "Additional",      Icon = "file"     },
+    };
+
+    string StepStatus(int num) {
+        if (num <= completedStep) return "completed";
+        if (num == completedStep + 1) return "active";
+        return num == 1 ? "pending" : "locked";
+    }
+}
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+    <div class="nav-brand">
+        <div class="nav-brand-icon">
+             <img src="~/logo.png" alt="logo"/> 
+        </div>
+        @* <div class="nav-brand-text">
+            <strong>NSIA</strong>
+            <span>Prize for Innovation</span>
+        </div> *@
+    </div>
+
+    <div class="nav-right">
+        <div class="nav-deadline">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Deadline: <span class="deadline-val">5 June 2026</span>
+        </div>
+        <div class="nav-user">
+            <div class="user-avatar">@initials</div>
+            <span class="user-name">@applicantName</span>
+        </div>
+        <a asp-action="Logout" asp-controller="Account" class="nav-logout">Sign out</a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- STEP PROGRESS BAR (desktop) -->
+<div class="step-bar">
+    @foreach (var s in steps) {
+        var status = StepStatus(s.Num);
+        <a asp-action="@s.Action" asp-controller="Application"
+           class="step-item @status"
+           title="@s.Name">
+            <div class="step-num">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                <span>@s.Num</span>
+            </div>
+            <span class="step-name">@s.Name</span>
+        </a>
+    }
+</div>
+
+<!-- MOBILE DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<!-- MOBILE SIDE DRAWER -->
+<aside class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+        <div class="drawer-brand-icon">
+           <img src="~/logo" alt="logo"/> 
+        </div>
+        @* <div class="drawer-brand-text">
+            <strong>NSIA</strong>
+            <span>Prize for Innovation</span>
+        </div> *@
+    </div>
+    <div class="drawer-user">
+        <div class="drawer-avatar">@initials</div>
+        <div>
+            <div class="drawer-uname">@applicantName</div>
+            <div class="drawer-uemail">NPI 4.0 Applicant</div>
+        </div>
+    </div>
+    <div class="drawer-steps">
+        <span class="drawer-step-label">Application Steps</span>
+        @foreach (var s in steps) {
+            var status = StepStatus(s.Num);
+            var statusLabel = status == "completed" ? "Completed" : status == "active" ? "In progress" : status == "locked" ? "Locked" : "Not started";
+            @* <a asp-action="@s.Action" asp-controller="Application"
+               class="drawer-item @status"
+               @(status == "locked" ? "style=pointer-events:none;opacity:.45" : "")>
+                <div class="drawer-item-num">
+                    <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                    <span>@s.Num</span>
+                </div>
+                <div class="drawer-item-text">
+                    <span class="drawer-item-name">@s.Name</span>
+                    <span class="drawer-item-status">@statusLabel</span>
+                </div>
+            </a> *@
+        }
+    </div>
+    <div class="drawer-footer">
+        <a asp-action="Logout" asp-controller="Account" class="drawer-logout">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out of account
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+    <div class="content">
+
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <div>
+                <div class="wb-eyebrow"><span class="wb-eyebrow-dot"></span> NPI 4.0 Application</div>
+                <h1 class="wb-title">Welcome back, <em>@applicantName.Split(' ')[0]</em></h1>
+                <p class="wb-sub">
+                    Complete all 7 steps to submit your application.
+                    @if (completedStep < totalSteps) {
+                        <text>You're @completedStep of @totalSteps steps done — keep going!</text>
+                    } else {
+                        <text>All steps completed — you're ready to submit!</text>
+                    }
+                </p>
+            </div>
+            <div class="wb-progress">
+                <div class="ring-wrap">
+                    <svg class="progress-ring" viewBox="0 0 80 80">
+                        <circle class="ring-bg" cx="40" cy="40" r="35"/>
+                        <circle class="ring-fill" id="ringFill" cx="40" cy="40" r="35"
+                                style="stroke-dashoffset: @ringOffset"/>
+                    </svg>
+                    <div class="ring-label">
+                        <span class="ring-pct">@progressPct%</span>
+                        <span class="ring-sub">Done</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step Cards -->
+        <div class="section-label">Your application steps</div>
+        <div class="steps-grid">
+            @foreach (var s in steps) {
+                var status = StepStatus(s.Num);
+                var badgeCls  = status == "completed" ? "badge-done" : status == "active" ? "badge-active" : status == "locked" ? "badge-locked" : "badge-pending";
+                var badgeTxt  = status == "completed" ? "Completed" : status == "active" ? "In Progress" : status == "locked" ? "Locked" : "Not Started";
+                var actionTxt = status == "completed" ? "Edit" : status == "active" ? "Continue" : "Start";
+                <a asp-action="@s.Action" asp-controller="Application"
+                   class="step-card @status @(status == "locked" ? "locked" : "")">
+                    <div class="card-top">
+                        <div class="card-icon">
+                            @if (s.Icon == "user") {
+                                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            } else if (s.Icon == "building") {
+                                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                            } else if (s.Icon == "users") {
+                                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            } else if (s.Icon == "box") {
+                                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                            } else if (s.Icon == "trending") {
+                                <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                            } else if (s.Icon == "leaf") {
+                                <svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                            } else {
+                                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            }
+                        </div>
+                        <span class="card-badge @badgeCls">@badgeTxt</span>
+                    </div>
+                    <div>
+                        <div class="card-num">Step @s.Num of @totalSteps</div>
+                        <div class="card-name">@s.Name</div>
+                    </div>
+                    <div class="card-desc">@s.Desc</div>
+                    <div class="card-footer">
+                        <span class="card-action">
+                            @if (status != "locked") {
+                                <text>@actionTxt</text>
+                                <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            } else {
+                                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <span style="color:#ccc">Complete previous step</span>
+                            }
+                        </span>
+                    </div>
+                </a>
+            }
+        </div>
+
+        <!-- Info Row -->
+        <div class="info-row">
+            <div class="info-card">
+                <div class="info-icon teal">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                    <div class="info-label">Application deadline</div>
+                    <div class="info-value">5 June 2026</div>
+                    <div class="info-sub">Submissions close at 11:59 PM WAT</div>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon green">
+                    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div>
+                    <div class="info-label">Application status</div>
+                    <div class="info-value">
+                        @if (completedStep == totalSteps) { <text>Ready to submit</text> }
+                        else { <text>In Progress</text> }
+                    </div>
+                    <div class="info-sub">@completedStep of @totalSteps sections completed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit CTA -->
+        <div class="submit-cta">
+            <div class="submit-cta-text">
+                <h3>Ready to submit your application?</h3>
+                <p>Once you complete all 7 steps, review your information and submit your application for the NSIA Prize for Innovation. You can edit your responses before the deadline.</p>
+            </div>
+            <button class="btn-submit-app" @(completedStep < totalSteps ? "disabled" : "")>
+                <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Submit application
+            </button>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    const hamburger    = document.getElementById('hamburger');
+    const sideDrawer   = document.getElementById('sideDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+
+    function openDrawer() {
+        sideDrawer.classList.add('open');
+        drawerOverlay.style.display = 'block';
+        setTimeout(() => drawerOverlay.classList.add('open'), 10);
+        hamburger.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeDrawer() {
+        sideDrawer.classList.remove('open');
+        drawerOverlay.classList.remove('open');
+        setTimeout(() => { drawerOverlay.style.display = ''; }, 300);
+        hamburger.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    hamburger.addEventListener('click', () => {
+        sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer();
+    });
+    drawerOverlay.addEventListener('click', closeDrawer);
+
+    // Animate ring on load
+    window.addEventListener('load', () => {
+        const ring = document.getElementById('ringFill');
+        if (ring) {
+            const offset = parseFloat(ring.style.strokeDashoffset);
+            ring.style.strokeDashoffset = 220;
+            setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
+        }
+    });
+</script>
+</body>
+</html>

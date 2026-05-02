@@ -1,0 +1,801 @@
+@{
+    ViewData["Title"] = "Additional Information — NSIA Prize for Innovation";
+    Layout = null;
+    var applicantName = ViewBag.ApplicantName as string ?? "Adaeze Okonkwo";
+    var completedStep = (int)(ViewBag.CompletedStep ?? 6);
+    var initials = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
+
+    var steps = new[] {
+        new { Num = 1, Name = "Profile",                 Action = "Profile"      },
+        new { Num = 2, Name = "Company Info",            Action = "CompanyInfo"  },
+        new { Num = 3, Name = "Team Info",               Action = "TeamInfo"     },
+        new { Num = 4, Name = "Product Info",            Action = "ProductInfo"  },
+        new { Num = 5, Name = "Commercial",              Action = "Commercial"   },
+        new { Num = 6, Name = "Impact & Sustainability", Action = "Impact"       },
+        new { Num = 7, Name = "Additional Information",  Action = "Additional"   },
+    };
+
+    string StepStatus(int num) {
+        if (num <= completedStep) return "completed";
+        if (num == completedStep + 1) return "active";
+        return "locked";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --teal: #0e86ab; --teal-d: #0a6b8a;
+            --green: #08703a; --green-d: #065a2f;
+            --lime: #83c240;
+            --ink: #0d1a12; --cream: #faf8f3; --off: #f4f2ec;
+            --muted: #5a6b60; --border: rgba(0,0,0,0.08);
+            --nav-h: 62px; --step-h: 56px;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
+
+        /* ── NAV ── */
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: var(--ink); display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
+        .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 30% 50%, rgba(14,134,171,0.12) 0%, transparent 60%); }
+        .nav-brand { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
+        @* .nav-brand-icon { width: 34px; height: 34px; border-radius: 7px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; } *@
+        .nav-brand-icon img { width: 130px; height: 30px; stroke: white; stroke-width: 2; fill: none; }
+        .nav-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
+        .nav-brand-text span { display: block; font-size: 10px; color: rgba(255,255,255,0.35); }
+        .nav-right { display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 1; }
+        .nav-deadline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.45); }
+        .nav-deadline svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.35); stroke-width: 1.75; fill: none; }
+        .deadline-val { color: var(--lime); font-weight: 500; }
+        .nav-user { display: flex; align-items: center; gap: 8px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: white; flex-shrink: 0; }
+        .user-name { font-size: 12px; color: rgba(255,255,255,0.7); }
+        .nav-logout { font-size: 11px; color: rgba(255,255,255,0.35); text-decoration: none; padding: .3rem .7rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: color .2s, border-color .2s; white-space: nowrap; }
+        .nav-logout:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.25); }
+        .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 1; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: transform .3s, opacity .3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        /* ── STEP BAR ── */
+        .step-bar { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190; height: var(--step-h); background: white; border-bottom: 1px solid var(--border); display: flex; align-items: stretch; overflow: hidden; }
+        .step-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 0 .5rem; text-decoration: none; color: var(--ink); border-right: 1px solid var(--border); position: relative; transition: background .2s; min-width: 0; }
+        .step-item:last-child { border-right: none; }
+        .step-item::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background .2s; }
+        .step-item:hover { background: var(--off); }
+        .step-item:hover::after { background: rgba(14,134,171,0.3); }
+        .step-item.completed .step-num { background: var(--green); border-color: var(--green); color: white; }
+        .step-item.completed .step-num svg { display: block; }
+        .step-item.completed .step-num span { display: none; }
+        .step-item.completed .step-name { color: var(--green); }
+        .step-item.completed::after { background: var(--green); }
+        .step-item.active { background: rgba(14,134,171,0.04); }
+        .step-item.active .step-num { background: var(--teal); border-color: var(--teal); color: white; }
+        .step-item.active .step-name { color: var(--teal); font-weight: 500; }
+        .step-item.active::after { background: var(--teal); }
+        .step-num { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: var(--muted); transition: background .2s, border-color .2s; }
+        .step-num svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .step-name { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .2s; }
+
+        /* ── DRAWER ── */
+        .drawer-overlay { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity .3s; }
+        .drawer-overlay.open { opacity: 1; }
+        .side-drawer { position: fixed; top: 0; left: -280px; bottom: 0; z-index: 160; width: 280px; background: var(--ink); display: flex; flex-direction: column; transition: left .3s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
+        .side-drawer.open { left: 0; }
+        .drawer-header { padding: 1.25rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .drawer-brand-icon { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .drawer-brand-icon svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+        .drawer-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .07em; text-transform: uppercase; }
+        .drawer-brand-text span { font-size: 10px; color: rgba(255,255,255,0.35); }
+        .drawer-user { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .drawer-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: white; }
+        .drawer-uname { font-size: 13px; font-weight: 500; color: white; }
+        .drawer-uemail { font-size: 11px; color: rgba(255,255,255,0.35); }
+        .drawer-steps { padding: .75rem 0; flex: 1; }
+        .drawer-step-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.3); letter-spacing: .1em; text-transform: uppercase; padding: .5rem 1.25rem .25rem; display: block; }
+        .drawer-item { display: flex; align-items: center; gap: .9rem; padding: .8rem 1.25rem; text-decoration: none; color: rgba(255,255,255,0.55); transition: background .2s, color .2s; position: relative; }
+        .drawer-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.85); }
+        .drawer-item.active { background: rgba(14,134,171,0.12); color: white; }
+        .drawer-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal); border-radius: 0 2px 2px 0; }
+        .drawer-item-num { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; transition: background .2s; }
+        .drawer-item.completed .drawer-item-num { background: var(--green); border-color: var(--green); }
+        .drawer-item.completed .drawer-item-num svg { display: block; }
+        .drawer-item.completed .drawer-item-num span { display: none; }
+        .drawer-item.active .drawer-item-num { background: var(--teal); border-color: var(--teal); }
+        .drawer-item-num svg { width: 11px; height: 11px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .drawer-item-name { font-size: 13px; }
+        .drawer-item-status { font-size: 10px; margin-top: 2px; color: rgba(255,255,255,0.25); }
+        .drawer-item.completed .drawer-item-status { color: #4ade80; }
+        .drawer-item.active .drawer-item-status { color: rgba(14,134,171,0.8); }
+        .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
+        .drawer-logout { display: flex; align-items: center; gap: .6rem; font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; padding: .6rem 0; transition: color .2s; }
+        .drawer-logout svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; }
+        .drawer-logout:hover { color: rgba(255,255,255,0.65); }
+
+        /* ── MAIN ── */
+        .main { padding-top: calc(var(--nav-h) + var(--step-h)); min-height: 100vh; }
+        .content { max-width: 800px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+
+        /* ── PAGE HEADER ── */
+        .page-header { margin-bottom: 2rem; }
+        .breadcrumb { display: flex; align-items: center; gap: .4rem; font-size: 11px; color: var(--muted); margin-bottom: .75rem; flex-wrap: wrap; }
+        .breadcrumb a { color: var(--teal); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); stroke-width: 2; fill: none; }
+        .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
+        .page-sub { font-size: .84rem; color: var(--muted); line-height: 1.65; }
+
+        /* ── STEP MINI ── */
+        .step-mini { display: flex; align-items: center; gap: .75rem; background: white; border-radius: 8px; border: 1px solid var(--border); padding: .85rem 1.25rem; margin-bottom: 2rem; }
+        .step-mini-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+        .step-mini-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+        .step-mini-name { font-size: .85rem; font-weight: 500; color: var(--ink); }
+        .step-mini-spacer { flex: 1; }
+        .step-mini-progress { font-size: 11px; color: var(--muted); white-space: nowrap; }
+        .step-mini-bar { width: 120px; height: 4px; background: var(--off); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--lime)); border-radius: 10px; width: 100%; }
+
+        /* ── FORM CARD ── */
+        .form-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
+        .form-card-header { padding: 1.2rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+        .form-card-icon { width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .form-card-icon.teal { background: rgba(14,134,171,0.1); }
+        .form-card-icon.teal svg { stroke: var(--teal); }
+        .form-card-icon.green { background: rgba(8,112,58,0.1); }
+        .form-card-icon.green svg { stroke: var(--green); }
+        .form-card-icon svg { width: 18px; height: 18px; stroke-width: 1.75; fill: none; }
+        .form-card-title { font-size: .95rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+        .form-card-desc { font-size: .75rem; color: var(--muted); line-height: 1.4; }
+        .form-card-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.35rem; }
+
+        /* ── FORM ELEMENTS ── */
+        .form-group { display: flex; flex-direction: column; gap: .4rem; }
+        label { font-size: .75rem; font-weight: 500; color: var(--ink); letter-spacing: .02em; }
+        .label-opt { font-size: .68rem; color: var(--muted); font-weight: 400; margin-left: 4px; }
+        .ta-wrap { position: relative; }
+        .ta-icon { position: absolute; left: 12px; top: 13px; pointer-events: none; color: var(--muted); }
+        .ta-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; display: block; }
+        textarea {
+            width: 100%; border: 1px solid var(--border); border-radius: 7px;
+            font-size: .85rem; font-family: 'DM Sans', sans-serif;
+            background: white; color: var(--ink);
+            transition: border-color .2s, box-shadow .2s;
+            outline: none; resize: vertical; min-height: 100px; line-height: 1.7;
+            padding: .72rem .9rem .72rem 2.4rem;
+        }
+        textarea::placeholder { color: #aab5af; }
+        textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(14,134,171,0.1); }
+        .char-count { font-size: .7rem; color: var(--muted); text-align: right; margin-top: .2rem; }
+        .char-count.warn { color: #d97706; }
+        .char-count.over { color: #b91c1c; }
+        .field-error { font-size: .71rem; color: #b91c1c; display: none; }
+        .form-group.invalid textarea { border-color: #f87171; }
+        .form-group.invalid textarea:focus { box-shadow: 0 0 0 3px rgba(248,113,113,0.12); }
+        .form-group.invalid .field-error { display: block; }
+
+        /* ── FILE UPLOAD ZONE ── */
+        .upload-zone {
+            border: 1.5px dashed rgba(14,134,171,0.3);
+            border-radius: 10px; background: rgba(14,134,171,0.02);
+            padding: 2rem 1.5rem; text-align: center;
+            cursor: pointer; transition: border-color .2s, background .2s;
+            position: relative;
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--teal); background: rgba(14,134,171,0.06);
+        }
+        .upload-zone input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+        }
+        .upload-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: rgba(14,134,171,0.1);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto .75rem;
+        }
+        .upload-icon svg { width: 20px; height: 20px; stroke: var(--teal); stroke-width: 1.75; fill: none; }
+        .upload-title { font-size: .88rem; font-weight: 500; color: var(--ink); margin-bottom: .3rem; }
+        .upload-sub { font-size: .75rem; color: var(--muted); line-height: 1.55; }
+        .upload-sub span { color: var(--teal); font-weight: 500; }
+        .upload-formats { font-size: .7rem; color: var(--muted); margin-top: .5rem; }
+
+        /* ── FILE LIST ── */
+        .file-list { display: flex; flex-direction: column; gap: .6rem; margin-top: .75rem; }
+        .file-item {
+            display: flex; align-items: center; gap: .85rem;
+            padding: .75rem 1rem; border-radius: 8px;
+            background: white; border: 1px solid var(--border);
+            transition: border-color .2s;
+        }
+        .file-item:hover { border-color: rgba(14,134,171,0.2); }
+        .file-type-icon {
+            width: 34px; height: 34px; border-radius: 7px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .65rem; font-weight: 700; letter-spacing: .02em;
+        }
+        .file-type-icon.pdf { background: rgba(220,38,38,0.1); color: #dc2626; }
+        .file-type-icon.doc { background: rgba(37,99,235,0.1); color: #2563eb; }
+        .file-type-icon.xls { background: rgba(22,163,74,0.1); color: #16a34a; }
+        .file-type-icon.ppt { background: rgba(234,88,12,0.1); color: #ea580c; }
+        .file-type-icon.img { background: rgba(124,58,237,0.1); color: #7c3aed; }
+        .file-type-icon.other { background: var(--off); color: var(--muted); }
+        .file-info { flex: 1; min-width: 0; }
+        .file-name { font-size: .82rem; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-meta { font-size: .7rem; color: var(--muted); margin-top: 2px; }
+        .file-progress { width: 100%; height: 3px; background: var(--off); border-radius: 10px; overflow: hidden; margin-top: 5px; }
+        .file-progress-fill { height: 100%; background: var(--teal); border-radius: 10px; width: 0%; transition: width .4s ease; }
+        .file-status {
+            font-size: .68rem; font-weight: 500; padding: .2rem .55rem; border-radius: 100px; flex-shrink: 0;
+        }
+        .file-status.uploading { background: rgba(14,134,171,0.1); color: var(--teal); }
+        .file-status.done { background: rgba(8,112,58,0.1); color: var(--green); }
+        .file-status.error { background: rgba(220,38,38,0.08); color: #dc2626; }
+        .btn-remove-file {
+            width: 26px; height: 26px; border-radius: 5px; flex-shrink: 0;
+            background: none; border: 1px solid rgba(0,0,0,0.08);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: background .2s, border-color .2s;
+        }
+        .btn-remove-file svg { width: 12px; height: 12px; stroke: var(--muted); stroke-width: 2; fill: none; }
+        .btn-remove-file:hover { background: #fef2f2; border-color: #fecaca; }
+        .btn-remove-file:hover svg { stroke: #dc2626; }
+
+        .upload-error { font-size: .72rem; color: #dc2626; margin-top: .35rem; display: none; }
+        .upload-error.show { display: block; }
+
+        /* ── DOCUMENT TYPE BADGES ── */
+        .doc-type-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .doc-type-badge {
+            font-size: .72rem; font-weight: 500; padding: .25rem .7rem; border-radius: 100px;
+            border: 1px solid var(--border); background: var(--off); color: var(--muted);
+            cursor: pointer; transition: border-color .2s, background .2s, color .2s; user-select: none;
+        }
+        .doc-type-badge:hover { border-color: var(--teal); color: var(--teal); }
+        .doc-type-badge.active { background: rgba(14,134,171,0.08); border-color: var(--teal); color: var(--teal); }
+
+        /* ── COMPLETION BANNER ── */
+        .completion-banner {
+            background: var(--ink); border-radius: 12px; padding: 2rem;
+            position: relative; overflow: hidden; margin-bottom: 1.25rem;
+        }
+        .completion-banner::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 10% 50%, rgba(14,134,171,0.2) 0%, transparent 55%),
+                        radial-gradient(ellipse at 90% 30%, rgba(8,112,58,0.15) 0%, transparent 50%);
+        }
+        .completion-banner > * { position: relative; z-index: 1; }
+        .cb-eyebrow { display: inline-flex; align-items: center; gap: 5px; background: rgba(131,194,64,0.12); border: 1px solid rgba(131,194,64,0.25); padding: .22rem .65rem; border-radius: 100px; font-size: 10px; font-weight: 500; color: var(--lime); letter-spacing: .08em; text-transform: uppercase; margin-bottom: .85rem; width: fit-content; }
+        .cb-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--lime); animation: pulse 2s ease-in-out infinite; }
+        @@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+        .cb-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: white; line-height: 1.1; margin-bottom: .5rem; }
+        .cb-title em { color: var(--lime); font-style: italic; }
+        .cb-sub { font-size: .82rem; color: rgba(255,255,255,0.5); line-height: 1.7; max-width: 520px; }
+        .cb-steps { display: flex; gap: .5rem; margin-top: 1.25rem; flex-wrap: wrap; }
+        .cb-step { display: flex; align-items: center; gap: 5px; font-size: .72rem; color: rgba(255,255,255,0.4); }
+        .cb-step-dot { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .cb-step-dot.done { background: var(--green); }
+        .cb-step-dot.done svg { width: 8px; height: 8px; stroke: white; stroke-width: 3; fill: none; }
+        .cb-step-dot.active { background: var(--teal); font-size: 8px; color: white; font-weight: 700; }
+        .cb-step.done-step { color: rgba(255,255,255,0.6); }
+        .cb-divider { width: 12px; height: 1px; background: rgba(255,255,255,0.12); flex-shrink: 0; align-self: center; }
+
+        /* ── ACTIONS ── */
+        .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
+        .actions-left { display: flex; align-items: center; gap: .75rem; }
+        .btn-back { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.3rem; border-radius: 7px; border: 1px solid var(--border); background: white; font-size: .84rem; font-weight: 400; color: var(--muted); text-decoration: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: border-color .2s, color .2s; }
+        .btn-back:hover { border-color: rgba(0,0,0,0.2); color: var(--ink); }
+        .btn-back svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: .72rem 1.5rem; border-radius: 7px; background: white; border: 1px solid var(--border); font-size: .84rem; font-weight: 500; color: var(--teal); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, border-color .2s; }
+        .btn-save:hover { background: rgba(14,134,171,0.04); border-color: rgba(14,134,171,0.3); }
+        .btn-save svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-submit {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: .82rem 2rem; border-radius: 7px;
+            background: var(--green); color: white; border: none;
+            font-size: .9rem; font-weight: 500; cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: background .2s, transform .15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-submit:hover { background: var(--green-d); transform: translateY(-1px); }
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+        .btn-submit svg { width: 16px; height: 16px; stroke: white; stroke-width: 2; fill: none; }
+
+        /* ── TOAST ── */
+        .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--ink); color: white; padding: .75rem 1.25rem; border-radius: 8px; font-size: .8rem; display: flex; align-items: center; gap: .6rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transform: translateY(20px); opacity: 0; transition: transform .3s, opacity .3s; pointer-events: none; min-width: 220px; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast svg { width: 15px; height: 15px; stroke: var(--lime); stroke-width: 2; fill: none; flex-shrink: 0; }
+
+        /* ── RESPONSIVE ── */
+        @@media (max-width: 900px) {
+            .step-bar { display: none; }
+            .top-nav { padding: 0 1.25rem; }
+            .hamburger { display: flex; }
+            .nav-deadline, .user-name, .nav-logout { display: none; }
+            .main { padding-top: var(--nav-h); }
+            .content { padding: 1.5rem 1rem 3rem; }
+            .step-mini-bar, .step-mini-progress { display: none; }
+            .cb-steps { display: none; }
+        }
+        @@media (max-width: 560px) {
+            .page-title { font-size: 1.6rem; }
+            .form-card-body { padding: 1.25rem; }
+            .form-actions { flex-direction: column; align-items: stretch; }
+            .actions-left { justify-content: space-between; }
+            .btn-submit { justify-content: center; width: 100%; padding: 1rem; }
+            .toast { left: 1rem; right: 1rem; bottom: 1rem; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+    <div class="nav-brand">
+        <div class="nav-brand-icon">
+            <img src="~/logo.png" alt="logo"/> 
+        </div>
+        @* <div class="nav-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div> *@
+    </div>
+    <div class="nav-right">
+        <div class="nav-deadline">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Deadline: <span class="deadline-val">5 June 2026</span>
+        </div>
+        <div class="nav-user">
+            <div class="user-avatar">@initials</div>
+            <span class="user-name">@applicantName</span>
+        </div>
+        <a asp-action="Logout" asp-controller="Account" class="nav-logout">Sign out</a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- STEP BAR -->
+<div class="step-bar">
+    @foreach (var s in steps) {
+        var st = StepStatus(s.Num);
+        <a asp-action="@s.Action" asp-controller="Application" class="step-item @st" title="@s.Name">
+            <div class="step-num">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                <span>@s.Num</span>
+            </div>
+            <span class="step-name">@s.Name</span>
+        </a>
+    }
+</div>
+
+<!-- MOBILE DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+        <div class="drawer-brand-icon"><svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg></div>
+        <div class="drawer-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div>
+    </div>
+    <div class="drawer-user">
+        <div class="drawer-avatar">@initials</div>
+        <div><div class="drawer-uname">@applicantName</div><div class="drawer-uemail">NPI 4.0 Applicant</div></div>
+    </div>
+    <div class="drawer-steps">
+        <span class="drawer-step-label">Application Steps</span>
+        @foreach (var s in steps) {
+            var st = StepStatus(s.Num);
+            var sl = st == "completed" ? "Completed" : st == "active" ? "In progress" : "Locked";
+            @* <a asp-action="@s.Action" asp-controller="Application" class="drawer-item @st" @(st=="locked"?"style=pointer-events:none;opacity:.45":"")>
+                <div class="drawer-item-num">
+                    <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                    <span>@s.Num</span>
+                </div>
+                <div>
+                    <div class="drawer-item-name">@s.Name</div>
+                    <div class="drawer-item-status">@sl</div>
+                </div>
+            </a> *@
+        }
+    </div>
+    <div class="drawer-footer">
+        <a asp-action="Logout" asp-controller="Account" class="drawer-logout">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out of account
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+    <div class="content">
+
+        <div class="page-header">
+            <div class="breadcrumb">
+                <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>Additional Information</span>
+            </div>
+            <h1 class="page-title">Additional Information</h1>
+            <p class="page-sub">This is your final step. Upload any supporting documents and add any other information you'd like the panel to know.</p>
+        </div>
+
+        <div class="step-mini">
+            <div class="step-mini-dot">7</div>
+            <div>
+                <div class="step-mini-label">Step 7 of 7 — Final Step</div>
+                <div class="step-mini-name">Additional Information</div>
+            </div>
+            <div class="step-mini-spacer"></div>
+            <span class="step-mini-progress">Step 7 of 7</span>
+            <div class="step-mini-bar"><div class="step-mini-fill"></div></div>
+        </div>
+
+        <!-- Completion banner -->
+        <div class="completion-banner">
+            <div class="cb-eyebrow"><span class="cb-dot"></span> Almost there</div>
+            <h2 class="cb-title">You're on the <em>last step.</em></h2>
+            <p class="cb-sub">
+                Complete this step and submit your application. Documents are optional but
+                a Business Plan or Financial Projection can significantly strengthen your submission.
+            </p>
+            <div class="cb-steps">
+                @foreach (var s in steps) {
+                    if (s.Num > 1) { <div class="cb-divider"></div> }
+                    var st = StepStatus(s.Num);
+                    <div class="cb-step @(st == "completed" ? "done-step" : st == "active" ? "done-step" : "")">
+                        <div class="cb-step-dot @(st == "completed" ? "done" : st == "active" ? "active" : "")">
+                            @if (st == "completed") {
+                                <svg viewBox="0 0 10 10"><polyline points="2,5 4,8 8,2"/></svg>
+                            } else if (st == "active") {
+                                <span>@s.Num</span>
+                            } else {
+                                <span style="font-size:8px;color:rgba(255,255,255,0.2)">@s.Num</span>
+                            }
+                        </div>
+                        <span style="font-size:.68rem">@s.Name.Split(' ')[0]</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <form asp-action="SaveAdditional" asp-controller="Application"
+              method="post" id="additionalForm"
+              enctype="multipart/form-data" novalidate>
+            @Html.AntiForgeryToken()
+
+            <!-- ── CARD 1: Document Uploads ── -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon teal">
+                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Supporting Documents <span style="font-size:.72rem;color:var(--muted);font-weight:400;margin-left:4px">(optional)</span></div>
+                        <div class="form-card-desc">Upload your Business Plan, Financial Projections, Pitch Deck, or any other document that strengthens your application. Max 5 files · 10MB each.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+
+                    <div>
+                        <div class="doc-type-row" id="docTypeBadges">
+                            <span class="doc-type-badge" data-type="Business Plan">Business Plan</span>
+                            <span class="doc-type-badge" data-type="Financial Projections">Financial Projections</span>
+                            <span class="doc-type-badge" data-type="Pitch Deck">Pitch Deck</span>
+                            <span class="doc-type-badge" data-type="Product Demo">Product Demo</span>
+                            <span class="doc-type-badge" data-type="Other">Other</span>
+                        </div>
+
+                        <div class="upload-zone" id="uploadZone">
+                            <input type="file" id="fileInput" name="Documents"
+                                   multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg"
+                                   aria-label="Upload supporting documents" />
+                            <div class="upload-icon">
+                                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            </div>
+                            <div class="upload-title">Drop files here or <span>browse</span></div>
+                            <div class="upload-sub">PDF, Word, Excel, PowerPoint, or image files</div>
+                            <div class="upload-formats">Max 5 files · 10MB per file</div>
+                        </div>
+                        <div class="upload-error" id="uploadError"></div>
+                        <div class="file-list" id="fileList"></div>
+                    </div>
+
+                    <!-- Document details -->
+                    <div class="form-group" id="grp-docdetails">
+                        <label for="DocumentDetails">
+                            Provide details about the documents you've uploaded
+                            <span class="label-opt">(optional)</span>
+                        </label>
+                        <div class="ta-wrap">
+                            <span class="ta-icon">
+                                <svg viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+                            </span>
+                            <textarea id="DocumentDetails" name="DocumentDetails" rows="3"
+                                      placeholder="e.g. The uploaded Business Plan covers our 3-year expansion strategy across 5 Nigerian states. The Financial Projections are based on our Q1 2026 pilot data.">@ViewBag.DocumentDetails</textarea>
+                        </div>
+                        <div class="char-count" id="docDetailsCount">0 / 500 words</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ── CARD 2: Additional Information ── -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon green">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Anything Else? <span style="font-size:.72rem;color:var(--muted);font-weight:400;margin-left:4px">(optional)</span></div>
+                        <div class="form-card-desc">Is there anything important about your innovation, team, or journey that wasn't covered in the previous sections?</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+                    <div class="form-group" id="grp-additional">
+                        <label for="AdditionalInformation">Additional information</label>
+                        <div class="ta-wrap">
+                            <span class="ta-icon">
+                                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </span>
+                            <textarea id="AdditionalInformation" name="AdditionalInformation" rows="5"
+                                      placeholder="Share anything else you'd like the review panel to consider — awards, notable press coverage, key upcoming milestones, or any other context that strengthens your application.">@ViewBag.AdditionalInformation</textarea>
+                        </div>
+                        <div class="char-count" id="additionalCount">0 / 500 words</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <div class="actions-left">
+                    <a asp-action="Impact" asp-controller="Application" class="btn-back">
+                        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                        Back
+                    </a>
+                    <button type="button" class="btn-save" id="saveBtn">
+                        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Save draft
+                    </button>
+                </div>
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Submit Application
+                </button>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<div class="toast" id="toast">
+    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <span id="toastMsg">Draft saved successfully</span>
+</div>
+
+<script>
+    // ── Drawer
+    const hamburger     = document.getElementById('hamburger');
+    const sideDrawer    = document.getElementById('sideDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const openDrawer  = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display='block'; setTimeout(()=>drawerOverlay.classList.add('open'),10); hamburger.classList.add('open'); document.body.style.overflow='hidden'; };
+    const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(()=>drawerOverlay.style.display='',300); hamburger.classList.remove('open'); document.body.style.overflow=''; };
+    hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
+    drawerOverlay.addEventListener('click', closeDrawer);
+
+    // ── Document type badge filter (purely visual label helper)
+    let activeDocType = null;
+    document.querySelectorAll('.doc-type-badge').forEach(badge => {
+        badge.addEventListener('click', () => {
+            const type = badge.dataset.type;
+            if (activeDocType === type) {
+                badge.classList.remove('active');
+                activeDocType = null;
+            } else {
+                document.querySelectorAll('.doc-type-badge').forEach(b => b.classList.remove('active'));
+                badge.classList.add('active');
+                activeDocType = type;
+            }
+        });
+    });
+
+    // ── File upload
+    const uploadZone  = document.getElementById('uploadZone');
+    const fileInput   = document.getElementById('fileInput');
+    const fileList    = document.getElementById('fileList');
+    const uploadError = document.getElementById('uploadError');
+
+    const MAX_FILES   = 5;
+    const MAX_SIZE_MB = 10;
+    const ALLOWED_EXT = ['pdf','doc','docx','xls','xlsx','ppt','pptx','png','jpg','jpeg'];
+
+    let uploadedFiles = []; // track {file, id, status}
+
+    function getExt(name) { return name.split('.').pop().toLowerCase(); }
+    function fmtSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+    function getTypeIcon(ext) {
+        if (ext === 'pdf') return { cls: 'pdf', label: 'PDF' };
+        if (['doc','docx'].includes(ext)) return { cls: 'doc', label: 'DOC' };
+        if (['xls','xlsx'].includes(ext)) return { cls: 'xls', label: 'XLS' };
+        if (['ppt','pptx'].includes(ext)) return { cls: 'ppt', label: 'PPT' };
+        if (['png','jpg','jpeg'].includes(ext)) return { cls: 'img', label: 'IMG' };
+        return { cls: 'other', label: ext.toUpperCase().slice(0,3) };
+    }
+
+    function showUploadError(msg) {
+        uploadError.textContent = msg;
+        uploadError.classList.add('show');
+        setTimeout(() => uploadError.classList.remove('show'), 4000);
+    }
+
+    function renderFileItem(fileObj) {
+        const ext  = getExt(fileObj.file.name);
+        const icon = getTypeIcon(ext);
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        item.id = 'file-' + fileObj.id;
+        item.innerHTML = `
+            <div class="file-type-icon ${icon.cls}">${icon.label}</div>
+            <div class="file-info">
+                <div class="file-name">${fileObj.file.name}</div>
+                <div class="file-meta">${fmtSize(fileObj.file.size)}${activeDocType ? ' · ' + activeDocType : ''}</div>
+                <div class="file-progress"><div class="file-progress-fill" id="prog-${fileObj.id}"></div></div>
+            </div>
+            <span class="file-status uploading" id="status-${fileObj.id}">Queued</span>
+            <button type="button" class="btn-remove-file" onclick="removeFile('${fileObj.id}')" title="Remove file">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>`;
+        fileList.appendChild(item);
+
+        // Simulate upload progress (replace with real fetch if needed)
+        simulateUpload(fileObj.id);
+    }
+
+    function simulateUpload(id) {
+        const prog   = document.getElementById('prog-' + id);
+        const status = document.getElementById('status-' + id);
+        let pct = 0;
+        const interval = setInterval(() => {
+            pct += Math.random() * 25;
+            if (pct >= 100) {
+                pct = 100;
+                clearInterval(interval);
+                prog.style.width = '100%';
+                status.textContent = 'Ready';
+                status.className = 'file-status done';
+                const fileObj = uploadedFiles.find(f => f.id === id);
+                if (fileObj) fileObj.status = 'done';
+            } else {
+                prog.style.width = Math.round(pct) + '%';
+                status.textContent = Math.round(pct) + '%';
+            }
+        }, 120);
+    }
+
+    function removeFile(id) {
+        uploadedFiles = uploadedFiles.filter(f => f.id !== id);
+        document.getElementById('file-' + id)?.remove();
+        rebuildFileInput();
+    }
+
+    function rebuildFileInput() {
+        // Keep the DataTransfer in sync — replace file input with new one
+        const dt = new DataTransfer();
+        uploadedFiles.forEach(f => dt.items.add(f.file));
+        fileInput.files = dt.files;
+    }
+
+    function handleFiles(files) {
+        uploadError.classList.remove('show');
+        const remaining = MAX_FILES - uploadedFiles.length;
+        if (remaining <= 0) { showUploadError(`Maximum ${MAX_FILES} files allowed.`); return; }
+
+        const toAdd = Array.from(files).slice(0, remaining);
+        let hasError = false;
+
+        toAdd.forEach(file => {
+            const ext  = getExt(file.name);
+            const sizeMb = file.size / (1024 * 1024);
+            if (!ALLOWED_EXT.includes(ext)) {
+                showUploadError(`"${file.name}" has an unsupported format.`);
+                hasError = true; return;
+            }
+            if (sizeMb > MAX_SIZE_MB) {
+                showUploadError(`"${file.name}" exceeds the 10MB limit (${fmtSize(file.size)}).`);
+                hasError = true; return;
+            }
+            if (uploadedFiles.some(f => f.file.name === file.name && f.file.size === file.size)) {
+                showUploadError(`"${file.name}" is already added.`);
+                hasError = true; return;
+            }
+            const id = 'f' + Date.now() + Math.random().toString(36).slice(2, 6);
+            const fileObj = { file, id, status: 'uploading' };
+            uploadedFiles.push(fileObj);
+            renderFileItem(fileObj);
+        });
+
+        if (!hasError) rebuildFileInput();
+    }
+
+    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+    // Drag and drop
+    uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    // ── Word count helper
+    function watchWordCount(taId, countId, max) {
+        const ta = document.getElementById(taId);
+        const ct = document.getElementById(countId);
+        if (!ta || !ct) return;
+        function update() {
+            const words = ta.value.trim() === '' ? 0 : ta.value.trim().split(/\s+/).length;
+            if (words > max) ta.value = ta.value.trim().split(/\s+/).slice(0, max).join(' ');
+            const w = Math.min(words, max);
+            ct.textContent = w + ' / ' + max + ' words';
+            ct.className = 'char-count' + (w >= max ? ' over' : w >= max * 0.9 ? ' warn' : '');
+        }
+        ta.addEventListener('input', update);
+        update();
+    }
+    watchWordCount('DocumentDetails', 'docDetailsCount', 500);
+    watchWordCount('AdditionalInformation', 'additionalCount', 500);
+
+    // ── Toast
+    function showToast(msg, isError) {
+        const toast = document.getElementById('toast');
+        toast.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--lime)';
+        document.getElementById('toastMsg').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // ── Save draft
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('saveBtn');
+        btn.textContent = 'Saving...'; btn.disabled = true;
+        try {
+            const res = await fetch('/Application/SaveAdditionalDraft', {
+                method: 'POST',
+                body: new FormData(document.getElementById('additionalForm'))
+            });
+            showToast(res.ok ? 'Draft saved successfully' : 'Could not save draft', !res.ok);
+        } catch { showToast('Could not save draft', true); }
+        finally {
+            btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save draft';
+            btn.disabled = false;
+        }
+    });
+
+    // ── Submit
+    document.getElementById('additionalForm').addEventListener('submit', function (e) {
+        // Check all files are done uploading
+        const pending = uploadedFiles.filter(f => f.status !== 'done');
+        if (pending.length > 0) {
+            e.preventDefault();
+            showToast('Please wait for all files to finish uploading.', true);
+            return;
+        }
+        const btn = document.getElementById('submitBtn');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Submitting...';
+        btn.disabled = true;
+    });
+</script>
+</body>
+</html>
