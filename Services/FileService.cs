@@ -37,7 +37,7 @@ namespace nsia.Services
             if (!AllowedExtensions.Contains(ext))
                 throw new ArgumentException($"File type '{ext}' is not allowed.");
 
-            // Build folder: /var/www/uploads/applications/{applicationId}/
+            // Build folder: /var/www/npi/uploads/applications/{applicationId}/
             var relativeFolder = Path.Combine("applications", applicationId.ToString());
             var absoluteFolder = Path.Combine(RootPath, relativeFolder);
 

@@ -575,7 +575,7 @@ namespace Nsia.Controllers
             return RedirectToAction("Submitted");
         }
 
-        [HttpGet("/uploads/{**filePath}")]
+        [HttpGet("/npi/uploads/{**filePath}")]
         public IActionResult ServeFile(string filePath)
         {
             var rootPath = _config["UploadSettings:RootPath"]
