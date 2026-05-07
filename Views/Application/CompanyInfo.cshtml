@@ -324,9 +324,10 @@
 <!-- TOP NAV -->
 <nav class="top-nav">
     <div class="nav-brand">
-        <div class="nav-brand-icon">
+       <a href="/"> <div class="nav-brand-icon">
             <img src="~/logo.png" alt="logo"/> 
         </div>
+        </a>
         @* <div class="nav-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div> *@
     </div>
     <div class="nav-right">
@@ -672,55 +673,97 @@
                     <!-- Milestones -->
                     <div class="form-group" id="grp-milestones">
                         <label>What milestones have you achieved so far? <span class="label-req">*</span> <span class="label-opt">(select all that apply)</span></label>
-                        <div class="mc-options">
-                            @{
-                                var milestones = new[] {
-                                    new { Val = "A", Text = "Secured initial funding and developed a prototype" },
-                                    new { Val = "B", Text = "Launched a pilot program and gained early adopters" },
-                                    new { Val = "C", Text = "Established key partnerships and collaborations" },
-                                    new { Val = "D", Text = "Received industry recognition and awards" },
-                                };
-                                var savedMilestones = ViewBag.Milestones as List<string> ?? new List<string>();
-                            }
-                            @foreach (var m in milestones) {
-                                <div class="mc-option">
-                                    <input type="checkbox" id="ms-@m.Val" name="Milestones" value="@m.Val"
-                                           @(savedMilestones.Contains(m.Val) ? "checked" : "") />
-                                    <label class="mc-label" for="ms-@m.Val">
-                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="mc-letter">@m.Val)</span>
-                                        <span class="mc-text">@m.Text</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
+                        <div class="mc-option">
+                        <input type="checkbox" id="ms-A" name="Milestones"
+                            value="Secured initial funding and developed a prototype"
+                            @@(savedMilestones.Contains("Secured initial funding and developed a prototype") ? "checked" : "") />
+                        <label class="mc-label" for="ms-A">
+                            <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                            <span class="mc-letter">A)</span>
+                            <span class="mc-text">Secured initial funding and developed a prototype</span>
+                        </label>
+                    </div>
+
+                    <div class="mc-option">
+                        <input type="checkbox" id="ms-B" name="Milestones"
+                            value="Launched a pilot program and gained early adopters"
+                            @@(savedMilestones.Contains("Launched a pilot program and gained early adopters") ? "checked" : "") />
+                        <label class="mc-label" for="ms-B">
+                            <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                            <span class="mc-letter">B)</span>
+                            <span class="mc-text">Launched a pilot program and gained early adopters</span>
+                        </label>
+                    </div>
+
+                    <div class="mc-option">
+                        <input type="checkbox" id="ms-C" name="Milestones"
+                            value="Established key partnerships and collaborations"
+                            @@(savedMilestones.Contains("Established key partnerships and collaborations") ? "checked" : "") />
+                        <label class="mc-label" for="ms-C">
+                            <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                            <span class="mc-letter">C)</span>
+                            <span class="mc-text">Established key partnerships and collaborations</span>
+                        </label>
+                    </div>
+
+                    <div class="mc-option">
+                        <input type="checkbox" id="ms-D" name="Milestones"
+                            value="Received industry recognition and awards"
+                            @@(savedMilestones.Contains("Received industry recognition and awards") ? "checked" : "") />
+                        <label class="mc-label" for="ms-D">
+                            <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                            <span class="mc-letter">D)</span>
+                            <span class="mc-text">Received industry recognition and awards</span>
+                        </label>
+                    </div>
                         <div class="field-error">Please select at least one milestone.</div>
                     </div>
 
                     <!-- How do you measure success -->
                     <div class="form-group" id="grp-success">
                         <label>How do you measure success? <span class="label-req">*</span> <span class="label-opt">(select all that apply)</span></label>
-                        <div class="mc-options">
-                            @{
-                                var successMetrics = new[] {
-                                    new { Val = "A", Text = "Revenue growth" },
-                                    new { Val = "B", Text = "Customer satisfaction" },
-                                    new { Val = "C", Text = "Market share" },
-                                    new { Val = "D", Text = "Social and environmental impact" },
-                                };
-                                var savedSuccess = ViewBag.SuccessMetrics as List<string> ?? new List<string>();
-                            }
-                            @foreach (var s in successMetrics) {
-                                <div class="mc-option">
-                                    <input type="checkbox" id="sm-@s.Val" name="SuccessMetrics" value="@s.Val"
-                                           @(savedSuccess.Contains(s.Val) ? "checked" : "") />
-                                    <label class="mc-label" for="sm-@s.Val">
-                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="mc-letter">@s.Val)</span>
-                                        <span class="mc-text">@s.Text</span>
-                                    </label>
-                                </div>
-                            }
+                        <div class="mc-option">
+                            <input type="checkbox" id="sm-A" name="SuccessMetrics"
+                                value="Revenue growth"
+                                @@(savedSuccess.Contains("Revenue growth") ? "checked" : "") />
+                            <label class="mc-label" for="sm-A">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">A)</span>
+                                <span class="mc-text">Revenue growth</span>
+                            </label>
+                        </div>
+
+                        <div class="mc-option">
+                            <input type="checkbox" id="sm-B" name="SuccessMetrics"
+                                value="Customer satisfaction"
+                                @@(savedSuccess.Contains("Customer satisfaction") ? "checked" : "") />
+                            <label class="mc-label" for="sm-B">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">B)</span>
+                                <span class="mc-text">Customer satisfaction</span>
+                            </label>
+                        </div>
+
+                        <div class="mc-option">
+                            <input type="checkbox" id="sm-C" name="SuccessMetrics"
+                                value="Market share"
+                                @@(savedSuccess.Contains("Market share") ? "checked" : "") />
+                            <label class="mc-label" for="sm-C">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">C)</span>
+                                <span class="mc-text">Market share</span>
+                            </label>
+                        </div>
+
+                        <div class="mc-option">
+                            <input type="checkbox" id="sm-D" name="SuccessMetrics"
+                                value="Social and environmental impact"
+                                @@(savedSuccess.Contains("Social and environmental impact") ? "checked" : "") />
+                            <label class="mc-label" for="sm-D">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">D)</span>
+                                <span class="mc-text">Social and environmental impact</span>
+                            </label>
                         </div>
                         <div class="field-error">Please select at least one option.</div>
                     </div>
@@ -728,27 +771,48 @@
                     <!-- Long-term vision -->
                     <div class="form-group" id="grp-vision">
                         <label>What is your long-term vision for the company? <span class="label-req">*</span> <span class="label-opt">(select all that apply)</span></label>
-                        <div class="mc-options">
-                            @{
-                                var visions = new[] {
-                                    new { Val = "A", Text = "Becoming a market leader in Nigeria" },
-                                    new { Val = "B", Text = "Expanding to other African countries" },
-                                    new { Val = "C", Text = "Diversifying product/service offerings" },
-                                    new { Val = "D", Text = "Achieving sustainable growth and impact" },
-                                };
-                                var savedVisions = ViewBag.LongTermVision as List<string> ?? new List<string>();
-                            }
-                            @foreach (var v in visions) {
-                                <div class="mc-option">
-                                    <input type="checkbox" id="vn-@v.Val" name="LongTermVision" value="@v.Val"
-                                           @(savedVisions.Contains(v.Val) ? "checked" : "") />
-                                    <label class="mc-label" for="vn-@v.Val">
-                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="mc-letter">@v.Val)</span>
-                                        <span class="mc-text">@v.Text</span>
-                                    </label>
-                                </div>
-                            }
+                        <div class="mc-option">
+                            <input type="checkbox" id="vn-A" name="LongTermVision"
+                                value="Becoming a market leader in Nigeria"
+                                @@(savedVisions.Contains("Becoming a market leader in Nigeria") ? "checked" : "") />
+                            <label class="mc-label" for="vn-A">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">A)</span>
+                                <span class="mc-text">Becoming a market leader in Nigeria</span>
+                            </label>
+                        </div>
+
+                        <div class="mc-option">
+                            <input type="checkbox" id="vn-B" name="LongTermVision"
+                                value="Expanding to other African countries"
+                                @@(savedVisions.Contains("Expanding to other African countries") ? "checked" : "") />
+                            <label class="mc-label" for="vn-B">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">B)</span>
+                                <span class="mc-text">Expanding to other African countries</span>
+                            </label>
+                        </div>
+
+                        <div class="mc-option">
+                            <input type="checkbox" id="vn-C" name="LongTermVision"
+                                value="Diversifying product/service offerings"
+                                @@(savedVisions.Contains("Diversifying product/service offerings") ? "checked" : "") />
+                            <label class="mc-label" for="vn-C">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">C)</span>
+                                <span class="mc-text">Diversifying product/service offerings</span>
+                            </label>
+                        </div>
+
+                        <div class="mc-option">
+                            <input type="checkbox" id="vn-D" name="LongTermVision"
+                                value="Achieving sustainable growth and impact"
+                                @@(savedVisions.Contains("Achieving sustainable growth and impact") ? "checked" : "") />
+                            <label class="mc-label" for="vn-D">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">D)</span>
+                                <span class="mc-text">Achieving sustainable growth and impact</span>
+                            </label>
                         </div>
                         <div class="field-error">Please select at least one option.</div>
                     </div>

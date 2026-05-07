@@ -342,7 +342,7 @@ namespace Nsia.Controllers
                 // Identity
                 "Reference Number","Status","Application Step","Submitted At","Created At",
                 // Profile
-                "Full Name","Email","Phone","Gender","Email Verified",
+                "Full Name","Email","Phone","Gender","Email Verified", "Location", "How Did You Hear",
                 // Company
                 "Company Name","Company URL","Business Address","Year Incorporated",
                 "Legally Registered","CAC Reg Number","Is Operational Entity",
@@ -354,9 +354,9 @@ namespace Nsia.Controllers
                 // Founders (up to 5)
                 "Founder 1 Name","Founder 1 Phone","Founder 1 Role","Founder 1 LinkedIn","Founder 1 Nationality",
                 "Founder 2 Name","Founder 2 Phone","Founder 2 Role","Founder 2 LinkedIn","Founder 2 Nationality",
-                "Founder 3 Name","Founder 3 Phone","Founder 3 Role","Founder 3 LinkedIn","Founder 3 Nationality",
-                "Founder 4 Name","Founder 4 Phone","Founder 4 Role","Founder 4 LinkedIn","Founder 4 Nationality",
-                "Founder 5 Name","Founder 5 Phone","Founder 5 Role","Founder 5 LinkedIn","Founder 5 Nationality",
+                // "Founder 3 Name","Founder 3 Phone","Founder 3 Role","Founder 3 LinkedIn","Founder 3 Nationality",
+                // "Founder 4 Name","Founder 4 Phone","Founder 4 Role","Founder 4 LinkedIn","Founder 4 Nationality",
+                // "Founder 5 Name","Founder 5 Phone","Founder 5 Role","Founder 5 LinkedIn","Founder 5 Nationality",
                 // Product
                 "Growth Stage","Sector","MVP Link","Product Description","User Count Range",
                 "Business Model","USP","Competitors","Go To Market","Key Features",
@@ -384,11 +384,11 @@ namespace Nsia.Controllers
                 // Additional
                 "Document Details","Additional Information",
                 // Documents (up to 5)
-                "Doc 1 Name","Doc 1 Type","Doc 1 Size",
-                "Doc 2 Name","Doc 2 Type","Doc 2 Size",
-                "Doc 3 Name","Doc 3 Type","Doc 3 Size",
-                "Doc 4 Name","Doc 4 Type","Doc 4 Size",
-                "Doc 5 Name","Doc 5 Type","Doc 5 Size",
+                "Doc 1 Name",
+                "Doc 2 Name",
+                "Doc 3 Name",
+                "Doc 4 Name",
+                "Doc 5 Name",
             }));
 
             foreach (var a in apps)
@@ -416,6 +416,8 @@ namespace Nsia.Controllers
                     EscapeCsv(a.Phone),
                     EscapeCsv(a.Gender),
                     a.IsEmailVerified ? "Yes" : "No",
+                    EscapeCsv(a.Location),
+                    EscapeCsv(a.HowDidYouHear),
                     // Company
                     EscapeCsv(a.CompanyName),
                     EscapeCsv(a.CompanyUrl),
@@ -441,9 +443,9 @@ namespace Nsia.Controllers
                     // Founders
                     F(0,f=>f.FullName), F(0,f=>f.PhoneNumber), F(0,f=>f.Role), F(0,f=>f.LinkedInUrl), F(0,f=>f.Nationality),
                     F(1,f=>f.FullName), F(1,f=>f.PhoneNumber), F(1,f=>f.Role), F(1,f=>f.LinkedInUrl), F(1,f=>f.Nationality),
-                    F(2,f=>f.FullName), F(2,f=>f.PhoneNumber), F(2,f=>f.Role), F(2,f=>f.LinkedInUrl), F(2,f=>f.Nationality),
-                    F(3,f=>f.FullName), F(3,f=>f.PhoneNumber), F(3,f=>f.Role), F(3,f=>f.LinkedInUrl), F(3,f=>f.Nationality),
-                    F(4,f=>f.FullName), F(4,f=>f.PhoneNumber), F(4,f=>f.Role), F(4,f=>f.LinkedInUrl), F(4,f=>f.Nationality),
+                    // F(2,f=>f.FullName), F(2,f=>f.PhoneNumber), F(2,f=>f.Role), F(2,f=>f.LinkedInUrl), F(2,f=>f.Nationality),
+                    // F(3,f=>f.FullName), F(3,f=>f.PhoneNumber), F(3,f=>f.Role), F(3,f=>f.LinkedInUrl), F(3,f=>f.Nationality),
+                    // F(4,f=>f.FullName), F(4,f=>f.PhoneNumber), F(4,f=>f.Role), F(4,f=>f.LinkedInUrl), F(4,f=>f.Nationality),
                     // Product
                     EscapeCsv(a.GrowthStage),
                     EscapeCsv(a.Sector),
@@ -515,11 +517,11 @@ namespace Nsia.Controllers
                     EscapeCsv(a.DocumentDetails),
                     EscapeCsv(a.AdditionalInformation),
                     // Documents
-                    D(0,d=>d.StoredFilePath), D(0,d=>d.DocumentType), D(0,d=>$"{d.FileSizeBytes/1024}KB"),
-                    D(1,d=>d.StoredFilePath), D(1,d=>d.DocumentType), D(1,d=>$"{d.FileSizeBytes/1024}KB"),
-                    D(2,d=>d.StoredFilePath), D(2,d=>d.DocumentType), D(2,d=>$"{d.FileSizeBytes/1024}KB"),
-                    D(3,d=>d.StoredFilePath), D(3,d=>d.DocumentType), D(3,d=>$"{d.FileSizeBytes/1024}KB"),
-                    D(4,d=>d.StoredFilePath), D(4,d=>d.DocumentType), D(4,d=>$"{d.FileSizeBytes/1024}KB"),
+                    D(0,d=>d.StoredFilePath),
+                    D(1,d=>d.StoredFilePath),
+                    D(2,d=>d.StoredFilePath),
+                    D(3,d=>d.StoredFilePath),
+                    D(4,d=>d.StoredFilePath),
                 };
 
                 sb.AppendLine(string.Join(",", row));

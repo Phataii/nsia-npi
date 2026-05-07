@@ -250,6 +250,8 @@
                     <div class="field-row"><span class="field-label">Phone</span><span class="field-value">@Val(a?.Phone)</span></div>
                     <div class="field-row"><span class="field-label">Gender</span><span class="field-value">@Val(a?.Gender)</span></div>
                     <div class="field-row"><span class="field-label">Email Verified</span><span class="field-value">@YN(a?.IsEmailVerified)</span></div>
+                    <div class="field-row"><span class="field-label">Location</span><span class="field-value">@Val(a?.Location)</span></div>
+                    <div class="field-row"><span class="field-label">How did you hear?</span><span class="field-value">@Val(a?.HowDidYouHear)</span></div>
                     <div class="field-row"><span class="field-label">Submitted</span><span class="field-value">@(a?.SubmittedAt?.ToString("dd MMM yyyy HH:mm") ?? "—")</span></div>
                 </div>
             </div>
@@ -410,7 +412,7 @@
                                     <div class="doc-name">@d.OriginalFileName</div>
                                     <div class="doc-meta">@d.DocumentType &nbsp;·&nbsp; @size &nbsp;·&nbsp; @d.UploadedAt.ToString("dd MMM yyyy")</div>
                                 </div>
-                                <a href="/@d.StoredFilePath" target="_blank" class="doc-link">Download →</a>
+                                <a href="@d.StoredFilePath" target="_blank" class="doc-link">Download →</a>
                             </div>
                         }
                     </div>

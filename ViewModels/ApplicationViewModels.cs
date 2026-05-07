@@ -16,6 +16,11 @@ namespace nsia.ViewModels
 
         [Required]
         public string Gender { get; set; } = default!;
+        [MaxLength(100)]
+        public string? Location { get; set; }
+
+        [MaxLength(100)]
+        public string? HowDidYouHear { get; set; }
     }
 
     public class CompanyInfoViewModel

@@ -39,6 +39,11 @@ namespace nsia.Models
 
         [MaxLength(20)]
         public string? Gender { get; set; }
+        [MaxLength(100)]
+        public string? Location { get; set; }
+
+        [MaxLength(100)]
+        public string? HowDidYouHear { get; set; }
 
         public bool IsEmailVerified { get; set; } = false;
 
@@ -81,19 +86,19 @@ namespace nsia.Models
         /// <summary>
         /// Comma-separated milestone option values e.g. "A,C"
         /// </summary>
-        [MaxLength(20)]
+        [MaxLength(200)]
         public string? Milestones { get; set; }
 
         /// <summary>
         /// Comma-separated success metric option values e.g. "B,D"
         /// </summary>
-        [MaxLength(20)]
+        [MaxLength(200)]
         public string? SuccessMetrics { get; set; }
 
         /// <summary>
         /// Comma-separated vision option values e.g. "A,B"
         /// </summary>
-        [MaxLength(20)]
+        [MaxLength(200)]
         public string? LongTermVision { get; set; }
 
         // ======================

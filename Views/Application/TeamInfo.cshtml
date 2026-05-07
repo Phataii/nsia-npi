@@ -328,9 +328,10 @@
 <!-- TOP NAV -->
 <nav class="top-nav">
     <div class="nav-brand">
-        <div class="nav-brand-icon">
+        <a href="/"><div class="nav-brand-icon">
             <img src="~/logo.png" alt="logo"/> 
         </div>
+        </a>
         @* <div class="nav-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div> *@
     </div>
     <div class="nav-right">
@@ -455,7 +456,7 @@
                                 </span>
                                 <select id="NumberOfFounders" name="NumberOfFounders">
                                     <option value="" disabled selected="@(ViewBag.NumberOfFounders == null)">Select number</option>
-                                    @for (int i = 1; i <= 10; i++)
+                                    @for (int i = 1; i <= 2; i++)
                                     {
                                         <option value="@i" selected="@(ViewBag.NumberOfFounders == i)">
                                             @i founder@(i > 1 ? "s" : "")
@@ -494,27 +495,50 @@
                             <span class="label-opt">(select all that apply)</span>
                         </label>
                         <div class="mc-options">
-                            @{
-                                var teamProfiles = new[] {
-                                    new { Val = "A", Text = "Experienced professionals with industry expertise" },
-                                    new { Val = "B", Text = "Innovators with a track record of success" },
-                                    new { Val = "C", Text = "Recent graduates with fresh perspectives" },
-                                    new { Val = "D", Text = "A diverse mix of technical and business skills" },
-                                };
-                                var savedTeamComp = ViewBag.TeamComposition as List<string> ?? new List<string>();
-                            }
-                            @foreach (var t in teamProfiles) {
-                                <div class="mc-option">
-                                    <input type="checkbox" id="tc-@t.Val" name="TeamComposition" value="@t.Val"
-                                           @(savedTeamComp.Contains(t.Val) ? "checked" : "") />
-                                    <label class="mc-label" for="tc-@t.Val">
-                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="mc-letter">@t.Val)</span>
-                                        <span class="mc-text">@t.Text</span>
-                                    </label>
-                                </div>
-                            }
+                        <div class="mc-option">
+                            <input type="checkbox" id="tc-A" name="TeamComposition"
+                                value="Experienced professionals with industry expertise"
+                                @@(savedTeamComp.Contains("Experienced professionals with industry expertise") ? "checked" : "") />
+                            <label class="mc-label" for="tc-A">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">A)</span>
+                                <span class="mc-text">Experienced professionals with industry expertise</span>
+                            </label>
                         </div>
+
+                        <div class="mc-option">
+                            <input type="checkbox" id="tc-B" name="TeamComposition"
+                                value="Innovators with a track record of success"
+                                @@(savedTeamComp.Contains("Innovators with a track record of success") ? "checked" : "") />
+                            <label class="mc-label" for="tc-B">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">B)</span>
+                                <span class="mc-text">Innovators with a track record of success</span>
+                            </label>
+                        </div>
+
+                        <div class="mc-option">
+                            <input type="checkbox" id="tc-C" name="TeamComposition"
+                                value="Recent graduates with fresh perspectives"
+                                @@(savedTeamComp.Contains("Recent graduates with fresh perspectives") ? "checked" : "") />
+                            <label class="mc-label" for="tc-C">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">C)</span>
+                                <span class="mc-text">Recent graduates with fresh perspectives</span>
+                            </label>
+                        </div>
+
+                        <div class="mc-option">
+                            <input type="checkbox" id="tc-D" name="TeamComposition"
+                                value="A diverse mix of technical and business skills"
+                                @@(savedTeamComp.Contains("A diverse mix of technical and business skills") ? "checked" : "") />
+                            <label class="mc-label" for="tc-D">
+                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                <span class="mc-letter">D)</span>
+                                <span class="mc-text">A diverse mix of technical and business skills</span>
+                            </label>
+                        </div>
+                    </div>
                         <div class="field-error">Please select at least one option.</div>
                     </div>
                 </div>
