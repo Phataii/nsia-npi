@@ -15,11 +15,17 @@
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --teal: #0e86ab; --teal-d: #0a6b8a;
-            --green: #08703a; --green-d: #065a2f;
-            --lime: #83c240;
-            --ink: #0d1a12; --cream: #faf8f3;
-            --muted: #5a6b60; --border: rgba(0,0,0,0.1);
+            --teal:       #21a1b8;
+            --teal-dark:  #1a9990;
+            --teal-deep:  #0d7a73;
+            --teal-light: #f2f8fa;
+            --teal-pale:  #F0FAF9;
+            --green:      #7BC144;
+            --green-dark: #5a9130;
+            --ink:        #1C2B2A;
+            --muted:      #4A6260;
+            --border:     rgba(45,184,176,0.2);
+            --white:      #FFFFFF;
         }
         body {
             font-family: 'DM Sans', sans-serif;
@@ -29,14 +35,13 @@
 
         /* ── LEFT PANEL ── */
         .panel-left {
-            background: var(--ink); padding: 3rem;
+            background: var(--teal-light); padding: 3rem;
             display: flex; flex-direction: column; justify-content: space-between;
             position: relative; overflow: hidden; min-height: 100vh;
         }
         .panel-left::before {
             content: ''; position: absolute; inset: 0;
-            background: radial-gradient(ellipse at 15% 40%, rgba(14,134,171,0.25) 0%, transparent 60%),
-                        radial-gradient(ellipse at 85% 70%, rgba(8,112,58,0.2) 0%, transparent 55%);
+           
         }
         .panel-left > * { position: relative; z-index: 1; }
         .brand { display: flex; align-items: center; gap: 10px; }
@@ -44,20 +49,20 @@
         .panel-center { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 2.5rem 0; }
         .step-indicator { display: flex; align-items: center; gap: .5rem; margin-bottom: 2rem; flex-wrap: wrap; }
         .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
-        .step-dot.active { background: var(--lime); color: var(--ink); }
-        .step-dot.inactive { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); }
+        .step-dot.active { background: var(--teal-deep); color: var(--teal-light); }
+        .step-dot.inactive { background: var(--teal-light); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); }
         .step-line { width: 28px; height: 1px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
-        .step-label { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: .06em; text-transform: uppercase; margin-left: .25rem; }
-        .left-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 2.5vw, 3rem); font-weight: 700; color: white; line-height: 1.05; margin-bottom: 1rem; }
-        .left-title em { color: var(--lime); font-style: italic; }
-        .left-desc { font-size: .84rem; line-height: 1.8; color: rgba(255,255,255,0.5); max-width: 340px; font-weight: 300; margin-bottom: 2rem; }
+        .step-label { font-size: 10px; color: var(--ink); letter-spacing: .06em; text-transform: uppercase; margin-left: .25rem; }
+        .left-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 2.5vw, 3rem); font-weight: 700; color: var(--ink); line-height: 1.05; margin-bottom: 1rem; }
+        .left-title em { color: var(--ink); font-style: italic; }
+        .left-desc { font-size: .84rem; line-height: 1.8; color: var(--ink); max-width: 340px; font-weight: 300; margin-bottom: 2rem; }
         .checklist { display: flex; flex-direction: column; gap: .75rem; }
         .check-item { display: flex; align-items: flex-start; gap: .75rem; }
         .check-icon { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; background: rgba(131,194,64,0.15); border: 1px solid rgba(131,194,64,0.3); display: flex; align-items: center; justify-content: center; margin-top: 1px; }
         .check-icon svg { width: 10px; height: 10px; stroke: var(--lime); stroke-width: 2.5; fill: none; }
-        .check-text { font-size: .79rem; color: rgba(255,255,255,0.5); line-height: 1.55; font-weight: 300; }
+        .check-text { font-size: .79rem; color: var(--ink); line-height: 1.55; font-weight: 300; }
         .left-footer { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-        .left-footer span { font-size: .72rem; color: rgba(255,255,255,0.3); }
+        .left-footer span { font-size: .72rem; color: var(--teal); }
         .left-footer a { font-size: .72rem; color: var(--teal); text-decoration: none; }
         .left-footer a:hover { text-decoration: underline; }
 
@@ -124,8 +129,8 @@
         .terms-row span { font-size: .78rem; color: var(--muted); line-height: 1.6; }
         .terms-row a { color: var(--teal); text-decoration: none; font-weight: 500; }
         .terms-row a:hover { text-decoration: underline; }
-        .btn-submit { width: 100%; padding: .88rem; background: var(--green); color: white; border: none; border-radius: 6px; font-size: .88rem; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; letter-spacing: .03em; transition: background .2s, transform .15s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 1rem; touch-action: manipulation; }
-        .btn-submit:hover { background: var(--green-d); transform: translateY(-1px); }
+        .btn-submit { width: 100%; padding: .88rem; background: var(--teal); color: white; border: none; border-radius: 6px; font-size: .88rem; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; letter-spacing: .03em; transition: background .2s, transform .15s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 1rem; touch-action: manipulation; }
+        .btn-submit:hover { background: var(--teal-dark); transform: translateY(-1px); }
         .btn-submit:active { transform: scale(0.98); }
         .btn-submit:disabled { opacity: .65; cursor: not-allowed; transform: none; }
         .btn-submit svg { width: 16px; height: 16px; stroke: white; stroke-width: 2; fill: none; flex-shrink: 0; }
