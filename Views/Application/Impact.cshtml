@@ -33,33 +33,40 @@
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --teal: #0e86ab; --teal-d: #0a6b8a;
-            --green: #08703a; --green-d: #065a2f;
+            --teal: #21a1b8;
+            --teal-dark:  #1a9990;
+            --teal-deep:  #0d7a73;
+            --teal-light: #f2f8fa;
+            --green:      #7BC144;
+            --green-dark: #5a9130;
             --lime: #83c240;
-            --ink: #0d1a12; --cream: #faf8f3; --off: #f4f2ec;
-            --muted: #5a6b60; --border: rgba(0,0,0,0.08);
+            --ink:        #1C2B2A;
+            --muted:      #4A6260;
+            --cream: #faf8f3;
+            --off: #f4f2ec;
+            --border: rgba(0,0,0,0.08);
             --nav-h: 62px; --step-h: 56px;
         }
         html { scroll-behavior: smooth; }
         body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
 
         /* ── NAV ── */
-        .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: var(--ink); display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
-        .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 30% 50%, rgba(14,134,171,0.12) 0%, transparent 60%); }
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: white; display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
+        .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; transparent 60%); }
         .nav-brand { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
         @* .nav-brand-icon { width: 34px; height: 34px; border-radius: 7px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; } *@
         .nav-brand-icon img { width: 130px; height: 30px; stroke: white; stroke-width: 2; fill: none; }
         .nav-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
         .nav-brand-text span { display: block; font-size: 10px; color: rgba(255,255,255,0.35); }
         .nav-right { display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 1; }
-        .nav-deadline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.45); }
+        .nav-deadline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink); }
         .nav-deadline svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.35); stroke-width: 1.75; fill: none; }
         .deadline-val { color: var(--lime); font-weight: 500; }
         .nav-user { display: flex; align-items: center; gap: 8px; }
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: white; flex-shrink: 0; }
-        .user-name { font-size: 12px; color: rgba(255,255,255,0.7); }
-        .nav-logout { font-size: 11px; color: rgba(255,255,255,0.35); text-decoration: none; padding: .3rem .7rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: color .2s, border-color .2s; white-space: nowrap; }
-        .nav-logout:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.25); }
+        .user-name { font-size: 12px; color: var(--ink); }
+        .nav-logout { font-size: 11px; color: var(--ink); text-decoration: none; padding: .3rem .7rem; border: 1px solid var(--teal-dark); border-radius: 4px; transition: color .2s, border-color .2s; white-space: nowrap; }
+        .nav-logout:hover { color: var(--ink); border-color: var(--green); }
         .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 1; }
         .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: transform .3s, opacity .3s; }
         .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
@@ -237,8 +244,8 @@
         .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: .72rem 1.5rem; border-radius: 7px; background: white; border: 1px solid var(--border); font-size: .84rem; font-weight: 500; color: var(--teal); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, border-color .2s; }
         .btn-save:hover { background: rgba(14,134,171,0.04); border-color: rgba(14,134,171,0.3); }
         .btn-save svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
-        .btn-next { display: inline-flex; align-items: center; gap: 7px; padding: .76rem 1.75rem; border-radius: 7px; background: var(--green); color: white; border: none; font-size: .88rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, transform .15s; -webkit-tap-highlight-color: transparent; }
-        .btn-next:hover { background: var(--green-d); transform: translateY(-1px); }
+        .btn-next { display: inline-flex; align-items: center; gap: 7px; padding: .76rem 1.75rem; border-radius: 7px; background: var(--teal); color: white; border: none; font-size: .88rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, transform .15s; -webkit-tap-highlight-color: transparent; }
+        .btn-next:hover { background: var(--teal-dark); transform: translateY(-1px); }
         .btn-next:active { transform: scale(0.98); }
         .btn-next:disabled { opacity: .5; cursor: not-allowed; transform: none; }
         .btn-next svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
@@ -275,7 +282,7 @@
 <nav class="top-nav">
     <div class="nav-brand">
         <a href="/"><div class="nav-brand-icon">
-            <img src="~/logo.png" alt="logo"/> 
+            <img src="~/web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" alt="NSIA" />
         </div>
         </a>
         @* <div class="nav-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div> *@
