@@ -50,10 +50,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseDefaultFiles(); // serves index.html when hitting /
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();         // must be before MapControllerRoute
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

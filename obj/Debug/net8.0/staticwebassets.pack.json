@@ -13,248 +13,300 @@
       "PackagePath": "staticwebassets/NPI_4_0_Terms_of_Service.pdf"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/css/site.css",
-      "PackagePath": "staticwebassets/css/site.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/about.html",
+      "PackagePath": "staticwebassets/about.html"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/favicon.ico",
-      "PackagePath": "staticwebassets/favicon.ico"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/favicons/site.webmanifest",
+      "PackagePath": "staticwebassets/assets/images/favicons/site.webmanifest"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/js/site.js",
-      "PackagePath": "staticwebassets/js/site.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/contact.html",
+      "PackagePath": "staticwebassets/contact.html"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/LICENSE",
-      "PackagePath": "staticwebassets/lib/bootstrap"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/faq.html",
+      "PackagePath": "staticwebassets/faq.html"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/gallery.html",
+      "PackagePath": "staticwebassets/gallery.html"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/index.html",
+      "PackagePath": "staticwebassets/index.html"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.min.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/program-stages.html",
+      "PackagePath": "staticwebassets/program-stages.html"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.min.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/css/notech-light.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/css/notech-light.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/css/notech-responsive.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/css/notech-responsive.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/css/notech.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/css/notech.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/animate/animate.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/animate/animate.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/animate/custom-animate.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/animate/custom-animate.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/bootstrap-select/css/bootstrap-select.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/bootstrap-select/css/bootstrap-select.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/bootstrap/css/bootstrap.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/bootstrap/css/bootstrap.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.min.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/bxslider/jquery.bxslider.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/bxslider/jquery.bxslider.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.min.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/fontawesome/css/all.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/fontawesome/css/all.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/jarallax/jarallax.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/jarallax/jarallax.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/jquery-ui/jquery-ui.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/jquery-ui/jquery-ui.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/notech-icons/style.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/notech-icons/style.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/notech-two-icons/style.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/notech-two-icons/style.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/nouislider/nouislider.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/nouislider/nouislider.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.min.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.min.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/nouislider/nouislider.pips.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/nouislider/nouislider.pips.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.min.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.min.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/odometer/odometer.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/odometer/odometer.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/owl-carousel/owl.carousel.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/owl-carousel/owl.carousel.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/owl-carousel/owl.theme.default.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/owl-carousel/owl.theme.default.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/reey-font/stylesheet.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/reey-font/stylesheet.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/swiper/swiper.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/swiper/swiper.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/timepicker/timePicker.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/timepicker/timePicker.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/tiny-slider/tiny-slider.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/tiny-slider/tiny-slider.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.min.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/toolbar/css/toolbar.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/toolbar/css/toolbar.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.min.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/vegas/vegas.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/http:/nsia-ip.com/assets/vendors/vegas/vegas.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/https:/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/https:/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/https:/fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap.css",
+      "PackagePath": "staticwebassets/web/20250328144002cs_/https:/fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.min.css"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/2.jpg",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/2.jpg"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/_MG_6527.jpg",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/_MG_6527.jpg"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/brand/brand1.jpeg",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/brand/brand1.jpeg"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.js.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/brand1.png",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/brand1.png"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/brand2.jpg",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/brand2.jpg"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/favicons/favicon-16x16.png",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/favicons/favicon-16x16.png"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.js",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/favicons/favicon-32x32.png",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/favicons/favicon-32x32.png"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.js.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.js.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/gallery/gallery15.jpg",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/gallery/gallery15.jpg"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.min.js",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.min.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.min.js.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.min.js.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/shapes/get-to-know-shape-1.png",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/shapes/get-to-know-shape-1.png"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.js",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/shapes/helping-shape-1.png",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/shapes/helping-shape-1.png"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.js.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.js.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/shapes/service-bg-1-1.png",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/shapes/service-bg-1-1.png"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.min.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/shapes/site-footer-shape-1.png",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/shapes/site-footer-shape-1.png"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js.map",
-      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.min.js.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/shapes/site-footer-shape-2.png",
+      "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/shapes/site-footer-shape-2.png"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt",
-      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/LICENSE.txt"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/js/notech.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/js/notech.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
-      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/bootstrap-select/js/bootstrap-select.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/bootstrap-select/js/bootstrap-select.min.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
-      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/bootstrap/js/bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/bootstrap/js/bootstrap.bundle.min.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery-validation/LICENSE.md",
-      "PackagePath": "staticwebassets/lib/jquery-validation/LICENSE.md"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/bxslider/jquery.bxslider.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/bxslider/jquery.bxslider.min.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery-validation/dist/additional-methods.js",
-      "PackagePath": "staticwebassets/lib/jquery-validation/dist/additional-methods.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/countdown/countdown.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/countdown/countdown.min.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery-validation/dist/additional-methods.min.js",
-      "PackagePath": "staticwebassets/lib/jquery-validation/dist/additional-methods.min.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/isotope/isotope.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/isotope/isotope.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery-validation/dist/jquery.validate.js",
-      "PackagePath": "staticwebassets/lib/jquery-validation/dist/jquery.validate.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jarallax/jarallax.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jarallax/jarallax.min.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery-validation/dist/jquery.validate.min.js",
-      "PackagePath": "staticwebassets/lib/jquery-validation/dist/jquery.validate.min.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-ajaxchimp/jquery.ajaxchimp.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-ajaxchimp/jquery.ajaxchimp.min.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery/LICENSE.txt",
-      "PackagePath": "staticwebassets/lib/jquery/LICENSE.txt"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-appear/jquery.appear.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-appear/jquery.appear.min.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery/dist/jquery.js",
-      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-circle-progress/jquery.circle-progress.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-circle-progress/jquery.circle-progress.min.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery/dist/jquery.min.js",
-      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.js"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/lib/jquery/dist/jquery.min.map",
-      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.map"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-ui/jquery-ui.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-ui/jquery-ui.js"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/logo.png",
-      "PackagePath": "staticwebassets/logo.png"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-validate/jquery.validate.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery-validate/jquery.validate.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery/jquery-3.6.0.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/jquery/jquery-3.6.0.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/nouislider/nouislider.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/nouislider/nouislider.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/odometer/odometer.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/odometer/odometer.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/owl-carousel/owl.carousel.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/owl-carousel/owl.carousel.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/swiper/swiper.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/swiper/swiper.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/timepicker/timePicker.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/timepicker/timePicker.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/tiny-slider/tiny-slider.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/tiny-slider/tiny-slider.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/toolbar/js/jQuery.style.switcher.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/toolbar/js/jQuery.style.switcher.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/toolbar/js/js.cookie.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/toolbar/js/js.cookie.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/toolbar/js/toolbar.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/toolbar/js/toolbar.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/vegas/vegas.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/vegas/vegas.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/wnumb/wNumb.min.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/wnumb/wNumb.min.js"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/wow/wow.js",
+      "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/wow/wow.js"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.nsia.props",
