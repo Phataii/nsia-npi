@@ -576,22 +576,6 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\web\20250328144002cs_\https:\cdnjs.cloudflare.com\ajax\libs\font-awesome\6.7.2\css\all.min.css))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\web\20250328144002cs_\https:\fonts.googleapis.com\css2?family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap.css))">
-      <SourceType>Package</SourceType>
-      <SourceId>nsia</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/nsia</BasePath>
-      <RelativePath>web/20250328144002cs_/https:/fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap.css</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\web\20250328144002cs_\https:\fonts.googleapis.com\css2?family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap.css))</OriginalItemSpec>
-    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\web\20250328144002im_\http:\nsia-ip.com\assets\images\2.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>nsia</SourceId>

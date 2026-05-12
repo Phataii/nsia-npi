@@ -145,10 +145,6 @@
       "PackagePath": "staticwebassets/web/20250328144002cs_/https:/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/https:/fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap.css",
-      "PackagePath": "staticwebassets/web/20250328144002cs_/https:/fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap.css"
-    },
-    {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/2.jpg",
       "PackagePath": "staticwebassets/web/20250328144002im_/http:/nsia-ip.com/assets/images/2.jpg"
     },

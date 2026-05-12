@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "jRVFpcrYEJvipCQvDrnWtil4W+0vC3RBZPp3j4O24Pk=",
+  "Hash": "Fes6iHTEgD9EX4lqZ7t0wZfrwW4BhkF3TkGhOFaQLYU=",
   "Source": "nsia",
   "BasePath": "_content/nsia",
   "Mode": "Default",
@@ -1858,25 +1858,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/web/20250328144002cs_/https:/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    },
-    {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002cs_/https:/fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap.css",
-      "SourceId": "nsia",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
-      "BasePath": "_content/nsia",
-      "RelativePath": "web/20250328144002cs_/https:/fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap.css",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/web/20250328144002cs_/https:/fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap.css"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/20250328144002im_/http:/nsia-ip.com/assets/images/_MG_6527.jpg",
