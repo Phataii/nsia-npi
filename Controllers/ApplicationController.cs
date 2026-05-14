@@ -13,6 +13,7 @@ namespace Nsia.Controllers
         private readonly IEmailService _email;
         private readonly IFileService _fileService;
         private readonly ILogger<ApplicationController> _logger;
+        private readonly INinEncryptionService _ninService;
         private readonly IConfiguration _config;
 
         public ApplicationController(
@@ -20,15 +21,134 @@ namespace Nsia.Controllers
             IEmailService email,
             IFileService fileService,
             ILogger<ApplicationController> logger,
+            INinEncryptionService ninService,
             IConfiguration config)
         {
             _db = db;
             _email = email;
             _fileService = fileService;
             _logger = logger;
+            _ninService = ninService;
             _config = config;
         }
+        [HttpGet]
+        public async Task<IActionResult> PreChecklist()
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return RedirectToLogin();
 
+            PopulateStepViewBag(app);
+            ViewBag.IsRegisteredInNigeria = app.IsRegisteredInNigeria;
+            ViewBag.BusinessSector = app.BusinessSector;
+            ViewBag.CountryOfOrigin = app.CountryOfOrigin;
+
+            return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SavePreChecklist(
+            string? IsRegisteredInNigeria,
+            string? BusinessSector,
+            string? CountryOfOrigin)
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return RedirectToLogin();
+
+            app.IsRegisteredInNigeria = IsRegisteredInNigeria;
+            app.BusinessSector = BusinessSector;
+            app.CountryOfOrigin = CountryOfOrigin;
+            app.ApplicationStep = Math.Max(app.ApplicationStep, 2);
+            app.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return RedirectToAction("PersonalInfo");
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SavePreChecklistDraft(
+            string? IsRegisteredInNigeria,
+            string? BusinessSector,
+            string? CountryOfOrigin)
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return Unauthorized();
+
+            app.IsRegisteredInNigeria = IsRegisteredInNigeria;
+            app.BusinessSector = BusinessSector;
+            app.CountryOfOrigin = CountryOfOrigin;
+            app.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> PersonalInfo()
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep < 2) return RedirectToAction("PreChecklist");
+
+            PopulateStepViewBag(app);
+            ViewBag.FullName = app.FullName;
+            ViewBag.Email = app.Email;
+            ViewBag.Phone = app.Phone;
+            ViewBag.Gender = app.Gender;
+            ViewBag.RelationshipToBusiness = app.RelationshipToBusiness;
+
+            return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SavePersonalInfo(
+            string? FullName,
+            string? Phone,
+            string? Gender,
+            string? Nin,
+            string? RelationshipToBusiness)
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return RedirectToLogin();
+
+            app.FullName = FullName?.Trim();
+            app.Phone = Phone?.Trim();
+            app.Gender = Gender;
+            app.RelationshipToBusiness = RelationshipToBusiness;
+            app.UpdatedAt = DateTime.UtcNow;
+
+            // Encrypt NIN only if provided
+            if (!string.IsNullOrWhiteSpace(Nin))
+                app.NinEncrypted = _ninService.Encrypt(Nin.Trim());
+
+            app.ApplicationStep = Math.Max(app.ApplicationStep, 3);
+            await _db.SaveChangesAsync();
+            return RedirectToAction("CompanyInfo");
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SavePersonalInfoDraft(
+            string? FullName,
+            string? Phone,
+            string? Gender,
+            string? Nin,
+            string? RelationshipToBusiness)
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return Unauthorized();
+
+            app.FullName = FullName?.Trim() ?? app.FullName;
+            app.Phone = Phone?.Trim() ?? app.Phone;
+            app.Gender = Gender ?? app.Gender;
+            app.RelationshipToBusiness = RelationshipToBusiness ?? app.RelationshipToBusiness;
+            app.UpdatedAt = DateTime.UtcNow;
+
+            if (!string.IsNullOrWhiteSpace(Nin))
+                app.NinEncrypted = _ninService.Encrypt(Nin.Trim());
+
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
         // ─────────────────────────────────
         // DASHBOARD
         // ─────────────────────────────────
@@ -48,57 +168,6 @@ namespace Nsia.Controllers
         // STEP 1 – PROFILE
         // ─────────────────────────────────
 
-        [HttpGet]
-        public async Task<IActionResult> Profile()
-        {
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return RedirectToLogin();
-
-            ViewBag.ApplicantName = app.FullName;
-            ViewBag.CompletedStep = app.ApplicationStep - 1;
-            ViewBag.FullName = app.FullName;
-            ViewBag.Email = app.Email;
-            ViewBag.PhoneNumber = app.Phone;
-            ViewBag.Gender = app.Gender;
-            return View();
-        }
-
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveProfile(ProfileViewModel model)
-        {
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return RedirectToLogin();
-
-            if (!ModelState.IsValid)
-            {
-                PopulateStepViewBag(app);
-                return View("Profile", model);
-            }
-
-            app.FullName = model.FullName.Trim();
-            app.Phone = model.PhoneNumber.Trim();
-            app.Gender = model.Gender;
-            app.ApplicationStep = Math.Max(app.ApplicationStep, 2);
-            app.UpdatedAt = DateTime.Now;
-
-            await _db.SaveChangesAsync();
-            return RedirectToAction("CompanyInfo");
-        }
-
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveProfileDraft(ProfileViewModel model)
-        {
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return Unauthorized();
-
-            app.FullName = model.FullName?.Trim() ?? app.FullName;
-            app.Phone = model.PhoneNumber?.Trim() ?? app.Phone;
-            app.Gender = model.Gender ?? app.Gender;
-            app.UpdatedAt = DateTime.Now;
-
-            await _db.SaveChangesAsync();
-            return Ok();
-        }
 
         // ─────────────────────────────────
         // STEP 2 – COMPANY INFO
@@ -109,74 +178,120 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep < 2) return RedirectToAction("Profile");
+            if (app.ApplicationStep < 3) return RedirectToAction("PersonalInfo");
 
             PopulateStepViewBag(app);
             ViewBag.CompanyName = app.CompanyName;
-            ViewBag.CompanyUrl = app.CompanyUrl;
-            ViewBag.TwitterHandle = app.SocialMedia?.Twitter;
-            ViewBag.InstagramHandle = app.SocialMedia?.Instagram;
-            ViewBag.LinkedInHandle = app.SocialMedia?.LinkedIn;
-            ViewBag.FacebookHandle = app.SocialMedia?.Facebook;
-            ViewBag.CompanyDescription = app.CompanyDescription;
-            ViewBag.BusinessAddress = app.BusinessAddress;
-            ViewBag.IsRegisteredInNigeria = app.IsLegallyRegisteredInNigeria ? "Yes" : "No";
-            ViewBag.RegistrationNumber = app.CacRegistrationNumber;
-            ViewBag.IsOperationalEntity = app.IsNigerianEntityOperational ? "Yes" : "No";
-            ViewBag.HasForeignAffiliates = app.HasForeignAffiliates ? "Yes" : "No";
-            ViewBag.AffiliateDetails = app.ForeignAffiliateDetails;
-            ViewBag.YearOfIncorporation = app.YearOfIncorporation;
-            ViewBag.Milestones = ParseList(app.Milestones);
-            ViewBag.SuccessMetrics = ParseList(app.SuccessMetrics);
-            ViewBag.LongTermVision = ParseList(app.LongTermVision);
+            ViewBag.CompanyWebsite = app.CompanyWebsite;
+            ViewBag.Twitter = app.SocialMedia?.Twitter;
+            ViewBag.Instagram = app.SocialMedia?.Instagram;
+            ViewBag.LinkedIn = app.SocialMedia?.LinkedIn;
+            ViewBag.Facebook = app.SocialMedia?.Facebook;
+            ViewBag.BusinessState = app.BusinessState;
+            ViewBag.BusinessLga = app.BusinessLga;
+            ViewBag.CompanyHqAddress = app.CompanyHqAddress;
+            ViewBag.GeographicScope = app.GeographicScope;
+            ViewBag.CompanyRegistrationNumber = app.CompanyRegistrationNumber;
+            ViewBag.RegulatoryCompliance = app.RegulatoryCompliance;
+            ViewBag.TaxCompliance = app.TaxCompliance;
+            ViewBag.HasForeignAffiliates = app.HasForeignAffiliates;
+            ViewBag.IsNigerianEntityPrimary = app.IsNigerianEntityPrimary;
+            ViewBag.CompanyStructure = app.CompanyStructure;
+            ViewBag.ParentOrganizationName = app.ParentOrganizationName;
+            ViewBag.OtherCompetitions = app.OtherCompetitions;
+
             return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveCompanyInfo(CompanyInfoViewModel model)
+        public async Task<IActionResult> SaveCompanyInfo(
+            string? CompanyName,
+            string? CompanyWebsite,
+            string? Twitter,
+            string? Instagram,
+            string? LinkedIn,
+            string? Facebook,
+            string? BusinessState,
+            string? BusinessLga,
+            string? CompanyHqAddress,
+            string? GeographicScope,
+            string? CompanyRegistrationNumber,
+            string? RegulatoryCompliance,
+            string? TaxCompliance,
+            string? HasForeignAffiliates,
+            string? IsNigerianEntityPrimary,
+            string? CompanyStructure,
+            string? ParentOrganizationName,
+            string? OtherCompetitions)
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
 
-            if (!ModelState.IsValid)
-            {
-                PopulateStepViewBag(app);
-                return View("CompanyInfo", model);
-            }
-
-            app.CompanyName = model.CompanyName.Trim();
-            app.CompanyUrl = model.CompanyUrl?.Trim();
+            app.CompanyName = CompanyName?.Trim();
+            app.CompanyWebsite = CompanyWebsite?.Trim();
             app.SocialMedia = new SocialMedia
             {
-                Twitter = model.TwitterHandle?.Trim(),
-                Instagram = model.InstagramHandle?.Trim(),
-                LinkedIn = model.LinkedInHandle?.Trim(),
-                Facebook = model.FacebookHandle?.Trim(),
+                Twitter = Twitter?.Trim(),
+                Instagram = Instagram?.Trim(),
+                LinkedIn = LinkedIn?.Trim(),
+                Facebook = Facebook?.Trim(),
             };
-            app.CompanyDescription = model.CompanyDescription?.Trim();
-            app.BusinessAddress = model.BusinessAddress.Trim();
-            app.IsLegallyRegisteredInNigeria = model.IsRegisteredInNigeria == "Yes";
-            app.CacRegistrationNumber = model.RegistrationNumber?.Trim();
-            app.IsNigerianEntityOperational = model.IsOperationalEntity == "Yes";
-            app.HasForeignAffiliates = model.HasForeignAffiliates == "Yes";
-            app.ForeignAffiliateDetails = model.AffiliateDetails?.Trim();
-            app.YearOfIncorporation = model.YearOfIncorporation;
-            app.Milestones = string.Join(",", model.Milestones);
-            app.SuccessMetrics = string.Join(",", model.SuccessMetrics);
-            app.LongTermVision = string.Join(",", model.LongTermVision);
-            app.ApplicationStep = Math.Max(app.ApplicationStep, 3);
-            app.UpdatedAt = DateTime.Now;
+            app.BusinessState = BusinessState;
+            app.BusinessLga = BusinessLga;
+            app.CompanyHqAddress = CompanyHqAddress?.Trim();
+            app.GeographicScope = GeographicScope;
+            app.CompanyRegistrationNumber = CompanyRegistrationNumber?.Trim();
+            app.RegulatoryCompliance = RegulatoryCompliance;
+            app.TaxCompliance = TaxCompliance;
+            app.HasForeignAffiliates = HasForeignAffiliates;
+            app.IsNigerianEntityPrimary = IsNigerianEntityPrimary;
+            app.CompanyStructure = CompanyStructure;
+            app.ParentOrganizationName = ParentOrganizationName?.Trim();
+            app.OtherCompetitions = OtherCompetitions?.Trim();
+            app.ApplicationStep = Math.Max(app.ApplicationStep, 4);
+            app.UpdatedAt = DateTime.UtcNow;
 
             await _db.SaveChangesAsync();
             return RedirectToAction("TeamInfo");
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveCompanyInfoDraft(CompanyInfoViewModel model)
+        public async Task<IActionResult> SaveCompanyInfoDraft(
+            string? CompanyName, string? CompanyWebsite,
+            string? Twitter, string? Instagram, string? LinkedIn, string? Facebook,
+            string? BusinessState, string? BusinessLga, string? CompanyHqAddress,
+            string? GeographicScope, string? CompanyRegistrationNumber,
+            string? RegulatoryCompliance, string? TaxCompliance,
+            string? HasForeignAffiliates, string? IsNigerianEntityPrimary,
+            string? CompanyStructure, string? ParentOrganizationName,
+            string? OtherCompetitions)
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return Unauthorized();
-            await ApplyCompanyInfoDraft(app, model);
+
+            app.CompanyName = CompanyName?.Trim() ?? app.CompanyName;
+            app.CompanyWebsite = CompanyWebsite?.Trim() ?? app.CompanyWebsite;
+            app.SocialMedia = new SocialMedia
+            {
+                Twitter = Twitter?.Trim() ?? app.SocialMedia?.Twitter,
+                Instagram = Instagram?.Trim() ?? app.SocialMedia?.Instagram,
+                LinkedIn = LinkedIn?.Trim() ?? app.SocialMedia?.LinkedIn,
+                Facebook = Facebook?.Trim() ?? app.SocialMedia?.Facebook,
+            };
+            app.BusinessState = BusinessState ?? app.BusinessState;
+            app.BusinessLga = BusinessLga ?? app.BusinessLga;
+            app.CompanyHqAddress = CompanyHqAddress?.Trim() ?? app.CompanyHqAddress;
+            app.GeographicScope = GeographicScope ?? app.GeographicScope;
+            app.CompanyRegistrationNumber = CompanyRegistrationNumber?.Trim() ?? app.CompanyRegistrationNumber;
+            app.RegulatoryCompliance = RegulatoryCompliance ?? app.RegulatoryCompliance;
+            app.TaxCompliance = TaxCompliance ?? app.TaxCompliance;
+            app.HasForeignAffiliates = HasForeignAffiliates ?? app.HasForeignAffiliates;
+            app.IsNigerianEntityPrimary = IsNigerianEntityPrimary ?? app.IsNigerianEntityPrimary;
+            app.CompanyStructure = CompanyStructure ?? app.CompanyStructure;
+            app.ParentOrganizationName = ParentOrganizationName?.Trim() ?? app.ParentOrganizationName;
+            app.OtherCompetitions = OtherCompetitions?.Trim() ?? app.OtherCompetitions;
+            app.UpdatedAt = DateTime.UtcNow;
+
             await _db.SaveChangesAsync();
             return Ok();
         }
@@ -190,316 +305,605 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync(includeFounders: true);
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep < 3) return RedirectToAction("CompanyInfo");
+            if (app.ApplicationStep < 4) return RedirectToAction("CompanyInfo");
 
             PopulateStepViewBag(app);
             ViewBag.NumberOfFounders = app.NumberOfFounders;
-            ViewBag.TotalEmployees = app.TotalEmployees;
-            ViewBag.TeamComposition = ParseList(app.TeamComposition);
+            ViewBag.FoundingTeamType = app.FoundingTeamType;
+            ViewBag.FounderIndustryExperience = app.FounderIndustryExperience;
+            ViewBag.ManagementTeamExperience = app.ManagementTeamExperience;
+            ViewBag.TotalFullTimeEmployees = app.TotalFullTimeEmployees;
             ViewBag.Founders = app.Founders
                 .OrderBy(f => f.DisplayOrder)
                 .Select(f => new
                 {
-                    name = f.FullName,
-                    phone = f.PhoneNumber,
-                    role = f.Role,
-                    linkedin = f.LinkedInUrl,
-                    nationality = f.Nationality,
+                    name = f.FullName ?? "",
+                    phone = f.PhoneNumber ?? "",
+                    role = f.Role ?? "",
+                    linkedin = f.LinkedInUrl ?? "",
+                    nationality = f.Nationality ?? "",
                 }).ToList();
+
             return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveTeamInfo(TeamInfoViewModel model)
+        public async Task<IActionResult> SaveTeamInfo(
+            string? NumberOfFounders,
+            string? FoundingTeamType,
+            string? FounderIndustryExperience,
+            string? ManagementTeamExperience,
+            string? TotalFullTimeEmployees,
+            List<string>? FounderName,
+            List<string>? FounderPhone,
+            List<string>? FounderRole,
+            List<string>? FounderLinkedIn,
+            List<string>? FounderNationality)
         {
             var app = await GetCurrentApplicationAsync(includeFounders: true);
             if (app == null) return RedirectToLogin();
 
-            if (!ModelState.IsValid)
-            {
-                PopulateStepViewBag(app);
-                return View("TeamInfo", model);
-            }
+            app.NumberOfFounders = NumberOfFounders;
+            app.FoundingTeamType = FoundingTeamType;
+            app.FounderIndustryExperience = FounderIndustryExperience;
+            app.ManagementTeamExperience = ManagementTeamExperience;
+            app.TotalFullTimeEmployees = TotalFullTimeEmployees;
+            app.UpdatedAt = DateTime.UtcNow;
 
-            app.NumberOfFounders = model.NumberOfFounders;
-            app.TotalEmployees = model.TotalEmployees;
-            app.TeamComposition = string.Join(",", model.TeamComposition);
-            app.ApplicationStep = Math.Max(app.ApplicationStep, 4);
-            app.UpdatedAt = DateTime.Now;
-
-            // Get existing founders from DB
+            // Upsert founders
             var existingFounders = await _db.Founders
                 .Where(f => f.ApplicationId == app.Id)
                 .OrderBy(f => f.DisplayOrder)
                 .ToListAsync();
 
-            var submittedFounders = model.Founders
-                .Where(f => !string.IsNullOrWhiteSpace(f.Name))
-                .ToList();
+            var submittedCount = FounderName?.Count(n => !string.IsNullOrWhiteSpace(n)) ?? 0;
 
-            for (int i = 0; i < submittedFounders.Count; i++)
+            for (int i = 0; i < submittedCount; i++)
             {
-                var submitted = submittedFounders[i];
+                var name = FounderName![i].Trim();
+                if (string.IsNullOrWhiteSpace(name)) continue;
 
                 if (i < existingFounders.Count)
                 {
-                    // Update existing record in place — no delete/insert
-                    var existing = existingFounders[i];
-                    existing.FullName = submitted.Name.Trim();
-                    existing.PhoneNumber = submitted.PhoneNumber?.Trim();
-                    existing.Role = submitted.Role?.Trim();
-                    existing.LinkedInUrl = submitted.LinkedInUrl?.Trim();
-                    existing.Nationality = submitted.Nationality?.Trim();
-                    existing.DisplayOrder = i + 1;
+                    existingFounders[i].FullName = name;
+                    existingFounders[i].PhoneNumber = FounderPhone?.ElementAtOrDefault(i)?.Trim();
+                    existingFounders[i].Role = FounderRole?.ElementAtOrDefault(i)?.Trim();
+                    existingFounders[i].LinkedInUrl = FounderLinkedIn?.ElementAtOrDefault(i)?.Trim();
+                    existingFounders[i].Nationality = FounderNationality?.ElementAtOrDefault(i)?.Trim();
+                    existingFounders[i].DisplayOrder = i + 1;
                 }
                 else
                 {
-                    // More founders submitted than existed — add the new ones
                     _db.Founders.Add(new Founder
                     {
-                        Id = Guid.NewGuid(),
                         ApplicationId = app.Id,
-                        FullName = submitted.Name.Trim(),
-                        PhoneNumber = submitted.PhoneNumber?.Trim(),
-                        Role = submitted.Role?.Trim(),
-                        LinkedInUrl = submitted.LinkedInUrl?.Trim(),
-                        Nationality = submitted.Nationality?.Trim(),
+                        FullName = name,
+                        PhoneNumber = FounderPhone?.ElementAtOrDefault(i)?.Trim(),
+                        Role = FounderRole?.ElementAtOrDefault(i)?.Trim(),
+                        LinkedInUrl = FounderLinkedIn?.ElementAtOrDefault(i)?.Trim(),
+                        Nationality = FounderNationality?.ElementAtOrDefault(i)?.Trim(),
                         DisplayOrder = i + 1,
                     });
                 }
             }
 
-            // Fewer founders submitted than existed — remove the extras
-            if (existingFounders.Count > submittedFounders.Count)
-            {
-                var toRemove = existingFounders.Skip(submittedFounders.Count).ToList();
-                _db.Founders.RemoveRange(toRemove);
-            }
+            // Remove extras
+            if (existingFounders.Count > submittedCount)
+                _db.Founders.RemoveRange(existingFounders.Skip(submittedCount));
 
+            app.ApplicationStep = Math.Max(app.ApplicationStep, 5);
             await _db.SaveChangesAsync();
             return RedirectToAction("ProductInfo");
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveTeamInfoDraft(TeamInfoViewModel model)
+        public async Task<IActionResult> SaveTeamInfoDraft(
+            string? NumberOfFounders,
+            string? FoundingTeamType,
+            string? FounderIndustryExperience,
+            string? ManagementTeamExperience,
+            string? TotalFullTimeEmployees)
         {
-            var app = await GetCurrentApplicationAsync(includeFounders: true);
+            var app = await GetCurrentApplicationAsync();
             if (app == null) return Unauthorized();
 
-            app.NumberOfFounders = model.NumberOfFounders ?? app.NumberOfFounders;
-            app.TotalEmployees = model.TotalEmployees ?? app.TotalEmployees;
-            app.TeamComposition = string.Join(",", model.TeamComposition);
-            app.UpdatedAt = DateTime.Now;
+            app.NumberOfFounders = NumberOfFounders ?? app.NumberOfFounders;
+            app.FoundingTeamType = FoundingTeamType ?? app.FoundingTeamType;
+            app.FounderIndustryExperience = FounderIndustryExperience ?? app.FounderIndustryExperience;
+            app.ManagementTeamExperience = ManagementTeamExperience ?? app.ManagementTeamExperience;
+            app.TotalFullTimeEmployees = TotalFullTimeEmployees ?? app.TotalFullTimeEmployees;
+            app.UpdatedAt = DateTime.UtcNow;
 
             await _db.SaveChangesAsync();
             return Ok();
         }
 
-        // ─────────────────────────────────
-        // STEP 4 – PRODUCT INFO
-        // ─────────────────────────────────
+        // // ─────────────────────────────────
+        // // STEP 4 – PRODUCT INFO
+        // // ─────────────────────────────────
 
         [HttpGet]
         public async Task<IActionResult> ProductInfo()
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep < 4) return RedirectToAction("TeamInfo");
+            if (app.ApplicationStep < 5) return RedirectToAction("TeamInfo");
 
             PopulateStepViewBag(app);
             ViewBag.GrowthStage = app.GrowthStage;
-            ViewBag.Sector = app.Sector;
-            ViewBag.MvpLink = app.MvpLink;
-            ViewBag.ProductDescription = app.ProductDescription;
-            ViewBag.UserCount = app.UserCountRange;
-            ViewBag.BusinessModel = ParseList(app.BusinessModel);
-            ViewBag.USP = ParseList(app.UniqueSellingPoint);
-            ViewBag.Competitors = ParseList(app.MainCompetitors);
-            ViewBag.GoToMarket = ParseList(app.GoToMarketStrategy);
-            ViewBag.KeyFeatures = ParseList(app.KeyFeatures);
+            ViewBag.KeyMilestones = app.KeyMilestones;
+            ViewBag.ExistingUsers = app.ExistingUsers;
+            ViewBag.TotalUsersReached = app.TotalUsersReached;
+            ViewBag.CoreBusinessModel = app.CoreBusinessModel;
+            ViewBag.UniqueSellingPoint = app.UniqueSellingPoint;
+            ViewBag.MainCompetitors = app.MainCompetitors;
+            ViewBag.MarketPenetrationStrategy = app.MarketPenetrationStrategy;
+            ViewBag.KeyFeatures = app.KeyFeatures;
+
             return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveProductInfo(ProductInfoViewModel model)
+        public async Task<IActionResult> SaveProductInfo(
+            string? GrowthStage,
+            List<string>? KeyMilestones,
+            string? ExistingUsers,
+            string? TotalUsersReached,
+            string? CoreBusinessModel,
+            string? UniqueSellingPoint,
+            string? MainCompetitors,
+            string? MarketPenetrationStrategy,
+            List<string>? KeyFeatures)
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
 
-            if (!ModelState.IsValid)
-            {
-                PopulateStepViewBag(app);
-                return View("ProductInfo", model);
-            }
-
-            app.GrowthStage = model.GrowthStage;
-            app.Sector = model.Sector;
-            app.MvpLink = model.MvpLink?.Trim();
-            app.ProductDescription = model.ProductDescription?.Trim();
-            app.UserCountRange = model.UserCount;
-            app.BusinessModel = string.Join(",", model.BusinessModel);
-            app.UniqueSellingPoint = string.Join(",", model.USP);
-            app.MainCompetitors = string.Join(",", model.Competitors);
-            app.GoToMarketStrategy = string.Join(",", model.GoToMarket);
-            app.KeyFeatures = string.Join(",", model.KeyFeatures);
-            app.ApplicationStep = Math.Max(app.ApplicationStep, 5);
-            app.UpdatedAt = DateTime.Now;
+            app.GrowthStage = GrowthStage;
+            app.KeyMilestones = KeyMilestones != null ? string.Join(",", KeyMilestones) : null;
+            app.ExistingUsers = ExistingUsers;
+            app.TotalUsersReached = TotalUsersReached;
+            app.CoreBusinessModel = CoreBusinessModel;
+            app.UniqueSellingPoint = UniqueSellingPoint;
+            app.MainCompetitors = MainCompetitors;
+            app.MarketPenetrationStrategy = MarketPenetrationStrategy;
+            app.KeyFeatures = KeyFeatures != null ? string.Join(",", KeyFeatures) : null;
+            app.ApplicationStep = Math.Max(app.ApplicationStep, 6);
+            app.UpdatedAt = DateTime.UtcNow;
 
             await _db.SaveChangesAsync();
-            return RedirectToAction("Commercial");
+            return RedirectToAction("Commercial1");
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveProductInfoDraft(ProductInfoViewModel model)
+        public async Task<IActionResult> SaveProductInfoDraft(
+            string? GrowthStage,
+            List<string>? KeyMilestones,
+            string? ExistingUsers,
+            string? TotalUsersReached,
+            string? CoreBusinessModel,
+            string? UniqueSellingPoint,
+            string? MainCompetitors,
+            string? MarketPenetrationStrategy,
+            List<string>? KeyFeatures)
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return Unauthorized();
 
-            app.GrowthStage = model.GrowthStage ?? app.GrowthStage;
-            app.Sector = model.Sector ?? app.Sector;
-            app.MvpLink = model.MvpLink?.Trim() ?? app.MvpLink;
-            app.ProductDescription = model.ProductDescription?.Trim() ?? app.ProductDescription;
-            app.UserCountRange = model.UserCount ?? app.UserCountRange;
-            app.UpdatedAt = DateTime.Now;
+            app.GrowthStage = GrowthStage ?? app.GrowthStage;
+            app.KeyMilestones = KeyMilestones != null ? string.Join(",", KeyMilestones) : app.KeyMilestones;
+            app.ExistingUsers = ExistingUsers ?? app.ExistingUsers;
+            app.TotalUsersReached = TotalUsersReached ?? app.TotalUsersReached;
+            app.CoreBusinessModel = CoreBusinessModel ?? app.CoreBusinessModel;
+            app.UniqueSellingPoint = UniqueSellingPoint ?? app.UniqueSellingPoint;
+            app.MainCompetitors = MainCompetitors ?? app.MainCompetitors;
+            app.MarketPenetrationStrategy = MarketPenetrationStrategy ?? app.MarketPenetrationStrategy;
+            app.KeyFeatures = KeyFeatures != null ? string.Join(",", KeyFeatures) : app.KeyFeatures;
+            app.UpdatedAt = DateTime.UtcNow;
 
             await _db.SaveChangesAsync();
             return Ok();
         }
 
-        // ─────────────────────────────────
-        // STEP 5 – COMMERCIAL
-        // ─────────────────────────────────
+        // // ─────────────────────────────────
+        // // STEP 5 – COMMERCIAL
+        // // ─────────────────────────────────
 
         [HttpGet]
-        public async Task<IActionResult> Commercial()
+        public async Task<IActionResult> Commercial1()
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep < 5) return RedirectToAction("ProductInfo");
+            if (app.ApplicationStep < 6) return RedirectToAction("ProductInfo");
 
             PopulateStepViewBag(app);
-            ViewBag.GeneratingRevenue = app.HasStartedGeneratingRevenue == true ? "Yes" : app.HasStartedGeneratingRevenue == false ? "No" : null;
-            ViewBag.FundingTypes = ParseList(app.FundingTypes);
-            ViewBag.CurrentlyFundraising = app.IsCurrentlyFundraising == true ? "Yes" : app.IsCurrentlyFundraising == false ? "No" : null;
-            ViewBag.Valuation = app.CompanyValuation;
-            ViewBag.ProjectedRevenue = app.ProjectedRevenueNextYear;
-            ViewBag.RevenueStreams = app.RevenueStreams;
-            ViewBag.GrossMargins = app.GrossMargins;
-            ViewBag.RepeatRevenue = app.RepeatCustomerRevenuePercentage;
-            ViewBag.PricingStrategy = app.PricingStrategy;
-            ViewBag.Runway = app.OperatingRunway;
-            ViewBag.DemandEvidence = app.DemandEvidence;
-            ViewBag.MarketShare = app.EstimatedMarketShare;
-            ViewBag.CompetitiveEdge = app.PrimaryCompetitiveEdge;
-            ViewBag.GeoScalability = app.GeographicScalability;
-            ViewBag.CrossIndustry = app.CrossIndustryApplicability;
-            ViewBag.GrowthPlan = app.LongTermGrowthPlan;
-            ViewBag.UpdateFrequency = app.FeedbackUpdateFrequency;
-            ViewBag.NewCustomers = app.CustomersAcquiredPastSixMonths;
-            ViewBag.GrowthRate = app.CustomerGrowthRatePastYear;
-            ViewBag.CAC = app.AverageCustomerAcquisitionCost;
-            ViewBag.SupplyChain = app.SupplyChainReliability;
-            ViewBag.Compliance = app.RegulatoryCompliance;
-            ViewBag.Risks = ParseList(app.BiggestRisks);
-            ViewBag.Partnerships = app.ActivePartnerships;
-            ViewBag.IPOwnership = app.IpOwnership;
+            ViewBag.HasStartedGeneratingSales = app.HasStartedGeneratingSales;
+            ViewBag.YearOfFirstSale = app.YearOfFirstSale;
+            ViewBag.YearlySalesRevenue = app.YearlySalesRevenue;
+            ViewBag.YearlyProfit = app.YearlyProfit;
+            ViewBag.ProprietaryFunding = app.ProprietaryFunding;
+            ViewBag.ExternalFunding = app.ExternalFunding;
+            ViewBag.TypesOfFunding = app.TypesOfFunding;
+            ViewBag.IsCurrentlyFundraising = app.IsCurrentlyFundraising;
+            ViewBag.ProjectedRevenue = app.ProjectedRevenue;
+            ViewBag.CompanyValuation = app.CompanyValuation;
+
             return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveCommercial(CommercialViewModel model)
+        public async Task<IActionResult> SaveCommercial1(
+            string? HasStartedGeneratingSales,
+            string? YearOfFirstSale,
+            string? YearlySalesRevenue,
+            string? YearlyProfit,
+            string? ProprietaryFunding,
+            string? ExternalFunding,
+            List<string>? TypesOfFunding,
+            string? IsCurrentlyFundraising,
+            string? ProjectedRevenue,
+            string? CompanyValuation)
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
 
-            await ApplyCommercial(app, model);
-            app.ApplicationStep = Math.Max(app.ApplicationStep, 6);
-            app.UpdatedAt = DateTime.Now;
+            app.HasStartedGeneratingSales = HasStartedGeneratingSales;
+            app.YearOfFirstSale = YearOfFirstSale;
+            app.YearlySalesRevenue = YearlySalesRevenue;
+            app.YearlyProfit = YearlyProfit;
+            app.ProprietaryFunding = ProprietaryFunding;
+            app.ExternalFunding = ExternalFunding;
+            app.TypesOfFunding = TypesOfFunding != null ? string.Join(",", TypesOfFunding) : null;
+            app.IsCurrentlyFundraising = IsCurrentlyFundraising;
+            app.ProjectedRevenue = ProjectedRevenue;
+            app.CompanyValuation = CompanyValuation;
+            app.ApplicationStep = Math.Max(app.ApplicationStep, 7);
+            app.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Commercial2");
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveCommercial1Draft(
+            string? HasStartedGeneratingSales,
+            string? YearOfFirstSale,
+            string? YearlySalesRevenue,
+            string? YearlyProfit,
+            string? ProprietaryFunding,
+            string? ExternalFunding,
+            List<string>? TypesOfFunding,
+            string? IsCurrentlyFundraising,
+            string? ProjectedRevenue,
+            string? CompanyValuation)
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return Unauthorized();
+
+            app.HasStartedGeneratingSales = HasStartedGeneratingSales ?? app.HasStartedGeneratingSales;
+            app.YearOfFirstSale = YearOfFirstSale ?? app.YearOfFirstSale;
+            app.YearlySalesRevenue = YearlySalesRevenue ?? app.YearlySalesRevenue;
+            app.YearlyProfit = YearlyProfit ?? app.YearlyProfit;
+            app.ProprietaryFunding = ProprietaryFunding ?? app.ProprietaryFunding;
+            app.ExternalFunding = ExternalFunding ?? app.ExternalFunding;
+            app.TypesOfFunding = TypesOfFunding != null ? string.Join(",", TypesOfFunding) : app.TypesOfFunding;
+            app.IsCurrentlyFundraising = IsCurrentlyFundraising ?? app.IsCurrentlyFundraising;
+            app.ProjectedRevenue = ProjectedRevenue ?? app.ProjectedRevenue;
+            app.CompanyValuation = CompanyValuation ?? app.CompanyValuation;
+            app.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Commercial2()
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep < 7) return RedirectToAction("Commercial1");
+
+            PopulateStepViewBag(app);
+            ViewBag.DemandEvidence = app.DemandEvidence;
+            ViewBag.RevenueStreams = app.RevenueStreams;
+            ViewBag.GeographicScalability = app.GeographicScalability;
+            ViewBag.GrossMargins = app.GrossMargins;
+            ViewBag.PrimaryCompetitiveAdvantage = app.PrimaryCompetitiveAdvantage;
+            ViewBag.OperatingRunway = app.OperatingRunway;
+            ViewBag.ActivePartnerships = app.ActivePartnerships;
+            ViewBag.RegulatoryApproach = app.RegulatoryApproach;
+            ViewBag.CrossIndustryApplication = app.CrossIndustryApplication;
+            ViewBag.LongTermGrowthStrategy = app.LongTermGrowthStrategy;
+            ViewBag.SupplyChainReliability = app.SupplyChainReliability;
+            ViewBag.IpOwnership = app.IpOwnership;
+            ViewBag.PricingStrategy = app.PricingStrategy;
+            ViewBag.BiggestRisks = app.BiggestRisks;
+            ViewBag.NewCustomersSixMonths = app.NewCustomersSixMonths;
+            ViewBag.CustomerGrowthRate = app.CustomerGrowthRate;
+            ViewBag.AverageCAC = app.AverageCAC;
+            ViewBag.RepeatCustomerRevenue = app.RepeatCustomerRevenue;
+
+            return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveCommercial2(
+            string? DemandEvidence,
+            string? RevenueStreams,
+            string? GeographicScalability,
+            string? GrossMargins,
+            string? PrimaryCompetitiveAdvantage,
+            string? OperatingRunway,
+            string? ActivePartnerships,
+            string? RegulatoryApproach,
+            string? CrossIndustryApplication,
+            string? LongTermGrowthStrategy,
+            string? SupplyChainReliability,
+            string? IpOwnership,
+            string? PricingStrategy,
+            string? BiggestRisks,
+            string? NewCustomersSixMonths,
+            string? CustomerGrowthRate,
+            string? AverageCAC,
+            string? RepeatCustomerRevenue)
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return RedirectToLogin();
+
+            app.DemandEvidence = DemandEvidence;
+            app.RevenueStreams = RevenueStreams;
+            app.GeographicScalability = GeographicScalability;
+            app.GrossMargins = GrossMargins;
+            app.PrimaryCompetitiveAdvantage = PrimaryCompetitiveAdvantage;
+            app.OperatingRunway = OperatingRunway;
+            app.ActivePartnerships = ActivePartnerships;
+            app.RegulatoryApproach = RegulatoryApproach;
+            app.CrossIndustryApplication = CrossIndustryApplication;
+            app.LongTermGrowthStrategy = LongTermGrowthStrategy;
+            app.SupplyChainReliability = SupplyChainReliability;
+            app.IpOwnership = IpOwnership;
+            app.PricingStrategy = PricingStrategy;
+            app.BiggestRisks = BiggestRisks;
+            app.NewCustomersSixMonths = NewCustomersSixMonths;
+            app.CustomerGrowthRate = CustomerGrowthRate;
+            app.AverageCAC = AverageCAC;
+            app.RepeatCustomerRevenue = RepeatCustomerRevenue;
+            app.ApplicationStep = Math.Max(app.ApplicationStep, 8);
+            app.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Sustainability");
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveCommercial2Draft(
+            string? DemandEvidence, string? RevenueStreams,
+            string? GeographicScalability, string? GrossMargins,
+            string? PrimaryCompetitiveAdvantage, string? OperatingRunway,
+            string? ActivePartnerships, string? RegulatoryApproach,
+            string? CrossIndustryApplication, string? LongTermGrowthStrategy,
+            string? SupplyChainReliability, string? IpOwnership,
+            string? PricingStrategy, string? BiggestRisks,
+            string? NewCustomersSixMonths, string? CustomerGrowthRate,
+            string? AverageCAC, string? RepeatCustomerRevenue)
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return Unauthorized();
+
+            app.DemandEvidence = DemandEvidence ?? app.DemandEvidence;
+            app.RevenueStreams = RevenueStreams ?? app.RevenueStreams;
+            app.GeographicScalability = GeographicScalability ?? app.GeographicScalability;
+            app.GrossMargins = GrossMargins ?? app.GrossMargins;
+            app.PrimaryCompetitiveAdvantage = PrimaryCompetitiveAdvantage ?? app.PrimaryCompetitiveAdvantage;
+            app.OperatingRunway = OperatingRunway ?? app.OperatingRunway;
+            app.ActivePartnerships = ActivePartnerships ?? app.ActivePartnerships;
+            app.RegulatoryApproach = RegulatoryApproach ?? app.RegulatoryApproach;
+            app.CrossIndustryApplication = CrossIndustryApplication ?? app.CrossIndustryApplication;
+            app.LongTermGrowthStrategy = LongTermGrowthStrategy ?? app.LongTermGrowthStrategy;
+            app.SupplyChainReliability = SupplyChainReliability ?? app.SupplyChainReliability;
+            app.IpOwnership = IpOwnership ?? app.IpOwnership;
+            app.PricingStrategy = PricingStrategy ?? app.PricingStrategy;
+            app.BiggestRisks = BiggestRisks ?? app.BiggestRisks;
+            app.NewCustomersSixMonths = NewCustomersSixMonths ?? app.NewCustomersSixMonths;
+            app.CustomerGrowthRate = CustomerGrowthRate ?? app.CustomerGrowthRate;
+            app.AverageCAC = AverageCAC ?? app.AverageCAC;
+            app.RepeatCustomerRevenue = RepeatCustomerRevenue ?? app.RepeatCustomerRevenue;
+            app.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+        // // ─────────────────────────────────
+        // // STEP 6 – IMPACT & SUSTAINABILITY
+        // // ─────────────────────────────────
+
+        [HttpGet]
+        public async Task<IActionResult> Sustainability()
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep < 8) return RedirectToAction("Commercial2");
+
+            PopulateStepViewBag(app);
+            ViewBag.SdgAlignment = app.SdgAlignment;
+            ViewBag.BusinessReplicability = app.BusinessReplicability;
+            ViewBag.SustainabilityIntegration = app.SustainabilityIntegration;
+            ViewBag.EnergyWasteReduction = app.EnergyWasteReduction;
+            ViewBag.SustainabilityTechnology = app.SustainabilityTechnology;
+            ViewBag.ScalingWithSustainability = app.ScalingWithSustainability;
+            ViewBag.ClimateChangeApproach = app.ClimateChangeApproach;
+            ViewBag.DigitalAccessibility = app.DigitalAccessibility;
+
+            return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveSustainability(
+            List<string>? SdgAlignment,
+            string? BusinessReplicability,
+            string? SustainabilityIntegration,
+            string? EnergyWasteReduction,
+            string? SustainabilityTechnology,
+            string? ScalingWithSustainability,
+            string? ClimateChangeApproach,
+            string? DigitalAccessibility)
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return RedirectToLogin();
+
+            app.SdgAlignment = SdgAlignment != null ? string.Join(",", SdgAlignment) : null;
+            app.BusinessReplicability = BusinessReplicability;
+            app.SustainabilityIntegration = SustainabilityIntegration;
+            app.EnergyWasteReduction = EnergyWasteReduction;
+            app.SustainabilityTechnology = SustainabilityTechnology;
+            app.ScalingWithSustainability = ScalingWithSustainability;
+            app.ClimateChangeApproach = ClimateChangeApproach;
+            app.DigitalAccessibility = DigitalAccessibility;
+            app.ApplicationStep = Math.Max(app.ApplicationStep, 9);
+            app.UpdatedAt = DateTime.UtcNow;
 
             await _db.SaveChangesAsync();
             return RedirectToAction("Impact");
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveCommercialDraft(CommercialViewModel model)
+        public async Task<IActionResult> SaveSustainabilityDraft(
+            List<string>? SdgAlignment,
+            string? BusinessReplicability,
+            string? SustainabilityIntegration,
+            string? EnergyWasteReduction,
+            string? SustainabilityTechnology,
+            string? ScalingWithSustainability,
+            string? ClimateChangeApproach,
+            string? DigitalAccessibility)
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return Unauthorized();
-            ApplyCommercial(app, model);
-            app.UpdatedAt = DateTime.Now;
+
+            app.SdgAlignment = SdgAlignment != null ? string.Join(",", SdgAlignment) : app.SdgAlignment;
+            app.BusinessReplicability = BusinessReplicability ?? app.BusinessReplicability;
+            app.SustainabilityIntegration = SustainabilityIntegration ?? app.SustainabilityIntegration;
+            app.EnergyWasteReduction = EnergyWasteReduction ?? app.EnergyWasteReduction;
+            app.SustainabilityTechnology = SustainabilityTechnology ?? app.SustainabilityTechnology;
+            app.ScalingWithSustainability = ScalingWithSustainability ?? app.ScalingWithSustainability;
+            app.ClimateChangeApproach = ClimateChangeApproach ?? app.ClimateChangeApproach;
+            app.DigitalAccessibility = DigitalAccessibility ?? app.DigitalAccessibility;
+            app.UpdatedAt = DateTime.UtcNow;
+
             await _db.SaveChangesAsync();
             return Ok();
         }
-
-        // ─────────────────────────────────
-        // STEP 6 – IMPACT & SUSTAINABILITY
-        // ─────────────────────────────────
 
         [HttpGet]
         public async Task<IActionResult> Impact()
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep < 6) return RedirectToAction("Commercial");
+            if (app.ApplicationStep < 9) return RedirectToAction("Sustainability");
 
             PopulateStepViewBag(app);
-            ViewBag.SDGAligned = app.AlignsWithUnSdgs == true ? "Yes" : app.AlignsWithUnSdgs == false ? "No" : null;
-            ViewBag.SDGCount = app.SdgsAddressed;
-            ViewBag.EnvImpact = app.ReducesEnvironmentalHarm == true ? "Yes" : app.ReducesEnvironmentalHarm == false ? "No" : null;
-            ViewBag.EnvReduction = app.EnvironmentalHarmReduction;
-            ViewBag.ResourceUse = app.ResourceOptimisation;
-            ViewBag.UnderservedMarket = app.UnderservedMarketPercentage;
-            ViewBag.Inequities = app.SystemicInequalityReduction;
-            ViewBag.GenderGaps = app.GenderGapApproach;
-            ViewBag.AccessUnderserved = app.AccessForUnderservedGroups;
+            ViewBag.UnderservedMarketPercentage = app.UnderservedMarketPercentage;
+            ViewBag.SystemicInequalityApproach = app.SystemicInequalityApproach;
+            ViewBag.BeneficiaryInvolvement = app.BeneficiaryInvolvement;
+            ViewBag.ImpactDataSharing = app.ImpactDataSharing;
             ViewBag.JobsCreated = app.JobsCreated;
-            ViewBag.PeopleImpacted = app.PeopleImpacted;
-            ViewBag.SelfReliance = app.UserSelfRelianceLevel;
-            ViewBag.OutcomeTracking = app.SocialOutcomeTracking;
-            ViewBag.ImpactMeasurement = app.ImpactMeasurementMethod;
-            ViewBag.ImpactSharing = app.ImpactDataSharingLevel;
-            ViewBag.BeneficiaryInvolvement = app.BeneficiaryInvolvementLevel;
-            ViewBag.LocalContext = app.LocalContextTailoring;
-            ViewBag.Ethics = app.EthicalPracticesApproach;
-            ViewBag.DataProtection = app.DataProtectionApproach;
-            ViewBag.TrustBuilding = app.TrustBuildingApproach;
-            ViewBag.Replicability = app.ModelReplicability;
-            ViewBag.ImpactDurability = app.ImpactDurability;
-            ViewBag.CrisisPerformance = app.CrisisPerformance;
-            ViewBag.PolicyAdvocacy = app.PolicyAdvocacy;
-            ViewBag.ImpactData = app.ImpactDataAndStatistics;
-            ViewBag.ImpactExamples = app.MeasurableCommunityDifferences;
-            ViewBag.TopDetails = app.TopImpactExamplesDetails;
-            ViewBag.AgreePrivacy = app.AgreesToNsiaPrivacyPolicy;
-            ViewBag.AgreeCompetition = app.AgreesToCompetitionSubmissionAgreement;
+            ViewBag.GenderGapApproach = app.GenderGapApproach;
+            ViewBag.AccessForUnderserved = app.AccessForUnderserved;
+            ViewBag.ResourceOptimization = app.ResourceOptimization;
+            ViewBag.DataProtection = app.DataProtection;
+            ViewBag.PopulationImpacted = app.PopulationImpacted;
+            ViewBag.SocialGoodContribution = app.SocialGoodContribution;
+            ViewBag.EthicalOperations = app.EthicalOperations;
+            ViewBag.DiversityInclusion = app.DiversityInclusion;
+            ViewBag.EquitableOpportunities = app.EquitableOpportunities;
+            ViewBag.AccessibilityForDisadvantaged = app.AccessibilityForDisadvantaged;
+
             return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveImpact(ImpactViewModel model)
+        public async Task<IActionResult> SaveImpact(
+            string? UnderservedMarketPercentage,
+            string? SystemicInequalityApproach,
+            string? BeneficiaryInvolvement,
+            string? ImpactDataSharing,
+            string? JobsCreated,
+            string? GenderGapApproach,
+            string? AccessForUnderserved,
+            string? ResourceOptimization,
+            string? DataProtection,
+            string? PopulationImpacted,
+            string? SocialGoodContribution,
+            List<string>? EthicalOperations,
+            List<string>? DiversityInclusion,
+            List<string>? EquitableOpportunities,
+            List<string>? AccessibilityForDisadvantaged)
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
 
-            ApplyImpact(app, model);
-            app.ApplicationStep = Math.Max(app.ApplicationStep, 7);
-            app.UpdatedAt = DateTime.Now;
+            app.UnderservedMarketPercentage = UnderservedMarketPercentage;
+            app.SystemicInequalityApproach = SystemicInequalityApproach;
+            app.BeneficiaryInvolvement = BeneficiaryInvolvement;
+            app.ImpactDataSharing = ImpactDataSharing;
+            app.JobsCreated = JobsCreated;
+            app.GenderGapApproach = GenderGapApproach;
+            app.AccessForUnderserved = AccessForUnderserved;
+            app.ResourceOptimization = ResourceOptimization;
+            app.DataProtection = DataProtection;
+            app.PopulationImpacted = PopulationImpacted;
+            app.SocialGoodContribution = SocialGoodContribution;
+            app.EthicalOperations = EthicalOperations != null ? string.Join(",", EthicalOperations) : null;
+            app.DiversityInclusion = DiversityInclusion != null ? string.Join(",", DiversityInclusion) : null;
+            app.EquitableOpportunities = EquitableOpportunities != null ? string.Join(",", EquitableOpportunities) : null;
+            app.AccessibilityForDisadvantaged = AccessibilityForDisadvantaged != null ? string.Join(",", AccessibilityForDisadvantaged) : null;
+            app.ApplicationStep = Math.Max(app.ApplicationStep, 10);
+            app.UpdatedAt = DateTime.UtcNow;
 
             await _db.SaveChangesAsync();
             return RedirectToAction("Additional");
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveImpactDraft(ImpactViewModel model)
+        public async Task<IActionResult> SaveImpactDraft(
+            string? UnderservedMarketPercentage,
+            string? SystemicInequalityApproach,
+            string? BeneficiaryInvolvement,
+            string? ImpactDataSharing,
+            string? JobsCreated,
+            string? GenderGapApproach,
+            string? AccessForUnderserved,
+            string? ResourceOptimization,
+            string? DataProtection,
+            string? PopulationImpacted,
+            string? SocialGoodContribution,
+            List<string>? EthicalOperations,
+            List<string>? DiversityInclusion,
+            List<string>? EquitableOpportunities,
+            List<string>? AccessibilityForDisadvantaged)
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return Unauthorized();
-            await ApplyImpact(app, model);
-            app.UpdatedAt = DateTime.Now;
+
+            app.UnderservedMarketPercentage = UnderservedMarketPercentage ?? app.UnderservedMarketPercentage;
+            app.SystemicInequalityApproach = SystemicInequalityApproach ?? app.SystemicInequalityApproach;
+            app.BeneficiaryInvolvement = BeneficiaryInvolvement ?? app.BeneficiaryInvolvement;
+            app.ImpactDataSharing = ImpactDataSharing ?? app.ImpactDataSharing;
+            app.JobsCreated = JobsCreated ?? app.JobsCreated;
+            app.GenderGapApproach = GenderGapApproach ?? app.GenderGapApproach;
+            app.AccessForUnderserved = AccessForUnderserved ?? app.AccessForUnderserved;
+            app.ResourceOptimization = ResourceOptimization ?? app.ResourceOptimization;
+            app.DataProtection = DataProtection ?? app.DataProtection;
+            app.PopulationImpacted = PopulationImpacted ?? app.PopulationImpacted;
+            app.SocialGoodContribution = SocialGoodContribution ?? app.SocialGoodContribution;
+            app.EthicalOperations = EthicalOperations != null ? string.Join(",", EthicalOperations) : app.EthicalOperations;
+            app.DiversityInclusion = DiversityInclusion != null ? string.Join(",", DiversityInclusion) : app.DiversityInclusion;
+            app.EquitableOpportunities = EquitableOpportunities != null ? string.Join(",", EquitableOpportunities) : app.EquitableOpportunities;
+            app.AccessibilityForDisadvantaged = AccessibilityForDisadvantaged != null ? string.Join(",", AccessibilityForDisadvantaged) : app.AccessibilityForDisadvantaged;
+            app.UpdatedAt = DateTime.UtcNow;
+
             await _db.SaveChangesAsync();
             return Ok();
         }
-
         // ─────────────────────────────────
         // STEP 7 – ADDITIONAL INFORMATION
         // ─────────────────────────────────
@@ -507,72 +911,105 @@ namespace Nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> Additional()
         {
-            var app = await GetCurrentApplicationAsync();
+            var app = await GetCurrentApplicationAsync(includeDocuments: true);
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep < 7) return RedirectToAction("Impact");
+            if (app.ApplicationStep < 10) return RedirectToAction("Impact");
 
             PopulateStepViewBag(app);
-            ViewBag.DocumentDetails = app.DocumentDetails;
             ViewBag.AdditionalInformation = app.AdditionalInformation;
+            ViewBag.Documents = app.Documents
+                .OrderBy(d => d.UploadedAt)
+                .Select(d => new
+                {
+                    id = d.Id,
+                    name = d.OriginalFileName ?? "",
+                    type = d.DocumentType ?? "",
+                    size = d.FileSizeBytes,
+                    url = d.OriginalFileName ?? "",
+                }).ToList();
+
             return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveAdditional(AdditionalViewModel model)
+        public async Task<IActionResult> SaveAdditional(
+            string? AdditionalInformation,
+            List<IFormFile>? Documents,
+            List<string>? DocumentTypes)
         {
-            var app = await GetCurrentApplicationAsync();
+            var app = await GetCurrentApplicationAsync(includeDocuments: true);
             if (app == null) return RedirectToLogin();
 
-            // Save text fields
-            app.DocumentDetails = model.DocumentDetails?.Trim();
-            app.AdditionalInformation = model.AdditionalInformation?.Trim();
-            app.CreatedAt = DateTime.Now;
-            app.UpdatedAt = DateTime.Now;
+            app.AdditionalInformation = AdditionalInformation?.Trim();
+            app.UpdatedAt = DateTime.UtcNow;
 
-            // Save uploaded files
-            if (model.Documents != null && model.Documents.Count > 0)
+            // Upload new documents
+            if (Documents != null)
             {
-                var existingCount = await _db.ApplicationDocuments
-                    .CountAsync(d => d.ApplicationId == app.Id);
-
-                foreach (var file in model.Documents.Take(5 - existingCount))
+                for (int i = 0; i < Documents.Count; i++)
                 {
-                    try
-                    {
-                        var (storedPath, originalName) =
-                            await _fileService.SaveDocumentAsync(file, app.Id);
+                    var file = Documents[i];
+                    if (file == null || file.Length == 0) continue;
 
-                        _db.ApplicationDocuments.Add(new ApplicationDocument
-                        {
-                            ApplicationId = app.Id,
-                            OriginalFileName = originalName,
-                            StoredFilePath = storedPath,
-                            FileExtension = Path.GetExtension(originalName).ToLowerInvariant(),
-                            FileSizeBytes = file.Length,
-                            DocumentType = "Other",
-                        });
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        _logger.LogWarning("File rejected: {Message}", ex.Message);
-                    }
+                    // var (storedPath, publicUrl, fileName) =
+                    //     await _fileService.SaveFileAsync(file, app.Id.ToString());
+
+                    // app.Documents.Add(new ApplicationDocument
+                    // {
+                    //     ApplicationId = app.Id,
+                    //     OriginalFileName = fileName,
+                    //     StoredFilePath = storedPath,
+                    //     // PublicUrl = publicUrl,
+                    //     DocumentType = DocumentTypes?.ElementAtOrDefault(i) ?? "Supporting Document",
+                    //     FileSizeBytes = file.Length,
+                    //     FileExtension = Path.GetExtension(fileName).ToLowerInvariant(),
+                    //     UploadedAt = DateTime.UtcNow,
+                    // });
                 }
             }
 
-            await _db.SaveChangesAsync();
-
-            // Final submit
+            // Mark as submitted
             app.Status = "Submitted";
-            app.ApplicationStep = Math.Max(app.ApplicationStep, 8);
-            app.SubmittedAt = DateTime.Now;
-            app.UpdatedAt = DateTime.Now;
+            app.SubmittedAt = DateTime.UtcNow;
 
             await _db.SaveChangesAsync();
 
-            await _email.SendSubmissionConfirmationAsync(
-                app.Email, app.FullName, app.ReferenceNumber!);
+            // Send confirmation email (fire and forget)
+            _ = _email.SendSubmissionConfirmationAsync(app.Email!, app.FullName!, app.ReferenceNumber!);
 
             return RedirectToAction("Submitted");
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveAdditionalDraft(
+            string? AdditionalInformation)
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return Unauthorized();
+
+            app.AdditionalInformation = AdditionalInformation?.Trim() ?? app.AdditionalInformation;
+            app.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteDocument(Guid documentId)
+        {
+            var app = await GetCurrentApplicationAsync();
+            if (app == null) return Unauthorized();
+
+            var doc = await _db.ApplicationDocuments
+                .FirstOrDefaultAsync(d => d.Id == documentId && d.ApplicationId == app.Id);
+
+            if (doc == null) return NotFound();
+
+            _fileService.DeleteFile(doc.StoredFilePath);
+            _db.ApplicationDocuments.Remove(doc);
+            await _db.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpGet("/npi/uploads/{**filePath}")]
@@ -655,17 +1092,16 @@ namespace Nsia.Controllers
         // PRIVATE HELPERS
         // ─────────────────────────────────
 
-        private async Task<Application?> GetCurrentApplicationAsync(
-            bool includeFounders = false)
+        private async Task<nsia.Models.Application?> GetCurrentApplicationAsync(
+            bool includeFounders = false,
+            bool includeDocuments = false)
         {
             var idStr = HttpContext.Session.GetString("ApplicationId");
-            if (string.IsNullOrEmpty(idStr) || !Guid.TryParse(idStr, out var id))
-                return null;
+            if (!Guid.TryParse(idStr, out var id)) return null;
 
-            var query = _db.Applications.AsTracking();
-
-            if (includeFounders)
-                query = query.Include(a => a.Founders);
+            var query = _db.Applications.AsQueryable();
+            if (includeFounders) query = query.Include(a => a.Founders);
+            if (includeDocuments) query = query.Include(a => a.Documents);
 
             return await query.FirstOrDefaultAsync(a => a.Id == id);
         }
@@ -684,88 +1120,88 @@ namespace Nsia.Controllers
                 ? new List<string>()
                 : value.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
 
-        private static Task ApplyCommercial(Application app, CommercialViewModel m)
-        {
-            app.HasStartedGeneratingRevenue = m.GeneratingRevenue == "Yes" ? true : m.GeneratingRevenue == "No" ? false : null;
-            app.FundingTypes = string.Join(",", m.FundingTypes);
-            app.IsCurrentlyFundraising = m.CurrentlyFundraising == "Yes" ? true : m.CurrentlyFundraising == "No" ? false : null;
-            app.CompanyValuation = m.Valuation;
-            app.ProjectedRevenueNextYear = m.ProjectedRevenue;
-            app.RevenueStreams = m.RevenueStreams;
-            app.GrossMargins = m.GrossMargins;
-            app.RepeatCustomerRevenuePercentage = m.RepeatRevenue;
-            app.PricingStrategy = m.PricingStrategy;
-            app.OperatingRunway = m.Runway;
-            app.DemandEvidence = m.DemandEvidence;
-            app.EstimatedMarketShare = m.MarketShare;
-            app.PrimaryCompetitiveEdge = m.CompetitiveEdge;
-            app.GeographicScalability = m.GeoScalability;
-            app.CrossIndustryApplicability = m.CrossIndustry;
-            app.LongTermGrowthPlan = m.GrowthPlan;
-            app.FeedbackUpdateFrequency = m.UpdateFrequency;
-            app.CustomersAcquiredPastSixMonths = m.NewCustomers;
-            app.CustomerGrowthRatePastYear = m.GrowthRate;
-            app.AverageCustomerAcquisitionCost = m.CAC;
-            app.SupplyChainReliability = m.SupplyChain;
-            app.RegulatoryCompliance = m.Compliance;
-            app.BiggestRisks = string.Join(",", m.Risks);
-            app.ActivePartnerships = m.Partnerships;
-            app.IpOwnership = m.IPOwnership;
+        // private static Task ApplyCommercial(Application app, CommercialViewModel m)
+        // {
+        //     app.HasStartedGeneratingRevenue = m.GeneratingRevenue == "Yes" ? true : m.GeneratingRevenue == "No" ? false : null;
+        //     app.FundingTypes = string.Join(",", m.FundingTypes);
+        //     app.IsCurrentlyFundraising = m.CurrentlyFundraising == "Yes" ? true : m.CurrentlyFundraising == "No" ? false : null;
+        //     app.CompanyValuation = m.Valuation;
+        //     app.ProjectedRevenueNextYear = m.ProjectedRevenue;
+        //     app.RevenueStreams = m.RevenueStreams;
+        //     app.GrossMargins = m.GrossMargins;
+        //     app.RepeatCustomerRevenuePercentage = m.RepeatRevenue;
+        //     app.PricingStrategy = m.PricingStrategy;
+        //     app.OperatingRunway = m.Runway;
+        //     app.DemandEvidence = m.DemandEvidence;
+        //     app.EstimatedMarketShare = m.MarketShare;
+        //     app.PrimaryCompetitiveEdge = m.CompetitiveEdge;
+        //     app.GeographicScalability = m.GeoScalability;
+        //     app.CrossIndustryApplicability = m.CrossIndustry;
+        //     app.LongTermGrowthPlan = m.GrowthPlan;
+        //     app.FeedbackUpdateFrequency = m.UpdateFrequency;
+        //     app.CustomersAcquiredPastSixMonths = m.NewCustomers;
+        //     app.CustomerGrowthRatePastYear = m.GrowthRate;
+        //     app.AverageCustomerAcquisitionCost = m.CAC;
+        //     app.SupplyChainReliability = m.SupplyChain;
+        //     app.RegulatoryCompliance = m.Compliance;
+        //     app.BiggestRisks = string.Join(",", m.Risks);
+        //     app.ActivePartnerships = m.Partnerships;
+        //     app.IpOwnership = m.IPOwnership;
 
-            return Task.CompletedTask;
-        }
+        //     return Task.CompletedTask;
+        // }
 
-        private static Task ApplyImpact(Application app, ImpactViewModel m)
-        {
-            app.AlignsWithUnSdgs = m.SDGAligned == "Yes" ? true : m.SDGAligned == "No" ? false : null;
-            app.SdgsAddressed = m.SDGCount;
-            app.ReducesEnvironmentalHarm = m.EnvImpact == "Yes" ? true : m.EnvImpact == "No" ? false : null;
-            app.EnvironmentalHarmReduction = m.EnvReduction;
-            app.ResourceOptimisation = m.ResourceUse;
-            app.UnderservedMarketPercentage = m.UnderservedMarket;
-            app.SystemicInequalityReduction = m.Inequities;
-            app.GenderGapApproach = m.GenderGaps;
-            app.AccessForUnderservedGroups = m.AccessUnderserved;
-            app.JobsCreated = m.JobsCreated;
-            app.PeopleImpacted = m.PeopleImpacted;
-            app.UserSelfRelianceLevel = m.SelfReliance;
-            app.SocialOutcomeTracking = m.OutcomeTracking;
-            app.ImpactMeasurementMethod = m.ImpactMeasurement;
-            app.ImpactDataSharingLevel = m.ImpactSharing;
-            app.BeneficiaryInvolvementLevel = m.BeneficiaryInvolvement;
-            app.LocalContextTailoring = m.LocalContext;
-            app.EthicalPracticesApproach = m.Ethics;
-            app.DataProtectionApproach = m.DataProtection;
-            app.TrustBuildingApproach = m.TrustBuilding;
-            app.ModelReplicability = m.Replicability;
-            app.ImpactDurability = m.ImpactDurability;
-            app.CrisisPerformance = m.CrisisPerformance;
-            app.PolicyAdvocacy = m.PolicyAdvocacy;
-            app.ImpactDataAndStatistics = m.ImpactData?.Trim();
-            app.MeasurableCommunityDifferences = m.ImpactExamples?.Trim();
-            app.TopImpactExamplesDetails = m.TopDetails?.Trim();
-            app.AgreesToNsiaPrivacyPolicy = m.AgreePrivacy;
-            app.AgreesToCompetitionSubmissionAgreement = m.AgreeCompetition;
+        // private static Task ApplyImpact(Application app, ImpactViewModel m)
+        // {
+        //     app.AlignsWithUnSdgs = m.SDGAligned == "Yes" ? true : m.SDGAligned == "No" ? false : null;
+        //     app.SdgsAddressed = m.SDGCount;
+        //     app.ReducesEnvironmentalHarm = m.EnvImpact == "Yes" ? true : m.EnvImpact == "No" ? false : null;
+        //     app.EnvironmentalHarmReduction = m.EnvReduction;
+        //     app.ResourceOptimisation = m.ResourceUse;
+        //     app.UnderservedMarketPercentage = m.UnderservedMarket;
+        //     app.SystemicInequalityReduction = m.Inequities;
+        //     app.GenderGapApproach = m.GenderGaps;
+        //     app.AccessForUnderservedGroups = m.AccessUnderserved;
+        //     app.JobsCreated = m.JobsCreated;
+        //     app.PeopleImpacted = m.PeopleImpacted;
+        //     app.UserSelfRelianceLevel = m.SelfReliance;
+        //     app.SocialOutcomeTracking = m.OutcomeTracking;
+        //     app.ImpactMeasurementMethod = m.ImpactMeasurement;
+        //     app.ImpactDataSharingLevel = m.ImpactSharing;
+        //     app.BeneficiaryInvolvementLevel = m.BeneficiaryInvolvement;
+        //     app.LocalContextTailoring = m.LocalContext;
+        //     app.EthicalPracticesApproach = m.Ethics;
+        //     app.DataProtectionApproach = m.DataProtection;
+        //     app.TrustBuildingApproach = m.TrustBuilding;
+        //     app.ModelReplicability = m.Replicability;
+        //     app.ImpactDurability = m.ImpactDurability;
+        //     app.CrisisPerformance = m.CrisisPerformance;
+        //     app.PolicyAdvocacy = m.PolicyAdvocacy;
+        //     app.ImpactDataAndStatistics = m.ImpactData?.Trim();
+        //     app.MeasurableCommunityDifferences = m.ImpactExamples?.Trim();
+        //     app.TopImpactExamplesDetails = m.TopDetails?.Trim();
+        //     app.AgreesToNsiaPrivacyPolicy = m.AgreePrivacy;
+        //     app.AgreesToCompetitionSubmissionAgreement = m.AgreeCompetition;
 
-            return Task.CompletedTask;
-        }
+        //     return Task.CompletedTask;
+        // }
 
-        private static Task ApplyCompanyInfoDraft(Application app, CompanyInfoViewModel m)
-        {
-            if (!string.IsNullOrEmpty(m.CompanyName)) app.CompanyName = m.CompanyName.Trim();
-            if (!string.IsNullOrEmpty(m.CompanyUrl)) app.CompanyUrl = m.CompanyUrl.Trim();
-            if (!string.IsNullOrEmpty(m.CompanyDescription)) app.CompanyDescription = m.CompanyDescription.Trim();
-            if (!string.IsNullOrEmpty(m.BusinessAddress)) app.BusinessAddress = m.BusinessAddress.Trim();
+        // private static Task ApplyCompanyInfoDraft(Application app, CompanyInfoViewModel m)
+        // {
+        //     if (!string.IsNullOrEmpty(m.CompanyName)) app.CompanyName = m.CompanyName.Trim();
+        //     if (!string.IsNullOrEmpty(m.CompanyUrl)) app.CompanyUrl = m.CompanyUrl.Trim();
+        //     if (!string.IsNullOrEmpty(m.CompanyDescription)) app.CompanyDescription = m.CompanyDescription.Trim();
+        //     if (!string.IsNullOrEmpty(m.BusinessAddress)) app.BusinessAddress = m.BusinessAddress.Trim();
 
-            app.SocialMedia = new SocialMedia
-            {
-                Twitter = m.TwitterHandle?.Trim(),
-                Instagram = m.InstagramHandle?.Trim(),
-                LinkedIn = m.LinkedInHandle?.Trim(),
-                Facebook = m.FacebookHandle?.Trim(),
-            };
+        //     app.SocialMedia = new SocialMedia
+        //     {
+        //         Twitter = m.TwitterHandle?.Trim(),
+        //         Instagram = m.InstagramHandle?.Trim(),
+        //         LinkedIn = m.LinkedInHandle?.Trim(),
+        //         Facebook = m.FacebookHandle?.Trim(),
+        //     };
 
-            return Task.CompletedTask;
-        }
+        //     return Task.CompletedTask;
+        // }
     }
 }

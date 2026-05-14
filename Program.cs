@@ -31,7 +31,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
-
+builder.Services.AddSingleton<INinEncryptionService, NinEncryptionService>();
 // Email — typed HttpClient, do NOT also add AddScoped for IEmailService
 builder.Services.AddHttpClient<IEmailService, EmailService>();
 

@@ -17,12 +17,28 @@
       "PackagePath": "staticwebassets/about.html"
     },
     {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/activity-calendar.html",
+      "PackagePath": "staticwebassets/activity-calendar.html"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/application-requirements.html",
+      "PackagePath": "staticwebassets/application-requirements.html"
+    },
+    {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/favicons/site.webmanifest",
       "PackagePath": "staticwebassets/assets/images/favicons/site.webmanifest"
     },
     {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/benefits.html",
+      "PackagePath": "staticwebassets/benefits.html"
+    },
+    {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/contact.html",
       "PackagePath": "staticwebassets/contact.html"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/evaluation-criteria.html",
+      "PackagePath": "staticwebassets/evaluation-criteria.html"
     },
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/faq.html",
@@ -35,6 +51,10 @@
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/index.html",
       "PackagePath": "staticwebassets/index.html"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/prizes.html",
+      "PackagePath": "staticwebassets/prizes.html"
     },
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/program-stages.html",

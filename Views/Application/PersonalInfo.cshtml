@@ -1,8 +1,8 @@
 @{
-    ViewData["Title"] = "Product, Growth & Traction — NSIA Prize for Innovation";
+    ViewData["Title"] = "Personal Information — NSIA Prize for Innovation";
     Layout = null;
     var applicantName = ViewBag.ApplicantName as string ?? "";
-    var completedStep = (int)(ViewBag.CompletedStep ?? 4);
+    var completedStep = (int)(ViewBag.CompletedStep ?? 1);
     var initials      = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
 
     var steps = new[] {
@@ -23,11 +23,6 @@
         if (num == completedStep + 1) return "active";
         return "locked";
     }
-
-    var savedMilestones = (ViewBag.KeyMilestones as string ?? "")
-        .Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
-    var savedFeatures = (ViewBag.KeyFeatures as string ?? "")
-        .Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -50,6 +45,8 @@
         }
         html { scroll-behavior: smooth; }
         body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
+
+        /* ── NAV ── */
         .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: white; display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
         .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 60%); }
         .nav-brand { display: flex; align-items: center; position: relative; z-index: 1; }
@@ -71,7 +68,7 @@
         .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
         .hamburger.open span:nth-child(2) { opacity: 0; }
         .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-        
+
         /* ── STEP BAR ── */
         .step-bar { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190; height: var(--step-h); background: white; border-bottom: 1px solid var(--green); display: flex; align-items: stretch; overflow: hidden; }
         .step-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 .35rem; text-decoration: none; color: var(--green); border-right: 1px solid var(--green); position: relative; transition: background .2s; min-width: 0; }
@@ -90,7 +87,8 @@
         .step-num { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 500; color: var(--muted); }
         .step-num svg { width: 9px; height: 9px; stroke: white; stroke-width: 3; fill: none; display: none; }
         .step-name { font-size: 10.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
+
+        /* ── DRAWER ── */
         .drawer-overlay { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity .3s; }
         .drawer-overlay.open { opacity: 1; }
         .side-drawer { position: fixed; top: 0; left: -280px; bottom: 0; z-index: 160; width: 280px; background: var(--ink); display: flex; flex-direction: column; transition: left .3s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
@@ -121,8 +119,12 @@
         .drawer-logout { display: flex; align-items: center; gap: .6rem; font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color .2s; }
         .drawer-logout svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; }
         .drawer-logout:hover { color: rgba(255,255,255,0.65); }
+
+        /* ── MAIN ── */
         .main { padding-top: calc(var(--nav-h) + var(--step-h)); min-height: 100vh; }
         .content { max-width: 760px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+
+        /* ── PAGE HEADER ── */
         .page-header { margin-bottom: 2rem; }
         .breadcrumb { display: flex; align-items: center; gap: .4rem; font-size: 11px; color: var(--muted); margin-bottom: .75rem; flex-wrap: wrap; }
         .breadcrumb a { color: var(--teal); text-decoration: none; }
@@ -130,6 +132,8 @@
         .breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); stroke-width: 2; fill: none; }
         .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
         .page-sub { font-size: .84rem; color: var(--muted); line-height: 1.65; }
+
+        /* ── STEP MINI ── */
         .step-mini { display: flex; align-items: center; gap: .75rem; background: white; border-radius: 8px; border: 1px solid var(--border); padding: .85rem 1.25rem; margin-bottom: 2rem; }
         .step-mini-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
         .step-mini-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
@@ -137,7 +141,9 @@
         .step-mini-spacer { flex: 1; }
         .step-mini-progress { font-size: 11px; color: var(--muted); white-space: nowrap; }
         .step-mini-bar { width: 120px; height: 4px; background: var(--off); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
-        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--green)); border-radius: 10px; width: 50%; }
+        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--green)); border-radius: 10px; width: 20%; }
+
+        /* ── FORM CARD ── */
         .form-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
         .form-card-header { padding: 1.1rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
         .form-card-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--teal-light); }
@@ -145,49 +151,67 @@
         .form-card-title { font-size: .92rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
         .form-card-desc { font-size: .74rem; color: var(--muted); line-height: 1.4; }
         .form-card-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.35rem; }
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+        .form-grid-2.full { grid-column: 1/-1; }
+
+        /* ── FORM ELEMENTS ── */
         .form-group { display: flex; flex-direction: column; gap: .38rem; }
         label.field-label { font-size: .75rem; font-weight: 500; color: var(--ink); letter-spacing: .02em; }
         .label-req { color: #e53e3e; margin-left: 2px; }
-        .label-opt { font-size: .68rem; color: var(--muted); font-weight: 400; margin-left: 4px; }
+        .label-note { font-size: .68rem; color: var(--muted); font-weight: 400; margin-left: 4px; }
+        .input-wrap { position: relative; }
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); }
+        .input-icon svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.75; fill: none; display: block; }
+        input[type="text"], input[type="email"], input[type="tel"], input[type="number"], select {
+            width: 100%; padding: .72rem .9rem .72rem 2.5rem;
+            border: 1px solid var(--border); border-radius: 7px;
+            font-size: .85rem; font-family: 'DM Sans', sans-serif;
+            background: white; color: var(--ink);
+            transition: border-color .2s, box-shadow .2s;
+            outline: none; -webkit-appearance: none; appearance: none;
+        }
+        input[readonly] { background: var(--off); color: var(--muted); cursor: not-allowed; }
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234A6260' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 12px center;
+            padding-right: 2.25rem;
+        }
+        input::placeholder { color: #aab5af; }
+        input:focus:not([readonly]), select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(45,184,176,0.12); }
 
-        /* Radio options */
+        /* NIN field */
+        .nin-wrap { position: relative; }
+        .nin-wrap input { padding-right: 2.75rem; }
+        .nin-toggle { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted); padding: 4px; display: flex; align-items: center; }
+        .nin-toggle svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.75; fill: none; }
+        .nin-toggle:hover { color: var(--teal); }
+        .nin-note { display: flex; align-items: flex-start; gap: 6px; background: rgba(45,184,176,0.06); border: 1px solid rgba(45,184,176,0.15); border-radius: 6px; padding: .6rem .85rem; font-size: .75rem; color: var(--teal-deep); line-height: 1.55; margin-top: .35rem; }
+        .nin-note svg { width: 13px; height: 13px; stroke: var(--teal); stroke-width: 2; fill: none; flex-shrink: 0; margin-top: 1px; }
+
+        /* Radio option cards */
         .radio-options { display: flex; flex-direction: column; gap: .6rem; }
-        .radio-options.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+        .radio-options.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
         .r-option { position: relative; }
         .r-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
-        .r-label { display: flex; align-items: flex-start; gap: .75rem; padding: .8rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
+        .r-label { display: flex; align-items: center; gap: .75rem; padding: .8rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
         .r-label:hover { border-color: var(--teal); background: var(--teal-pale); }
         .r-option input:checked + .r-label { border-color: var(--teal); background: var(--teal-light); }
-        .r-radio { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .2s; margin-top: 1px; }
+        .r-radio { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .2s; }
         .r-option input:checked + .r-label .r-radio { border-color: var(--teal); background: var(--teal); }
         .r-dot { width: 6px; height: 6px; border-radius: 50%; background: white; opacity: 0; transform: scale(0); transition: all .15s; }
         .r-option input:checked + .r-label .r-dot { opacity: 1; transform: scale(1); }
-        .r-text { font-size: .82rem; color: var(--ink); flex: 1; line-height: 1.45; }
-        .r-sub { font-size: .7rem; color: var(--muted); margin-top: 1px; }
+        .r-text { font-size: .84rem; color: var(--ink); flex: 1; line-height: 1.4; }
         .r-option input:checked + .r-label .r-text { color: var(--teal-deep); font-weight: 500; }
-
-        /* Multi-select */
-        .mc-options { display: flex; flex-direction: column; gap: .6rem; }
-        .mc-options.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
-        .mc-option { position: relative; }
-        .mc-option input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
-        .mc-label { display: flex; align-items: flex-start; gap: .75rem; padding: .8rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
-        .mc-label:hover { border-color: var(--teal); background: var(--teal-pale); }
-        .mc-option input:checked + .mc-label { border-color: var(--teal); background: var(--teal-light); }
-        .mc-box { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .15s; margin-top: 1px; }
-        .mc-option input:checked + .mc-label .mc-box { background: var(--teal); border-color: var(--teal); }
-        .mc-box svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; opacity: 0; }
-        .mc-option input:checked + .mc-label .mc-box svg { opacity: 1; }
-        .mc-text { font-size: .82rem; color: var(--ink); flex: 1; line-height: 1.45; }
-        .mc-sub { font-size: .7rem; color: var(--muted); margin-top: 1px; }
-        .mc-option input:checked + .mc-label .mc-text { color: var(--teal-deep); font-weight: 500; }
 
         /* Validation */
         .field-error { font-size: .71rem; color: #b91c1c; display: none; margin-top: .2rem; }
+        .form-group.invalid input, .form-group.invalid select { border-color: #f87171; }
+        .form-group.invalid input:focus, .form-group.invalid select:focus { box-shadow: 0 0 0 3px rgba(248,113,113,0.12); }
         .form-group.invalid .field-error { display: block; }
         .form-group.invalid .r-label { border-color: #f87171; }
-        .form-group.invalid .mc-label { border-color: #f87171; }
 
+        /* ── ACTIONS ── */
         .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
         .actions-left { display: flex; align-items: center; gap: .75rem; }
         .btn-back { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.3rem; border-radius: 100px; border: 1px solid var(--border); background: white; font-size: .84rem; color: var(--muted); text-decoration: none; font-family: 'DM Sans', sans-serif; transition: all .2s; }
@@ -200,10 +224,13 @@
         .btn-next:hover { background: var(--teal-d); transform: translateY(-1px); }
         .btn-next:active { transform: scale(0.98); }
         .btn-next svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+
+        /* ── TOAST ── */
         .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--ink); color: white; padding: .75rem 1.25rem; border-radius: 100px; font-size: .8rem; display: flex; align-items: center; gap: .6rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transform: translateY(20px); opacity: 0; transition: transform .3s, opacity .3s; pointer-events: none; }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast svg { width: 14px; height: 14px; stroke: var(--green); stroke-width: 2; fill: none; flex-shrink: 0; }
 
+        /* ── RESPONSIVE ── */
         @@media (max-width: 900px) {
             .step-bar { display: none; }
             .top-nav { padding: 0 1.25rem; }
@@ -212,8 +239,8 @@
             .main { padding-top: var(--nav-h); }
             .content { padding: 1.5rem 1rem 3rem; }
             .step-mini-bar, .step-mini-progress { display: none; }
-            .radio-options.cols-2 { grid-template-columns: 1fr; }
-            .mc-options.cols-2 { grid-template-columns: 1fr; }
+            .form-grid-2 { grid-template-columns: 1fr; }
+            .radio-options.grid-2 { grid-template-columns: 1fr; }
         }
         @@media (max-width: 560px) {
             .page-title { font-size: 1.65rem; }
@@ -266,7 +293,10 @@
     <div class="drawer-header"> <a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
     <div class="drawer-user">
         <div class="drawer-avatar">@initials</div>
-        <div><div class="drawer-uname">@applicantName</div><div class="drawer-uemail">NPI 4.0 Applicant</div></div>
+        <div>
+            <div class="drawer-uname">@applicantName</div>
+            <div class="drawer-uemail">NPI 4.0 Applicant</div>
+        </div>
     </div>
     <div class="drawer-steps">
         <span class="drawer-step-label">Application Steps</span>
@@ -303,330 +333,181 @@
             <div class="breadcrumb">
                 <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
                 <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-                <span>Product, Growth &amp; Traction</span>
+                <span>Personal Information</span>
             </div>
-            <h1 class="page-title">Product, Growth &amp; Traction</h1>
-            <p class="page-sub">Tell us about your product, where you are in your growth journey, and the traction you have achieved so far.</p>
+            <h1 class="page-title">Personal Information</h1>
+            <p class="page-sub">Tell us about yourself — your contact details and your relationship to the business you are applying on behalf of.</p>
         </div>
 
         <div class="step-mini">
-            <div class="step-mini-dot">5</div>
+            <div class="step-mini-dot">2</div>
             <div>
-                <div class="step-mini-label">Step 5 of 10</div>
-                <div class="step-mini-name">Product, Growth &amp; Traction</div>
+                <div class="step-mini-label">Step 2 of 10</div>
+                <div class="step-mini-name">Personal Information</div>
             </div>
             <div class="step-mini-spacer"></div>
-            <span class="step-mini-progress">Step 5 of 10</span>
+            <span class="step-mini-progress">Step 2 of 10</span>
             <div class="step-mini-bar"><div class="step-mini-fill"></div></div>
         </div>
 
-        <form asp-action="SaveProductInfo" asp-controller="Application"
-              method="post" id="productForm" novalidate>
+        <form asp-action="SavePersonalInfo" asp-controller="Application"
+              method="post" id="personalForm" novalidate>
             @Html.AntiForgeryToken()
 
-            <!-- ── CARD 1: Growth Stage ── -->
+            <!-- ── CARD 1: Basic Details ── -->
             <div class="form-card">
                 <div class="form-card-header">
                     <div class="form-card-icon">
-                        <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </div>
                     <div>
-                        <div class="form-card-title">Growth Stage &amp; Milestones</div>
-                        <div class="form-card-desc">Where your business currently is in its growth journey.</div>
+                        <div class="form-card-title">Basic Details</div>
+                        <div class="form-card-desc">Your name and contact information as the applicant.</div>
                     </div>
                 </div>
                 <div class="form-card-body">
 
-                    <!-- Growth Stage -->
-                    <div class="form-group" id="grp-stage">
-                        <label class="field-label">
-                            What stage of growth is your business currently at? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options">
-                            @{
-                                var stages = new[]
-                                {
-                                    ("Startup Stage",     "We are in the startup stage, building and validating our business model."),
-                                    ("Growth Stage",      "We are in the growth stage, expanding our market reach and scaling operations."),
-                                    ("Established Stage", "We are an established business with a solid market presence and steady revenue."),
-                                    ("Mature Business",   "Mature Business — Industry leader with significant market share."),
-                                };
-                            }
-                            @foreach (var (val, desc) in stages) {
+                    <div class="form-grid-2">
+
+                        <!-- Full Name -->
+                        <div class="form-group" id="grp-fullname">
+                            <label class="field-label" for="fullname">
+                                Full name <span class="label-req">*</span>
+                            </label>
+                            <div class="input-wrap">
+                                <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                                <input type="text" id="fullname" name="FullName"
+                                       placeholder="e.g. Adaeze Okonkwo"
+                                       value="@ViewBag.FullName"
+                                       autocomplete="name" />
+                            </div>
+                            <div class="field-error">Please enter your full name.</div>
+                        </div>
+
+                        <!-- Email — readonly -->
+                        <div class="form-group">
+                            <label class="field-label" for="email">
+                                Email address
+                                <span class="label-note">(cannot be changed)</span>
+                            </label>
+                            <div class="input-wrap">
+                                <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+                                <input type="email" id="email" value="@ViewBag.Email" readonly />
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-group" id="grp-phone">
+                            <label class="field-label" for="phone">
+                                Phone number <span class="label-req">*</span>
+                            </label>
+                            <div class="input-wrap">
+                                <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+                                <input type="tel" id="phone" name="Phone"
+                                       placeholder="+234 800 000 0000"
+                                       value="@ViewBag.Phone"
+                                       autocomplete="tel" inputmode="tel" />
+                            </div>
+                            <div class="field-error">Please enter a valid phone number.</div>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="form-group" id="grp-gender">
+                            <label class="field-label">
+                                Gender <span class="label-req">*</span>
+                            </label>
+                            <div class="radio-options grid-2">
                                 <div class="r-option">
-                                    <input type="radio" id="stage-@val.Replace(" ","-").ToLower()"
-                                           name="GrowthStage" value="@val"
-                                           @(ViewBag.GrowthStage == val ? "checked" : "") />
-                                    <label class="r-label" for="stage-@val.Replace(" ","-").ToLower()">
+                                    <input type="radio" id="gender-f" name="Gender" value="Female"
+                                           @(ViewBag.Gender == "Female" ? "checked" : "") />
+                                    <label class="r-label" for="gender-f">
                                         <div class="r-radio"><div class="r-dot"></div></div>
-                                        <div>
-                                            <div class="r-text">@val</div>
-                                            <div class="r-sub">@desc</div>
-                                        </div>
+                                        <span class="r-text">Female</span>
                                     </label>
                                 </div>
-                            }
+                                <div class="r-option">
+                                    <input type="radio" id="gender-m" name="Gender" value="Male"
+                                           @(ViewBag.Gender == "Male" ? "checked" : "") />
+                                    <label class="r-label" for="gender-m">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-text">Male</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="field-error">Please select your gender.</div>
                         </div>
-                        <div class="field-error">Please select your growth stage.</div>
+
                     </div>
 
-                    <!-- Key Milestones — select top 2 -->
-                    <div class="form-group" id="grp-milestones">
-                        <label class="field-label">
-                            What key milestones has your business achieved so far?
-                            <span class="label-req">*</span>
-                            <span class="label-opt">(select up to 2)</span>
+                    <!-- NIN -->
+                    <div class="form-group" id="grp-nin">
+                        <label class="field-label" for="nin">
+                            National Identity Number (NIN) <span class="label-req">*</span>
                         </label>
-                        <div class="mc-options">
-                            @{
-                                var milestones = new[]
-                                {
-                                    "Secured initial funding and developed a prototype",
-                                    "Launched a pilot program and gained early adopters",
-                                    "Established key partnerships and collaborations",
-                                    "Received industry recognition and awards",
-                                };
-                            }
-                            @foreach (var m in milestones) {
-                                <div class="mc-option">
-                                    <input type="checkbox" id="ms-@m.Replace(" ","-").ToLower().Substring(0,15)"
-                                           name="KeyMilestones" value="@m"
-                                           @(savedMilestones.Contains(m) ? "checked" : "") />
-                                    <label class="mc-label" for="ms-@m.Replace(" ","-").ToLower().Substring(0,15)">
-                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="mc-text">@m</span>
-                                    </label>
-                                </div>
-                            }
+                        <div class="nin-wrap input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="12" y2="13"/></svg></span>
+                            <input type="password" id="nin" name="Nin"
+                                   placeholder="Enter your 11-digit NIN"
+                                   maxlength="11"
+                                   inputmode="numeric"
+                                   autocomplete="off" />
+                            <button type="button" class="nin-toggle" id="ninToggle" aria-label="Toggle NIN visibility">
+                                <svg id="ninEye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
                         </div>
-                        <div class="field-error">Please select at least one milestone.</div>
+                        <div class="nin-note">
+                            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Your NIN is encrypted and stored securely. It is only used for identity verification purposes and will not be shared with third parties.
+                        </div>
+                        <div class="field-error">Please enter your 11-digit NIN.</div>
                     </div>
 
                 </div>
             </div>
 
-            <!-- ── CARD 2: Users & Traction ── -->
+            <!-- ── CARD 2: Relationship to Business ── -->
             <div class="form-card">
                 <div class="form-card-header">
                     <div class="form-card-icon">
                         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </div>
                     <div>
-                        <div class="form-card-title">Users &amp; Traction</div>
-                        <div class="form-card-desc">Current customer base and total users who have interacted with your product.</div>
+                        <div class="form-card-title">Relationship to Business</div>
+                        <div class="form-card-desc">What is your role in the company you are applying on behalf of?</div>
                     </div>
                 </div>
                 <div class="form-card-body">
 
-                    <!-- Existing Users -->
-                    <div class="form-group" id="grp-existingusers">
+                    <div class="form-group" id="grp-relationship">
                         <label class="field-label">
-                            How many existing users/customers do you have? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @{
-                                var userRanges = new[]{"1-50","51-200","201-500","500+"};
-                            }
-                            @foreach (var val in userRanges) {
-                                <div class="r-option">
-                                    <input type="radio" id="eu-@val" name="ExistingUsers" value="@val"
-                                           @(ViewBag.ExistingUsers == val ? "checked" : "") />
-                                    <label class="r-label" for="eu-@val">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
-
-                    <!-- Total Users Reached -->
-                    <div class="form-group" id="grp-totalusers">
-                        <label class="field-label">
-                            Approximately how many users have interacted with or used your product/service? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @foreach (var val in userRanges) {
-                                <div class="r-option">
-                                    <input type="radio" id="tu-@val" name="TotalUsersReached" value="@val"
-                                           @(ViewBag.TotalUsersReached == val ? "checked" : "") />
-                                    <label class="r-label" for="tu-@val">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- ── CARD 3: Business Model & Strategy ── -->
-            <div class="form-card">
-                <div class="form-card-header">
-                    <div class="form-card-icon">
-                        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    </div>
-                    <div>
-                        <div class="form-card-title">Business Model &amp; Strategy</div>
-                        <div class="form-card-desc">How your business operates and competes in the market.</div>
-                    </div>
-                </div>
-                <div class="form-card-body">
-
-                    <!-- Core Business Model -->
-                    <div class="form-group" id="grp-bizmodel">
-                        <label class="field-label">
-                            What is your core business model? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @{
-                                var bizModels = new[]
-                                {
-                                    "Subscription-based services",
-                                    "One-time purchase with maintenance options",
-                                    "Partnership and licensing agreements",
-                                    "Free with premium features",
-                                };
-                            }
-                            @foreach (var val in bizModels) {
-                                <div class="r-option">
-                                    <input type="radio" id="bm-@val.Replace(" ","-").Replace("/","-").ToLower().Substring(0,12)"
-                                           name="CoreBusinessModel" value="@val"
-                                           @(ViewBag.CoreBusinessModel == val ? "checked" : "") />
-                                    <label class="r-label" for="bm-@val.Replace(" ","-").Replace("/","-").ToLower().Substring(0,12)">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select your business model.</div>
-                    </div>
-
-                    <!-- USP -->
-                    <div class="form-group" id="grp-usp">
-                        <label class="field-label">
-                            What is your Unique Selling Point (USP)? <span class="label-req">*</span>
+                            Applicant's relationship to the business <span class="label-req">*</span>
                         </label>
                         <div class="radio-options">
                             @{
-                                var usps = new[]
+                                var roles = new[]
                                 {
-                                    "Affordable and scalable solutions tailored to local needs",
-                                    "Innovative technology with user-friendly interfaces",
-                                    "Comprehensive support and training",
-                                    "Sustainable and eco-friendly practices",
+                                    ("Founder",     "You started or co-founded the business"),
+                                    ("Partner",     "You are a business partner or co-owner"),
+                                    ("Team Member", "You are an employee or team member"),
+                                    ("Agent",       "You are applying on behalf of the business"),
                                 };
                             }
-                            @foreach (var val in usps) {
+                            @foreach (var (val, desc) in roles) {
                                 <div class="r-option">
-                                    <input type="radio" id="usp-@val.Replace(" ","-").ToLower().Substring(0,12)"
-                                           name="UniqueSellingPoint" value="@val"
-                                           @(ViewBag.UniqueSellingPoint == val ? "checked" : "") />
-                                    <label class="r-label" for="usp-@val.Replace(" ","-").ToLower().Substring(0,12)">
+                                    <input type="radio" id="rel-@val.Replace(" ","-").ToLower()"
+                                           name="RelationshipToBusiness" value="@val"
+                                           @(ViewBag.RelationshipToBusiness == val ? "checked" : "") />
+                                    <label class="r-label" for="rel-@val.Replace(" ","-").ToLower()">
                                         <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
+                                        <div>
+                                            <div class="r-text">@val</div>
+                                            <div style="font-size:.72rem;color:var(--muted);margin-top:1px">@desc</div>
+                                        </div>
                                     </label>
                                 </div>
                             }
                         </div>
-                        <div class="field-error">Please select your USP.</div>
-                    </div>
-
-                    <!-- Competitors -->
-                    <div class="form-group" id="grp-competitors">
-                        <label class="field-label">
-                            Who are your main competitors? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @{
-                                var competitors = new[]
-                                {
-                                    "Established industry leaders",
-                                    "Emerging startups",
-                                    "Local service providers",
-                                    "International corporations",
-                                };
-                            }
-                            @foreach (var val in competitors) {
-                                <div class="r-option">
-                                    <input type="radio" id="comp-@val.Replace(" ","-").ToLower().Substring(0,12)"
-                                           name="MainCompetitors" value="@val"
-                                           @(ViewBag.MainCompetitors == val ? "checked" : "") />
-                                    <label class="r-label" for="comp-@val.Replace(" ","-").ToLower().Substring(0,12)">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select your main competitors.</div>
-                    </div>
-
-                    <!-- Market Penetration -->
-                    <div class="form-group" id="grp-penetration">
-                        <label class="field-label">
-                            How do you plan to penetrate the market with your products/services? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @{
-                                var penetrations = new[]
-                                {
-                                    "Direct sales and strategic partnerships",
-                                    "Online marketing and social media campaigns",
-                                    "Community outreach and engagement",
-                                    "Industry events and trade shows",
-                                };
-                            }
-                            @foreach (var val in penetrations) {
-                                <div class="r-option">
-                                    <input type="radio" id="pen-@val.Replace(" ","-").ToLower().Substring(0,12)"
-                                           name="MarketPenetrationStrategy" value="@val"
-                                           @(ViewBag.MarketPenetrationStrategy == val ? "checked" : "") />
-                                    <label class="r-label" for="pen-@val.Replace(" ","-").ToLower().Substring(0,12)">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select a market penetration strategy.</div>
-                    </div>
-
-                    <!-- Key Features — select top 2 -->
-                    <div class="form-group" id="grp-features">
-                        <label class="field-label">
-                            What are the key features of your product/service?
-                            <span class="label-req">*</span>
-                            <span class="label-opt">(select up to 2)</span>
-                        </label>
-                        <div class="mc-options cols-2">
-                            @{
-                                var features = new[]
-                                {
-                                    "User-friendly interface",
-                                    "Cost-effectiveness",
-                                    "Scalability",
-                                    "Sustainability",
-                                };
-                            }
-                            @foreach (var f in features) {
-                                <div class="mc-option">
-                                    <input type="checkbox" id="feat-@f.Replace(" ","-").ToLower()"
-                                           name="KeyFeatures" value="@f"
-                                           @(savedFeatures.Contains(f) ? "checked" : "") />
-                                    <label class="mc-label" for="feat-@f.Replace(" ","-").ToLower()">
-                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="mc-text">@f</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select at least one key feature.</div>
+                        <div class="field-error">Please select your relationship to the business.</div>
                     </div>
 
                 </div>
@@ -635,7 +516,7 @@
             <!-- Actions -->
             <div class="form-actions">
                 <div class="actions-left">
-                    <a asp-action="TeamInfo" asp-controller="Application" class="btn-back">
+                    <a asp-action="PreChecklist" asp-controller="Application" class="btn-back">
                         <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
                         Back
                     </a>
@@ -669,52 +550,48 @@
     hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
     drawerOverlay.addEventListener('click', closeDrawer);
 
-    // ── Max 2 checkboxes for milestones and features
-    function limitCheckboxes(name, max) {
-        document.querySelectorAll(`input[name="${name}"]`).forEach(cb => {
-            cb.addEventListener('change', () => {
-                const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
-                if (checked.length > max) cb.checked = false;
-            });
-        });
-    }
-    limitCheckboxes('KeyMilestones', 2);
-    limitCheckboxes('KeyFeatures', 2);
+    // ── NIN toggle visibility
+    const ninInput  = document.getElementById('nin');
+    const ninEye    = document.getElementById('ninEye');
+    const eyeOn     = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    const eyeOff    = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    document.getElementById('ninToggle').addEventListener('click', () => {
+        const isText   = ninInput.type === 'text';
+        ninInput.type  = isText ? 'password' : 'text';
+        ninEye.innerHTML = isText ? eyeOn : eyeOff;
+    });
+
+    // Only allow digits in NIN
+    ninInput.addEventListener('input', () => {
+        ninInput.value = ninInput.value.replace(/\D/g, '').slice(0, 11);
+    });
 
     // ── Validation
     function setInvalid(id)   { document.getElementById(id)?.classList.add('invalid'); }
     function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
 
-    const radioMap = {
-        GrowthStage:              'grp-stage',
-        ExistingUsers:            'grp-existingusers',
-        TotalUsersReached:        'grp-totalusers',
-        CoreBusinessModel:        'grp-bizmodel',
-        UniqueSellingPoint:       'grp-usp',
-        MainCompetitors:          'grp-competitors',
-        MarketPenetrationStrategy:'grp-penetration',
-    };
-    Object.keys(radioMap).forEach(name => {
-        document.querySelectorAll(`input[name="${name}"]`).forEach(r =>
-            r.addEventListener('change', () => clearInvalid(radioMap[name]))
-        );
-    });
-    ['KeyMilestones','KeyFeatures'].forEach(name => {
-        document.querySelectorAll(`input[name="${name}"]`).forEach(c =>
-            c.addEventListener('change', () => clearInvalid(name === 'KeyMilestones' ? 'grp-milestones' : 'grp-features'))
-        );
-    });
+    document.getElementById('fullname').addEventListener('input', () => clearInvalid('grp-fullname'));
+    document.getElementById('phone').addEventListener('input',    () => clearInvalid('grp-phone'));
+    document.getElementById('nin').addEventListener('input',      () => clearInvalid('grp-nin'));
+    document.querySelectorAll('input[name="Gender"]')
+        .forEach(r => r.addEventListener('change', () => clearInvalid('grp-gender')));
+    document.querySelectorAll('input[name="RelationshipToBusiness"]')
+        .forEach(r => r.addEventListener('change', () => clearInvalid('grp-relationship')));
+
+    function isValidPhone(v) { return /^[+\d][\d\s\-(). ]{6,19}$/.test(v.trim()); }
 
     function validate() {
         let ok = true;
-        Object.entries(radioMap).forEach(([name, grp]) => {
-            if (!document.querySelector(`input[name="${name}"]:checked`))
-                { setInvalid(grp); ok = false; }
-        });
-        if (!document.querySelector('input[name="KeyMilestones"]:checked'))
-            { setInvalid('grp-milestones'); ok = false; }
-        if (!document.querySelector('input[name="KeyFeatures"]:checked'))
-            { setInvalid('grp-features'); ok = false; }
+        if (document.getElementById('fullname').value.trim().length < 2)
+            { setInvalid('grp-fullname'); ok = false; }
+        if (!isValidPhone(document.getElementById('phone').value))
+            { setInvalid('grp-phone'); ok = false; }
+        if (!document.querySelector('input[name="Gender"]:checked'))
+            { setInvalid('grp-gender'); ok = false; }
+        if (document.getElementById('nin').value.replace(/\D/g,'').length !== 11)
+            { setInvalid('grp-nin'); ok = false; }
+        if (!document.querySelector('input[name="RelationshipToBusiness"]:checked'))
+            { setInvalid('grp-relationship'); ok = false; }
         if (!ok) document.querySelector('.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return ok;
     }
@@ -733,8 +610,8 @@
         const btn = document.getElementById('saveBtn');
         btn.textContent = 'Saving...'; btn.disabled = true;
         try {
-            const fd  = new FormData(document.getElementById('productForm'));
-            const res = await fetch('/Application/SaveProductInfoDraft', { method: 'POST', body: fd });
+            const fd  = new FormData(document.getElementById('personalForm'));
+            const res = await fetch('/Application/SavePersonalInfoDraft', { method: 'POST', body: fd });
             showToast(res.ok ? 'Draft saved' : 'Could not save', !res.ok);
         } catch { showToast('Could not save', true); }
         finally {
@@ -744,7 +621,7 @@
     });
 
     // ── Submit
-    document.getElementById('productForm').addEventListener('submit', function(e) {
+    document.getElementById('personalForm').addEventListener('submit', function(e) {
         if (!validate()) { e.preventDefault(); return; }
         const btn = document.getElementById('nextBtn');
         btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Saving...';

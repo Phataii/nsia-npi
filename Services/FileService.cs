@@ -75,18 +75,17 @@ namespace nsia.Services
             return (publicUrl, file.FileName);
         }
 
-        public void DeleteDocument(string storedPath)
+        // FileService
+        public void DeleteFile(string storedPath)
         {
             try
             {
-                var absolutePath = Path.Combine(RootPath, storedPath.Replace("/", Path.DirectorySeparatorChar.ToString()));
-                if (File.Exists(absolutePath))
-                    File.Delete(absolutePath);
+                var root = _config["UploadSettings:RootPath"] ?? "../uploads";
+                var fullPath = Path.Combine(root, storedPath);
+                if (System.IO.File.Exists(fullPath))
+                    System.IO.File.Delete(fullPath);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to delete file at {StoredPath}", storedPath);
-            }
+            catch { /* swallow — file may already be gone */ }
         }
     }
 }

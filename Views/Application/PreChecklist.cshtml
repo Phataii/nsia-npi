@@ -1,0 +1,607 @@
+@{
+    ViewData["Title"] = "Pre-Submission Checklist — NSIA Prize for Innovation";
+    Layout = null;
+    var applicantName = ViewBag.ApplicantName as string ?? "";
+    var completedStep = (int)(ViewBag.CompletedStep ?? 0);
+    var initials      = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
+
+    var steps = new[] {
+        new { Num = 1,  Name = "Pre-Checklist",    Action = "PreChecklist"   },
+        new { Num = 2,  Name = "Personal Info",    Action = "PersonalInfo"   },
+        new { Num = 3,  Name = "Company Info",     Action = "CompanyInfo"    },
+        new { Num = 4,  Name = "Team Info",        Action = "TeamInfo"       },
+        new { Num = 5,  Name = "Product & Growth", Action = "ProductInfo"    },
+        new { Num = 6,  Name = "Commercial I",     Action = "Commercial1"    },
+        new { Num = 7,  Name = "Commercial II",    Action = "Commercial2"    },
+        new { Num = 8,  Name = "Sustainability",   Action = "Sustainability" },
+        new { Num = 9,  Name = "Impact",           Action = "Impact"         },
+        new { Num = 10, Name = "Additional Info", Action = "Additional"     },
+    };
+
+    string StepStatus(int num) {
+        if (num <= completedStep) return "completed";
+        if (num == completedStep + 1) return "active";
+        return "locked";
+    }
+
+    var countries = new[] {
+        "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina",
+        "Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados",
+        "Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana",
+        "Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon",
+        "Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo",
+        "Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica",
+        "Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia",
+        "Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana",
+        "Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary",
+        "Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan",
+        "Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon",
+        "Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi",
+        "Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico",
+        "Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar",
+        "Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria",
+        "North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama",
+        "Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania",
+        "Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines",
+        "Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles",
+        "Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa",
+        "South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland",
+        "Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga",
+        "Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine",
+        "United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu",
+        "Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
+    };
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+            :root {
+                --teal: #2DB8B0;
+                --teal-d: #1a9990;
+                --teal-deep: #0d7a73;
+                --teal-light: #E8F7F6;
+                --teal-pale: #F0FAF9;
+                --green: #7BC144;
+                --green-dark: #5a9130;
+                --ink: #1C2B2A;
+                --cream: #F5F9F8;
+                --off: #EEF4F3;
+                --muted: #4A6260;
+                --border: rgba(45, 184, 176, 0.2);
+                --nav-h: 62px;
+                --step-h: 56px;
+            }
+        
+        html { scroll-behavior: smooth; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
+
+        /* ── NAV ── */
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: white; display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
+        .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 60%); }
+        .nav-brand { display: flex; align-items: center; position: relative; z-index: 1; }
+        .nav-brand img { height: 32px; width: auto; }
+        .nav-right { display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 1; }
+        
+        .nav-deadline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink); }
+        .nav-deadline svg { width: 13px; height: 13px; stroke: var(--ink); stroke-width: 1.75; fill: none; }
+        .deadline-val { color: var(--ink); font-weight: 600; }
+        .nav-user { display: flex; align-items: center; gap: 8px; }
+        
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--ink); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: white; flex-shrink: 0; }
+        .user-name { font-size: 12px; color: var(--ink); }
+        .nav-logout { font-size: 11px; color: var(--ink); text-decoration: none; padding: .3rem .7rem; border: 1px solid var(--green-dark); border-radius: 100px; transition: all .2s; white-space: nowrap; }
+        .nav-logout:hover { color: white; border-color: var(--teal-dark); background: var(--ink); }
+
+        .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 1; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: transform .3s, opacity .3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        /* ── STEP BAR ── */
+        .step-bar { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190; height: var(--step-h); background: white; border-bottom: 1px solid var(--green); display: flex; align-items: stretch; overflow: hidden; }
+        .step-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 .35rem; text-decoration: none; color: var(--green); border-right: 1px solid var(--green); position: relative; transition: background .2s; min-width: 0; }
+        .step-item:last-child { border-right: none; }
+        .step-item::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background .2s; }
+        .step-item:hover { background: var(--teal-pale); }
+        .step-item.completed .step-num { background: var(--green); border-color: var(--green); color: white; }
+        .step-item.completed .step-num svg { display: block; }
+        .step-item.completed .step-num span { display: none; }
+        .step-item.completed .step-name { color: var(--green); }
+        .step-item.completed::after { background: var(--green); }
+        .step-item.active { background: var(--teal-pale); }
+        .step-item.active .step-num { background: var(--green); border-color: var(--green); color: white; }
+        .step-item.active .step-name { color: var(--green); font-weight: 500; }
+        .step-item.active::after { background: var(--green); }
+        .step-num { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 500; color: var(--muted); }
+        .step-num svg { width: 9px; height: 9px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .step-name { font-size: 10.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* ── DRAWER ── */
+        .drawer-overlay { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity .3s; }
+        .drawer-overlay.open { opacity: 1; }
+        .side-drawer { position: fixed; top: 0; left: -280px; bottom: 0; z-index: 160; width: 280px; background: var(--ink); display: flex; flex-direction: column; transition: left .3s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
+        .side-drawer.open { left: 0; }
+        .drawer-header { padding: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .drawer-header img { height: 30px; width: auto; }
+        .drawer-user { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .drawer-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: white; flex-shrink: 0; }
+        .drawer-uname { font-size: 13px; font-weight: 500; color: white; }
+        .drawer-uemail { font-size: 11px; color: rgba(255,255,255,0.35); }
+        .drawer-steps { padding: .75rem 0; flex: 1; }
+        .drawer-step-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.3); letter-spacing: .1em; text-transform: uppercase; padding: .5rem 1.25rem .25rem; display: block; }
+        .drawer-item { display: flex; align-items: center; gap: .9rem; padding: .75rem 1.25rem; text-decoration: none; color: rgba(255,255,255,0.55); transition: background .2s, color .2s; position: relative; }
+        .drawer-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.85); }
+        .drawer-item.active { background: rgba(45,184,176,0.15); color: white; }
+        .drawer-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal); border-radius: 0 2px 2px 0; }
+        .drawer-item.completed { color: rgba(255,255,255,0.6); }
+        .drawer-item-num { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; }
+        .drawer-item.completed .drawer-item-num { background: var(--teal); border-color: var(--teal); }
+        .drawer-item.active .drawer-item-num { background: var(--teal); border-color: var(--teal); }
+        .drawer-item-num svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .drawer-item.completed .drawer-item-num svg { display: block; }
+        .drawer-item.completed .drawer-item-num span { display: none; }
+        .drawer-item-name { font-size: 13px; }
+        .drawer-item-status { font-size: 10px; color: rgba(255,255,255,0.25); }
+        .drawer-item.completed .drawer-item-status { color: var(--teal); }
+        .drawer-item.active .drawer-item-status { color: rgba(45,184,176,0.8); }
+        .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
+        .drawer-logout { display: flex; align-items: center; gap: .6rem; font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color .2s; }
+        .drawer-logout svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; }
+        .drawer-logout:hover { color: rgba(255,255,255,0.65); }
+
+        /* ── MAIN ── */
+        .main { padding-top: calc(var(--nav-h) + var(--step-h)); min-height: 100vh; }
+        .content { max-width: 760px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+
+        /* ── PAGE HEADER ── */
+        .page-header { margin-bottom: 2rem; }
+        .breadcrumb { display: flex; align-items: center; gap: .4rem; font-size: 11px; color: var(--muted); margin-bottom: .75rem; flex-wrap: wrap; }
+        .breadcrumb a { color: var(--teal); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); stroke-width: 2; fill: none; }
+        .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
+        .page-sub { font-size: .84rem; color: var(--muted); line-height: 1.65; }
+
+        /* ── STEP MINI ── */
+        .step-mini { display: flex; align-items: center; gap: .75rem; background: white; border-radius: 8px; border: 1px solid var(--border); padding: .85rem 1.25rem; margin-bottom: 2rem; }
+        .step-mini-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+        .step-mini-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+        .step-mini-name { font-size: .85rem; font-weight: 500; color: var(--ink); }
+        .step-mini-spacer { flex: 1; }
+        .step-mini-progress { font-size: 11px; color: var(--muted); white-space: nowrap; }
+        .step-mini-bar { width: 120px; height: 4px; background: var(--off); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--green)); border-radius: 10px; width: 10%; }
+
+        /* ── NOTICE BANNER ── */
+        .notice-banner {
+            background: var(--teal-light); border: 1px solid rgba(45,184,176,0.3);
+            border-radius: 10px; padding: 1.1rem 1.4rem;
+            display: flex; align-items: flex-start; gap: .9rem;
+            margin-bottom: 1.75rem;
+        }
+        .notice-banner svg { width: 18px; height: 18px; stroke: var(--teal); stroke-width: 1.75; fill: none; flex-shrink: 0; margin-top: 1px; }
+        .notice-banner p { font-size: .82rem; color: var(--teal-deep); line-height: 1.65; }
+        .notice-banner p strong { font-weight: 600; }
+
+        /* ── FORM CARD ── */
+        .form-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
+        .form-card-header { padding: 1.1rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+        .form-card-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--teal-light); }
+        .form-card-icon svg { width: 17px; height: 17px; stroke: var(--teal); stroke-width: 1.75; fill: none; }
+        .form-card-title { font-size: .92rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+        .form-card-desc { font-size: .74rem; color: var(--muted); line-height: 1.4; }
+        .form-card-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+        /* ── QUESTION ── */
+        .question-block { display: flex; flex-direction: column; gap: .6rem; }
+        .question-label { font-size: .82rem; font-weight: 500; color: var(--ink); line-height: 1.5; }
+        .question-label .req { color: #e53e3e; margin-left: 2px; }
+
+        /* ── YES/NO OPTIONS ── */
+        .yn-options { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+        .yn-option { position: relative; }
+        .yn-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        .yn-label { display: flex; align-items: center; gap: .75rem; padding: .85rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
+        .yn-label:hover { border-color: var(--teal); background: var(--teal-pale); }
+        .yn-option input:checked + .yn-label { border-color: var(--teal); background: var(--teal-light); }
+        .yn-radio { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .2s; }
+        .yn-option input:checked + .yn-label .yn-radio { border-color: var(--teal); background: var(--teal); }
+        .yn-dot { width: 6px; height: 6px; border-radius: 50%; background: white; opacity: 0; transform: scale(0); transition: all .15s; }
+        .yn-option input:checked + .yn-label .yn-dot { opacity: 1; transform: scale(1); }
+        .yn-text { font-size: .84rem; color: var(--ink); }
+        .yn-option input:checked + .yn-label .yn-text { color: var(--teal-deep); font-weight: 500; }
+
+        /* ── SECTOR OPTIONS ── */
+        .sector-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+        .sector-option { position: relative; }
+        .sector-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        .sector-label { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem; padding: 1.25rem 1rem; border-radius: 10px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; text-align: center; }
+        .sector-label:hover { border-color: var(--teal); background: var(--teal-pale); }
+        .sector-option input:checked + .sector-label { border-color: var(--teal); background: var(--teal-light); }
+        .sector-icon { font-size: 1.75rem; }
+        .sector-name { font-size: .8rem; font-weight: 600; color: var(--ink); line-height: 1.3; }
+        .sector-option input:checked + .sector-label .sector-name { color: var(--teal-deep); }
+        .sector-check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; transition: all .2s; }
+        .sector-option input:checked + .sector-label .sector-check { background: var(--teal); border-color: var(--teal); }
+        .sector-check svg { width: 9px; height: 9px; stroke: white; stroke-width: 3; fill: none; opacity: 0; }
+        .sector-option input:checked + .sector-label .sector-check svg { opacity: 1; }
+
+        /* ── SELECT ── */
+        .select-wrap { position: relative; }
+        .select-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; stroke: var(--muted); stroke-width: 1.75; fill: none; pointer-events: none; }
+        select.field-select {
+            width: 100%; padding: .72rem .9rem .72rem 2.5rem;
+            border: 1px solid var(--border); border-radius: 7px;
+            font-size: .85rem; font-family: 'DM Sans', sans-serif;
+            background: white; color: var(--ink); outline: none;
+            -webkit-appearance: none; appearance: none; cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234A6260' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 12px center;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        select.field-select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(45,184,176,0.12); }
+
+        /* ── VALIDATION ── */
+        .field-error { font-size: .71rem; color: #b91c1c; display: none; margin-top: .2rem; }
+        .question-block.invalid .field-error { display: block; }
+        .question-block.invalid .yn-label { border-color: #f87171; }
+        .question-block.invalid .sector-label { border-color: #f87171; }
+        .question-block.invalid select.field-select { border-color: #f87171; }
+
+        /* ── ACTIONS ── */
+        .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
+        .actions-left { display: flex; align-items: center; gap: .75rem; }
+        .btn-back { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.3rem; border-radius: 100px; border: 1px solid var(--border); background: white; font-size: .84rem; color: var(--muted); text-decoration: none; font-family: 'DM Sans', sans-serif; transition: all .2s; }
+        .btn-back:hover { border-color: var(--teal); color: var(--teal); }
+        .btn-back svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: .72rem 1.5rem; border-radius: 100px; background: white; border: 1px solid var(--teal); font-size: .84rem; font-weight: 500; color: var(--teal); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s; }
+        .btn-save:hover { background: var(--teal-pale); }
+        .btn-save svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-next { display: inline-flex; align-items: center; gap: 7px; padding: .76rem 1.75rem; border-radius: 100px; background: var(--teal); color: white; border: none; font-size: .88rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, transform .15s; }
+        .btn-next:hover { background: var(--teal-d); transform: translateY(-1px); }
+        .btn-next:active { transform: scale(0.98); }
+        .btn-next svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
+
+        /* ── TOAST ── */
+        .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--ink); color: white; padding: .75rem 1.25rem; border-radius: 100px; font-size: .8rem; display: flex; align-items: center; gap: .6rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transform: translateY(20px); opacity: 0; transition: transform .3s, opacity .3s; pointer-events: none; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast svg { width: 14px; height: 14px; stroke: var(--green); stroke-width: 2; fill: none; flex-shrink: 0; }
+
+        /* ── RESPONSIVE ── */
+        @@media (max-width: 900px) {
+            .step-bar { display: none; }
+            .top-nav { padding: 0 1.25rem; }
+            .hamburger { display: flex; }
+            .nav-deadline, .user-name, .nav-logout { display: none; }
+            .main { padding-top: var(--nav-h); }
+            .content { padding: 1.5rem 1rem 3rem; }
+            .step-mini-bar, .step-mini-progress { display: none; }
+        }
+        @@media (max-width: 560px) {
+            .page-title { font-size: 1.65rem; }
+            .form-card-body { padding: 1.25rem; }
+            .sector-options { grid-template-columns: 1fr; }
+            .yn-options { grid-template-columns: 1fr 1fr; }
+            .form-actions { flex-direction: column; align-items: stretch; }
+            .actions-left { justify-content: space-between; }
+            .btn-next { justify-content: center; padding: 1rem; }
+            .toast { left: 1rem; right: 1rem; bottom: 1rem; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+    <div class="nav-brand">
+         <a href="/"><img src="~/logo.png" alt="NSIA" /></a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-deadline">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Deadline: <span class="deadline-val">30 Jun 2026</span>
+        </div>
+        <div class="nav-user">
+            <div class="user-avatar">@initials</div>
+            <span class="user-name">@applicantName</span>
+        </div>
+        <a asp-action="Logout" asp-controller="Account" class="nav-logout">Sign out</a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- STEP BAR -->
+<div class="step-bar">
+    @foreach (var s in steps) {
+        var st = StepStatus(s.Num);
+        <a asp-action="@s.Action" asp-controller="Application" class="step-item @st" title="@s.Name">
+            <div class="step-num">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                <span>@s.Num</span>
+            </div>
+            <span class="step-name">@s.Name</span>
+        </a>
+    }
+</div>
+
+<!-- MOBILE DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+        <img src="~/logo.png" alt="NSIA" style="filter:brightness(0) invert(1)" />
+    </div>
+    <div class="drawer-user">
+        <div class="drawer-avatar">@initials</div>
+        <div>
+            <div class="drawer-uname">@applicantName</div>
+            <div class="drawer-uemail">NPI 4.0 Applicant</div>
+        </div>
+    </div>
+    <div class="drawer-steps">
+        <span class="drawer-step-label">Application Steps</span>
+        @foreach (var s in steps) {
+            var st    = StepStatus(s.Num);
+            var label = st == "completed" ? "Completed" : st == "active" ? "In progress" : "Locked";
+            <a asp-action="@s.Action" asp-controller="Application"
+               class="drawer-item @st"
+               style="@(st == "locked" ? "pointer-events:none;opacity:.4" : null)">
+                <div class="drawer-item-num">
+                    <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+                    <span>@s.Num</span>
+                </div>
+                <div>
+                    <div class="drawer-item-name">@s.Name</div>
+                    <div class="drawer-item-status">@label</div>
+                </div>
+            </a>
+        }
+    </div>
+    <div class="drawer-footer">
+        <a asp-action="Logout" asp-controller="Account" class="drawer-logout">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+    <div class="content">
+
+        <div class="page-header">
+            <div class="breadcrumb">
+                <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>Pre-Submission Checklist</span>
+            </div>
+            <h1 class="page-title">Pre-Submission Checklist</h1>
+            <p class="page-sub">Before you begin, please confirm your eligibility. These questions help us ensure your application meets the basic requirements for NPI 4.0.</p>
+        </div>
+
+        <div class="step-mini">
+            <div class="step-mini-dot">1</div>
+            <div>
+                <div class="step-mini-label">Step 1 of 10</div>
+                <div class="step-mini-name">Pre-Submission Checklist</div>
+            </div>
+            <div class="step-mini-spacer"></div>
+            <span class="step-mini-progress">Step 1 of 10</span>
+            <div class="step-mini-bar"><div class="step-mini-fill"></div></div>
+        </div>
+
+        <div class="notice-banner">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <p><strong>Please answer all questions honestly.</strong> Your responses here help us verify your eligibility for the NPI 4.0 programme. Incomplete or inaccurate information may affect your application.</p>
+        </div>
+
+        <form asp-action="SavePreChecklist" asp-controller="Application"
+              method="post" id="checklistForm" novalidate>
+            @Html.AntiForgeryToken()
+
+            <div class="form-card">
+                <div class="form-card-header">
+                    <div class="form-card-icon">
+                        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Eligibility Questions</div>
+                        <div class="form-card-desc">Answer all three questions to proceed with your application.</div>
+                    </div>
+                </div>
+                <div class="form-card-body">
+
+                    <!-- Q1: Registered in Nigeria -->
+                    <div class="question-block" id="grp-registered">
+                        <div class="question-label">
+                            1. Is your company legally registered in Nigeria?
+                            <span class="req">*</span>
+                        </div>
+                        <div class="yn-options">
+                            <div class="yn-option">
+                                <input type="radio" id="reg-yes" name="IsRegisteredInNigeria" value="Yes"
+                                       @(ViewBag.IsRegisteredInNigeria == "Yes" ? "checked" : "") />
+                                <label class="yn-label" for="reg-yes">
+                                    <div class="yn-radio"><div class="yn-dot"></div></div>
+                                    <span class="yn-text">Yes</span>
+                                </label>
+                            </div>
+                            <div class="yn-option">
+                                <input type="radio" id="reg-no" name="IsRegisteredInNigeria" value="No"
+                                       @(ViewBag.IsRegisteredInNigeria == "No" ? "checked" : "") />
+                                <label class="yn-label" for="reg-no">
+                                    <div class="yn-radio"><div class="yn-dot"></div></div>
+                                    <span class="yn-text">No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Q2: Business Sector -->
+                    <div class="question-block" id="grp-sector">
+                        <div class="question-label">
+                            2. What is the sector of your business?
+                            <span class="req">*</span>
+                        </div>
+                        <div class="sector-options">
+                            <div class="sector-option">
+                                <input type="radio" id="sec-mfg" name="BusinessSector" value="Manufacturing"
+                                       @(ViewBag.BusinessSector == "Manufacturing" ? "checked" : "") />
+                                <label class="sector-label" for="sec-mfg">
+                                    <div class="sector-icon">🏭</div>
+                                    <div class="sector-name">Manufacturing</div>
+                                    <div class="sector-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                </label>
+                            </div>
+                            <div class="sector-option">
+                                <input type="radio" id="sec-health" name="BusinessSector" value="Healthcare"
+                                       @(ViewBag.BusinessSector == "Healthcare" ? "checked" : "") />
+                                <label class="sector-label" for="sec-health">
+                                    <div class="sector-icon">💊</div>
+                                    <div class="sector-name">Healthcare</div>
+                                    <div class="sector-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                </label>
+                            </div>
+                            <div class="sector-option">
+                                <input type="radio" id="sec-climate" name="BusinessSector" value="Climate & Food Security"
+                                       @(ViewBag.BusinessSector == "Climate & Food Security" ? "checked" : "") />
+                                <label class="sector-label" for="sec-climate">
+                                    <div class="sector-icon">🌱</div>
+                                    <div class="sector-name">Climate &amp; Food Security</div>
+                                    <div class="sector-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="field-error">Please select your business sector.</div>
+                    </div>
+
+                    <!-- Q3: Country of Origin -->
+                    <div class="question-block" id="grp-country">
+                        <div class="question-label">
+                            3. What is your country of origin?
+                            <span class="req">*</span>
+                        </div>
+                        <div class="select-wrap">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            <select name="CountryOfOrigin" id="countrySelect" class="field-select">
+                                <option value="" disabled>Select your country</option>
+                                @foreach (var c in countries) {
+                                    if (ViewBag.CountryOfOrigin == c) {
+                                        <option value="@c" selected>@c</option>
+                                    } else {
+                                        <option value="@c">@c</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="field-error">Please select your country of origin.</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <div class="actions-left">
+                    <a asp-action="Dashboard" asp-controller="Application" class="btn-back">
+                        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                        Dashboard
+                    </a>
+                    <button type="button" class="btn-save" id="saveBtn">
+                        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Save draft
+                    </button>
+                </div>
+                <button type="submit" class="btn-next" id="nextBtn">
+                    Save &amp; Continue
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<div class="toast" id="toast">
+    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <span id="toastMsg">Draft saved</span>
+</div>
+
+<script>
+    // ── Drawer
+    const hamburger     = document.getElementById('hamburger');
+    const sideDrawer    = document.getElementById('sideDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const openDrawer  = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display='block'; setTimeout(()=>drawerOverlay.classList.add('open'),10); hamburger.classList.add('open'); document.body.style.overflow='hidden'; };
+    const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(()=>drawerOverlay.style.display='',300); hamburger.classList.remove('open'); document.body.style.overflow=''; };
+    hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
+    drawerOverlay.addEventListener('click', closeDrawer);
+
+    // ── Validation
+    function setInvalid(id)   { document.getElementById(id)?.classList.add('invalid'); }
+    function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
+
+    document.querySelectorAll('input[name="IsRegisteredInNigeria"]')
+        .forEach(r => r.addEventListener('change', () => clearInvalid('grp-registered')));
+    document.querySelectorAll('input[name="BusinessSector"]')
+        .forEach(r => r.addEventListener('change', () => clearInvalid('grp-sector')));
+    document.getElementById('countrySelect')
+        .addEventListener('change', () => clearInvalid('grp-country'));
+
+    function validate() {
+        let ok = true;
+        if (!document.querySelector('input[name="IsRegisteredInNigeria"]:checked'))
+            { setInvalid('grp-registered'); ok = false; }
+        if (!document.querySelector('input[name="BusinessSector"]:checked'))
+            { setInvalid('grp-sector'); ok = false; }
+        if (!document.getElementById('countrySelect').value)
+            { setInvalid('grp-country'); ok = false; }
+        if (!ok) document.querySelector('.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return ok;
+    }
+
+    // ── Toast
+    function showToast(msg, isError) {
+        const t = document.getElementById('toast');
+        t.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--green)';
+        document.getElementById('toastMsg').textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ── Save draft
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('saveBtn');
+        btn.textContent = 'Saving...'; btn.disabled = true;
+        try {
+            const fd  = new FormData(document.getElementById('checklistForm'));
+            const res = await fetch('/Application/SavePreChecklistDraft', { method: 'POST', body: fd });
+            showToast(res.ok ? 'Draft saved' : 'Could not save', !res.ok);
+        } catch { showToast('Could not save', true); }
+        finally {
+            btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save draft';
+            btn.disabled = false;
+        }
+    });
+
+    // ── Submit
+    document.getElementById('checklistForm').addEventListener('submit', function(e) {
+        if (!validate()) { e.preventDefault(); return; }
+        const btn = document.getElementById('nextBtn');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Saving...';
+        btn.disabled = true;
+    });
+</script>
+</body>
+</html>

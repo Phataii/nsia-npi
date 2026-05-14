@@ -1,19 +1,21 @@
 @{
-    ViewData["Title"] = "Team Info — NSIA Prize for Innovation";
+    ViewData["Title"] = "Team Information — NSIA Prize for Innovation";
     Layout = null;
-    var applicantName = ViewBag.ApplicantName as string ?? "Adaeze Okonkwo";
-    var completedStep = (int)(ViewBag.CompletedStep ?? 2);
-    var initials = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
-    var totalSteps = 7;
+    var applicantName = ViewBag.ApplicantName as string ?? "";
+    var completedStep = (int)(ViewBag.CompletedStep ?? 3);
+    var initials      = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
 
     var steps = new[] {
-        new { Num = 1, Name = "Profile",                 Action = "Profile"      },
-        new { Num = 2, Name = "Company Info",            Action = "CompanyInfo"  },
-        new { Num = 3, Name = "Team Info",               Action = "TeamInfo"     },
-        new { Num = 4, Name = "Product Info",            Action = "ProductInfo"  },
-        new { Num = 5, Name = "Commercial",              Action = "Commercial"   },
-        new { Num = 6, Name = "Impact & Sustainability", Action = "Impact"       },
-        new { Num = 7, Name = "Additional Information",  Action = "Additional"   },
+        new { Num = 1,  Name = "Pre-Checklist",    Action = "PreChecklist"   },
+        new { Num = 2,  Name = "Personal Info",    Action = "PersonalInfo"   },
+        new { Num = 3,  Name = "Company Info",     Action = "CompanyInfo"    },
+        new { Num = 4,  Name = "Team Info",        Action = "TeamInfo"       },
+        new { Num = 5,  Name = "Product & Growth", Action = "ProductInfo"    },
+        new { Num = 6,  Name = "Commercial I",     Action = "Commercial1"    },
+        new { Num = 7,  Name = "Commercial II",    Action = "Commercial2"    },
+        new { Num = 8,  Name = "Sustainability",   Action = "Sustainability" },
+        new { Num = 9,  Name = "Impact",           Action = "Impact"         },
+        new { Num = 10, Name = "Additional",       Action = "Additional"     },
     };
 
     string StepStatus(int num) {
@@ -21,6 +23,8 @@
         if (num == completedStep + 1) return "active";
         return "locked";
     }
+
+    var savedFounders = ViewBag.Founders as dynamic ?? new List<dynamic>();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -34,106 +38,88 @@
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --teal: #21a1b8;
-            --teal-dark:  #1a9990;
-            --teal-deep:  #0d7a73;
-            --teal-light: #f2f8fa;
-            --green:      #7BC144;
-            --green-dark: #5a9130;
-            --lime: #83c240;
-            --ink:        #1C2B2A;
-            --muted:      #4A6260;
-            --cream: #faf8f3;
-            --off: #f4f2ec;
-            --border: rgba(0,0,0,0.08);
+            --teal: #2DB8B0; --teal-d: #1a9990; --teal-deep: #0d7a73;
+            --teal-light: #E8F7F6; --teal-pale: #F0FAF9;
+            --green: #7BC144; --green-dark: #5a9130;
+            --ink: #1C2B2A; --cream: #F5F9F8; --off: #EEF4F3;
+            --muted: #4A6260; --border: rgba(45,184,176,0.2);
             --nav-h: 62px; --step-h: 56px;
         }
         html { scroll-behavior: smooth; }
         body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
-
-        /* ── TOP NAV ── */
         .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: white; display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
-        .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; transparent 60%); }
-        .nav-brand { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
-        @* .nav-brand-icon { width: 34px; height: 34px; border-radius: 7px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; } *@
-        .nav-brand-icon img { width: 130px; height: 30%px; stroke: white; stroke-width: 2; fill: none; }
-        .nav-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
-        .nav-brand-text span { display: block; font-size: 10px; color: rgba(255,255,255,0.35); }
+        .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 60%); }
+        .nav-brand { display: flex; align-items: center; position: relative; z-index: 1; }
+        .nav-brand img { height: 32px; width: auto; }
         .nav-right { display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 1; }
+        
         .nav-deadline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink); }
-        .nav-deadline svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.35); stroke-width: 1.75; fill: none; }
-        .deadline-val { color: var(--lime); font-weight: 500; }
+        .nav-deadline svg { width: 13px; height: 13px; stroke: var(--ink); stroke-width: 1.75; fill: none; }
+        .deadline-val { color: var(--ink); font-weight: 600; }
         .nav-user { display: flex; align-items: center; gap: 8px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: white; flex-shrink: 0; }
+        
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--ink); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: white; flex-shrink: 0; }
         .user-name { font-size: 12px; color: var(--ink); }
-        .nav-logout { font-size: 11px; color: var(--ink); text-decoration: none; padding: .3rem .7rem; border: 1px solid var(--teal); border-radius: 4px; transition: color .2s, border-color .2s; white-space: nowrap; }
-        .nav-logout:hover { color: var(--ink); border-color: var(--teal-dark); }
+        .nav-logout { font-size: 11px; color: var(--ink); text-decoration: none; padding: .3rem .7rem; border: 1px solid var(--green-dark); border-radius: 100px; transition: all .2s; white-space: nowrap; }
+        .nav-logout:hover { color: white; border-color: var(--teal-dark); background: var(--ink); }
+
         .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 1; }
         .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: transform .3s, opacity .3s; }
         .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
         .hamburger.open span:nth-child(2) { opacity: 0; }
         .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
+        
         /* ── STEP BAR ── */
-        .step-bar { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190; height: var(--step-h); background: white; border-bottom: 1px solid var(--border); display: flex; align-items: stretch; overflow: hidden; }
-        .step-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 0 .5rem; text-decoration: none; color: var(--ink); border-right: 1px solid var(--border); position: relative; transition: background .2s; min-width: 0; }
+        .step-bar { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190; height: var(--step-h); background: white; border-bottom: 1px solid var(--green); display: flex; align-items: stretch; overflow: hidden; }
+        .step-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 .35rem; text-decoration: none; color: var(--green); border-right: 1px solid var(--green); position: relative; transition: background .2s; min-width: 0; }
         .step-item:last-child { border-right: none; }
         .step-item::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background .2s; }
-        .step-item:hover { background: var(--off); }
-        .step-item:hover::after { background: rgba(14,134,171,0.3); }
+        .step-item:hover { background: var(--teal-pale); }
         .step-item.completed .step-num { background: var(--green); border-color: var(--green); color: white; }
         .step-item.completed .step-num svg { display: block; }
         .step-item.completed .step-num span { display: none; }
         .step-item.completed .step-name { color: var(--green); }
         .step-item.completed::after { background: var(--green); }
-        .step-item.active { background: rgba(14,134,171,0.04); }
-        .step-item.active .step-num { background: var(--teal); border-color: var(--teal); color: white; }
-        .step-item.active .step-name { color: var(--teal); font-weight: 500; }
-        .step-item.active::after { background: var(--teal); }
-        .step-num { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: var(--muted); transition: background .2s, border-color .2s; }
-        .step-num svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; display: none; }
-        .step-name { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .2s; }
-
-        /* ── SIDE DRAWER ── */
+        .step-item.active { background: var(--teal-pale); }
+        .step-item.active .step-num { background: var(--green); border-color: var(--green); color: white; }
+        .step-item.active .step-name { color: var(--green); font-weight: 500; }
+        .step-item.active::after { background: var(--green); }
+        .step-num { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 500; color: var(--muted); }
+        .step-num svg { width: 9px; height: 9px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .step-name { font-size: 10.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
         .drawer-overlay { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity .3s; }
         .drawer-overlay.open { opacity: 1; }
         .side-drawer { position: fixed; top: 0; left: -280px; bottom: 0; z-index: 160; width: 280px; background: var(--ink); display: flex; flex-direction: column; transition: left .3s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
         .side-drawer.open { left: 0; }
-        .drawer-header { padding: 1.25rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
-        .drawer-brand-icon { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .drawer-brand-icon svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
-        .drawer-brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .07em; text-transform: uppercase; }
-        .drawer-brand-text span { font-size: 10px; color: rgba(255,255,255,0.35); }
+        .drawer-header { padding: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .drawer-header img { height: 30px; width: auto; filter: brightness(0) invert(1); }
         .drawer-user { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
-        .drawer-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: white; }
+        .drawer-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: white; flex-shrink: 0; }
         .drawer-uname { font-size: 13px; font-weight: 500; color: white; }
         .drawer-uemail { font-size: 11px; color: rgba(255,255,255,0.35); }
         .drawer-steps { padding: .75rem 0; flex: 1; }
         .drawer-step-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.3); letter-spacing: .1em; text-transform: uppercase; padding: .5rem 1.25rem .25rem; display: block; }
-        .drawer-item { display: flex; align-items: center; gap: .9rem; padding: .8rem 1.25rem; text-decoration: none; color: rgba(255,255,255,0.55); transition: background .2s, color .2s; position: relative; }
+        .drawer-item { display: flex; align-items: center; gap: .9rem; padding: .75rem 1.25rem; text-decoration: none; color: rgba(255,255,255,0.55); transition: background .2s, color .2s; position: relative; }
         .drawer-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.85); }
-        .drawer-item.active { background: rgba(14,134,171,0.12); color: white; }
+        .drawer-item.active { background: rgba(45,184,176,0.15); color: white; }
         .drawer-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal); border-radius: 0 2px 2px 0; }
-        .drawer-item-num { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; transition: background .2s; }
-        .drawer-item.completed .drawer-item-num { background: var(--green); border-color: var(--green); }
+        .drawer-item-num { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; }
+        .drawer-item.completed .drawer-item-num { background: var(--teal); border-color: var(--teal); }
+        .drawer-item.active .drawer-item-num { background: var(--teal); border-color: var(--teal); }
+        .drawer-item-num svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; display: none; }
         .drawer-item.completed .drawer-item-num svg { display: block; }
         .drawer-item.completed .drawer-item-num span { display: none; }
-        .drawer-item.active .drawer-item-num { background: var(--teal); border-color: var(--teal); }
-        .drawer-item-num svg { width: 11px; height: 11px; stroke: white; stroke-width: 3; fill: none; display: none; }
         .drawer-item-name { font-size: 13px; }
-        .drawer-item-status { font-size: 10px; margin-top: 2px; color: rgba(255,255,255,0.25); }
-        .drawer-item.completed .drawer-item-status { color: #4ade80; }
-        .drawer-item.active .drawer-item-status { color: rgba(14,134,171,0.8); }
+        .drawer-item-status { font-size: 10px; color: rgba(255,255,255,0.25); }
+        .drawer-item.completed .drawer-item-status { color: var(--teal); }
+        .drawer-item.active .drawer-item-status { color: rgba(45,184,176,0.8); }
         .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
-        .drawer-logout { display: flex; align-items: center; gap: .6rem; font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; padding: .6rem 0; transition: color .2s; }
+        .drawer-logout { display: flex; align-items: center; gap: .6rem; font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color .2s; }
         .drawer-logout svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; }
         .drawer-logout:hover { color: rgba(255,255,255,0.65); }
-
-        /* ── MAIN ── */
         .main { padding-top: calc(var(--nav-h) + var(--step-h)); min-height: 100vh; }
-        .content { max-width: 800px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
-
-        /* ── PAGE HEADER ── */
+        .content { max-width: 760px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
         .page-header { margin-bottom: 2rem; }
         .breadcrumb { display: flex; align-items: center; gap: .4rem; font-size: 11px; color: var(--muted); margin-bottom: .75rem; flex-wrap: wrap; }
         .breadcrumb a { color: var(--teal); text-decoration: none; }
@@ -141,173 +127,129 @@
         .breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); stroke-width: 2; fill: none; }
         .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
         .page-sub { font-size: .84rem; color: var(--muted); line-height: 1.65; }
-
-        /* ── STEP MINI ── */
         .step-mini { display: flex; align-items: center; gap: .75rem; background: white; border-radius: 8px; border: 1px solid var(--border); padding: .85rem 1.25rem; margin-bottom: 2rem; }
-        .step-mini-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+        .step-mini-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
         .step-mini-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
         .step-mini-name { font-size: .85rem; font-weight: 500; color: var(--ink); }
         .step-mini-spacer { flex: 1; }
         .step-mini-progress { font-size: 11px; color: var(--muted); white-space: nowrap; }
         .step-mini-bar { width: 120px; height: 4px; background: var(--off); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
-        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--lime)); border-radius: 10px; width: 43%; }
-
-        /* ── FORM CARD ── */
+        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--green)); border-radius: 10px; width: 40%; }
         .form-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
-        .form-card-header { padding: 1.2rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
-        .form-card-icon { width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-        .form-card-icon.teal { background: rgba(14,134,171,0.1); }
-        .form-card-icon.teal svg { stroke: var(--teal); }
-        .form-card-icon.green { background: rgba(8,112,58,0.1); }
-        .form-card-icon.green svg { stroke: var(--green); }
-        .form-card-icon svg { width: 18px; height: 18px; stroke-width: 1.75; fill: none; }
-        .form-card-title { font-size: .95rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
-        .form-card-desc { font-size: .75rem; color: var(--muted); line-height: 1.4; }
-        .form-card-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem; }
-
-        /* ── FORM ELEMENTS ── */
+        .form-card-header { padding: 1.1rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+        .form-card-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--teal-light); }
+        .form-card-icon svg { width: 17px; height: 17px; stroke: var(--teal); stroke-width: 1.75; fill: none; }
+        .form-card-title { font-size: .92rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+        .form-card-desc { font-size: .74rem; color: var(--muted); line-height: 1.4; }
+        .form-card-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.35rem; }
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
         .form-group { display: flex; flex-direction: column; gap: .38rem; }
-        label { font-size: .75rem; font-weight: 500; color: var(--ink); letter-spacing: .02em; }
+        .full { grid-column: 1/-1; }
+        label.field-label { font-size: .75rem; font-weight: 500; color: var(--ink); letter-spacing: .02em; }
         .label-req { color: #e53e3e; margin-left: 2px; }
         .label-opt { font-size: .68rem; color: var(--muted); font-weight: 400; margin-left: 4px; }
         .input-wrap { position: relative; }
         .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); }
         .input-icon svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.75; fill: none; display: block; }
-
-        input[type="text"], input[type="url"], input[type="number"], input[type="tel"], select {
-            width: 100%; border: 1px solid var(--border); border-radius: 7px;
+        input[type="text"], input[type="tel"], select {
+            width: 100%; padding: .72rem .9rem .72rem 2.5rem;
+            border: 1px solid var(--border); border-radius: 7px;
             font-size: .85rem; font-family: 'DM Sans', sans-serif;
             background: white; color: var(--ink);
             transition: border-color .2s, box-shadow .2s;
             outline: none; -webkit-appearance: none; appearance: none;
-            padding: .72rem .9rem .72rem 2.5rem;
         }
-        input[type="number"] { -moz-appearance: textfield; }
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        select { padding: .72rem 2.25rem .72rem 2.5rem; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6b60' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234A6260' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 12px center; padding-right: 2.25rem;
+        }
         input::placeholder { color: #aab5af; }
-        input:focus, select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(14,134,171,0.1); }
+        input:focus, select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(45,184,176,0.12); }
 
-        /* Validation */
-        .field-error { font-size: .71rem; color: #b91c1c; display: none; }
-        .form-group.invalid input, .form-group.invalid select { border-color: #f87171; }
-        .form-group.invalid input:focus, .form-group.invalid select:focus { box-shadow: 0 0 0 3px rgba(248,113,113,0.12); }
-        .form-group.invalid .field-error { display: block; }
+        /* Radio options */
+        .radio-options { display: flex; flex-direction: column; gap: .6rem; }
+        .radio-options.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+        .radio-options.cols-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: .65rem; }
+        .r-option { position: relative; }
+        .r-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        .r-label { display: flex; align-items: flex-start; gap: .75rem; padding: .8rem 1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
+        .r-label:hover { border-color: var(--teal); background: var(--teal-pale); }
+        .r-option input:checked + .r-label { border-color: var(--teal); background: var(--teal-light); }
+        .r-radio { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .2s; margin-top: 1px; }
+        .r-option input:checked + .r-label .r-radio { border-color: var(--teal); background: var(--teal); }
+        .r-dot { width: 6px; height: 6px; border-radius: 50%; background: white; opacity: 0; transform: scale(0); transition: all .15s; }
+        .r-option input:checked + .r-label .r-dot { opacity: 1; transform: scale(1); }
+        .r-text { font-size: .82rem; color: var(--ink); flex: 1; line-height: 1.4; }
+        .r-sub { font-size: .7rem; color: var(--muted); margin-top: 1px; }
+        .r-option input:checked + .r-label .r-text { color: var(--teal-deep); font-weight: 500; }
 
-        /* Multi-choice checkboxes */
-        .mc-options { display: flex; flex-direction: column; gap: .65rem; }
+        /* Multi-select checkboxes */
+        .mc-options { display: flex; flex-direction: column; gap: .6rem; }
         .mc-option { position: relative; }
         .mc-option input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
-        .mc-label { display: flex; align-items: flex-start; gap: .85rem; padding: .9rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
-        .mc-label:hover { border-color: rgba(14,134,171,0.3); background: rgba(14,134,171,0.02); }
-        .mc-option input:checked + .mc-label { border-color: var(--teal); background: rgba(14,134,171,0.05); }
-        .mc-box { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: background .15s, border-color .15s; margin-top: 1px; }
+        .mc-label { display: flex; align-items: flex-start; gap: .75rem; padding: .8rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
+        .mc-label:hover { border-color: var(--teal); background: var(--teal-pale); }
+        .mc-option input:checked + .mc-label { border-color: var(--teal); background: var(--teal-light); }
+        .mc-box { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .15s; margin-top: 1px; }
         .mc-option input:checked + .mc-label .mc-box { background: var(--teal); border-color: var(--teal); }
-        .mc-box svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; opacity: 0; transform: scale(0); transition: opacity .15s, transform .15s; }
-        .mc-option input:checked + .mc-label .mc-box svg { opacity: 1; transform: scale(1); }
-        .mc-letter { font-size: .72rem; font-weight: 500; color: var(--muted); flex-shrink: 0; min-width: 16px; }
-        .mc-option input:checked + .mc-label .mc-letter { color: var(--teal); }
-        .mc-text { font-size: .84rem; color: var(--ink); line-height: 1.5; }
-        .form-group.invalid .mc-label { border-color: #f87171; }
+        .mc-box svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; opacity: 0; }
+        .mc-option input:checked + .mc-label .mc-box svg { opacity: 1; }
+        .mc-text { font-size: .82rem; color: var(--ink); flex: 1; line-height: 1.4; }
+        .mc-option input:checked + .mc-label .mc-text { color: var(--teal-deep); font-weight: 500; }
 
-        /* ── FOUNDER CARDS ── */
+        /* Founder cards */
         .founders-list { display: flex; flex-direction: column; gap: 1rem; }
-
         .founder-card {
             border: 1px solid var(--border); border-radius: 10px;
-            overflow: hidden; transition: box-shadow .2s;
-            background: white;
+            overflow: hidden; background: white;
         }
-        .founder-card:focus-within { box-shadow: 0 0 0 3px rgba(14,134,171,0.08); border-color: rgba(14,134,171,0.25); }
-
         .founder-card-header {
             display: flex; align-items: center; justify-content: space-between;
-            padding: .9rem 1.25rem;
-            background: var(--off); border-bottom: 1px solid var(--border);
-            cursor: pointer; user-select: none;
+            padding: .85rem 1.25rem; background: var(--teal-pale);
+            border-bottom: 1px solid var(--border); cursor: pointer;
+            user-select: none;
         }
         .founder-card-header-left { display: flex; align-items: center; gap: .75rem; }
-        .founder-avatar {
-            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
-            background: linear-gradient(135deg, var(--teal), var(--green));
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 500; color: white;
-        }
-        .founder-card-label { font-size: .85rem; font-weight: 500; color: var(--ink); }
-        .founder-card-sublabel { font-size: .72rem; color: var(--muted); margin-top: 1px; }
-        .founder-card-actions { display: flex; align-items: center; gap: .5rem; }
-        .founder-toggle {
-            width: 28px; height: 28px; border-radius: 6px; border: none;
-            background: white; border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: background .2s; flex-shrink: 0;
-        }
-        .founder-toggle svg { width: 14px; height: 14px; stroke: var(--muted); stroke-width: 2; fill: none; transition: transform .25s; }
-        .founder-card.collapsed .founder-toggle svg { transform: rotate(-90deg); }
-        .btn-remove-founder {
-            width: 28px; height: 28px; border-radius: 6px;
-            background: white; border: 1px solid rgba(248,113,113,0.3);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: background .2s; flex-shrink: 0;
-        }
-        .btn-remove-founder svg { width: 13px; height: 13px; stroke: #f87171; stroke-width: 2; fill: none; }
-        .btn-remove-founder:hover { background: #fef2f2; }
+        .founder-num { width: 26px; height: 26px; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+        .founder-title { font-size: .85rem; font-weight: 500; color: var(--ink); }
+        .founder-subtitle { font-size: .72rem; color: var(--muted); margin-top: 1px; }
+        .founder-card-toggle { background: none; border: none; cursor: pointer; color: var(--muted); padding: 4px; display: flex; }
+        .founder-card-toggle svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; transition: transform .2s; }
+        .founder-card.collapsed .founder-card-toggle svg { transform: rotate(-90deg); }
+        .founder-card-body { padding: 1.25rem; }
+        .founder-card.collapsed .founder-card-body { display: none; }
+        .founder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .btn-remove-founder { display: inline-flex; align-items: center; gap: 5px; font-size: .74rem; color: #dc2626; background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.15); padding: .3rem .75rem; border-radius: 100px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s; margin-top: .75rem; }
+        .btn-remove-founder:hover { background: rgba(220,38,38,0.12); }
+        .btn-remove-founder svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .btn-add-founder { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.25rem; border-radius: 100px; border: 1.5px dashed rgba(45,184,176,0.4); background: var(--teal-pale); font-size: .82rem; font-weight: 500; color: var(--teal); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s; width: 100%; justify-content: center; margin-top: .5rem; }
+        .btn-add-founder:hover { border-color: var(--teal); background: var(--teal-light); }
+        .btn-add-founder svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2; fill: none; }
 
-        .founder-card-body {
-            padding: 1.25rem;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
-            transition: all .25s ease;
-        }
-        .founder-card.collapsed .founder-card-body {
-            display: none;
-        }
-        .founder-field-full { grid-column: 1 / -1; }
+        /* Validation */
+        .field-error { font-size: .71rem; color: #b91c1c; display: none; margin-top: .2rem; }
+        .form-group.invalid input, .form-group.invalid select { border-color: #f87171; }
+        .form-group.invalid .field-error { display: block; }
+        .form-group.invalid .r-label { border-color: #f87171; }
+        .form-group.invalid .mc-label { border-color: #f87171; }
 
-        /* ── ADD FOUNDER BUTTON ── */
-        .btn-add-founder {
-            display: flex; align-items: center; justify-content: center; gap: .6rem;
-            width: 100%; padding: .85rem;
-            border: 1.5px dashed rgba(14,134,171,0.3); border-radius: 10px;
-            background: rgba(14,134,171,0.02); color: var(--teal);
-            font-size: .84rem; font-weight: 500; font-family: 'DM Sans', sans-serif;
-            cursor: pointer; transition: background .2s, border-color .2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .btn-add-founder:hover { background: rgba(14,134,171,0.06); border-color: rgba(14,134,171,0.5); }
-        .btn-add-founder svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
-
-        /* Founder count badge */
-        .founder-count-badge {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: rgba(14,134,171,0.08); border: 1px solid rgba(14,134,171,0.18);
-            padding: .2rem .65rem; border-radius: 100px;
-            font-size: 11px; color: var(--teal); font-weight: 500;
-            margin-left: .75rem;
-        }
-
-        /* ── ACTIONS ── */
         .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
         .actions-left { display: flex; align-items: center; gap: .75rem; }
-        .btn-back { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.3rem; border-radius: 7px; border: 1px solid var(--border); background: white; font-size: .84rem; font-weight: 400; color: var(--muted); text-decoration: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: border-color .2s, color .2s; }
-        .btn-back:hover { border-color: rgba(0,0,0,0.2); color: var(--ink); }
+        .btn-back { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.3rem; border-radius: 100px; border: 1px solid var(--border); background: white; font-size: .84rem; color: var(--muted); text-decoration: none; font-family: 'DM Sans', sans-serif; transition: all .2s; }
+        .btn-back:hover { border-color: var(--teal); color: var(--teal); }
         .btn-back svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
-        .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: .72rem 1.5rem; border-radius: 7px; background: white; border: 1px solid var(--border); font-size: .84rem; font-weight: 500; color: var(--teal); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, border-color .2s; }
-        .btn-save:hover { background: rgba(14,134,171,0.04); border-color: rgba(14,134,171,0.3); }
+        .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: .72rem 1.5rem; border-radius: 100px; background: white; border: 1px solid var(--teal); font-size: .84rem; font-weight: 500; color: var(--teal); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s; }
+        .btn-save:hover { background: var(--teal-pale); }
         .btn-save svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
-        .btn-next { display: inline-flex; align-items: center; gap: 7px; padding: .76rem 1.75rem; border-radius: 7px; background: var(--green); color: white; border: none; font-size: .88rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, transform .15s; -webkit-tap-highlight-color: transparent; }
-        .btn-next:hover { background: var(--green-d); transform: translateY(-1px); }
+        .btn-next { display: inline-flex; align-items: center; gap: 7px; padding: .76rem 1.75rem; border-radius: 100px; background: var(--teal); color: white; border: none; font-size: .88rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, transform .15s; }
+        .btn-next:hover { background: var(--teal-d); transform: translateY(-1px); }
         .btn-next:active { transform: scale(0.98); }
-        .btn-next:disabled { opacity: .5; cursor: not-allowed; transform: none; }
         .btn-next svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
-
-        /* ── TOAST ── */
-        .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--ink); color: white; padding: .75rem 1.25rem; border-radius: 8px; font-size: .8rem; display: flex; align-items: center; gap: .6rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transform: translateY(20px); opacity: 0; transition: transform .3s, opacity .3s; pointer-events: none; }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--ink); color: white; padding: .75rem 1.25rem; border-radius: 100px; font-size: .8rem; display: flex; align-items: center; gap: .6rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transform: translateY(20px); opacity: 0; transition: transform .3s, opacity .3s; pointer-events: none; }
         .toast.show { transform: translateY(0); opacity: 1; }
-        .toast svg { width: 15px; height: 15px; stroke: var(--lime); stroke-width: 2; fill: none; flex-shrink: 0; }
+        .toast svg { width: 14px; height: 14px; stroke: var(--green); stroke-width: 2; fill: none; flex-shrink: 0; }
 
-        /* ── RESPONSIVE ── */
         @@media (max-width: 900px) {
             .step-bar { display: none; }
             .top-nav { padding: 0 1.25rem; }
@@ -315,17 +257,19 @@
             .nav-deadline, .user-name, .nav-logout { display: none; }
             .main { padding-top: var(--nav-h); }
             .content { padding: 1.5rem 1rem 3rem; }
-            .form-grid-2 { grid-template-columns: 1fr; }
             .step-mini-bar, .step-mini-progress { display: none; }
+            .form-grid-2 { grid-template-columns: 1fr; }
+            .radio-options.cols-2 { grid-template-columns: 1fr; }
+            .radio-options.cols-4 { grid-template-columns: 1fr 1fr; }
+            .founder-grid { grid-template-columns: 1fr; }
         }
-        @@media (max-width: 600px) {
-            .founder-card-body { grid-template-columns: 1fr; }
-            .founder-field-full { grid-column: 1; }
-            .page-title { font-size: 1.6rem; }
+        @@media (max-width: 560px) {
+            .page-title { font-size: 1.65rem; }
             .form-card-body { padding: 1.25rem; }
+            .radio-options.cols-4 { grid-template-columns: 1fr 1fr; }
             .form-actions { flex-direction: column; align-items: stretch; }
             .actions-left { justify-content: space-between; }
-            .btn-next { justify-content: center; width: 100%; padding: 1rem; }
+            .btn-next { justify-content: center; padding: 1rem; }
             .toast { left: 1rem; right: 1rem; bottom: 1rem; justify-content: center; }
         }
     </style>
@@ -334,17 +278,11 @@
 
 <!-- TOP NAV -->
 <nav class="top-nav">
-    <div class="nav-brand">
-        <a href="/"><div class="nav-brand-icon">
-            <img src="~/web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" alt="NSIA" />
-        </div>
-        </a>
-        @* <div class="nav-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div> *@
-    </div>
+    <div class="nav-brand"> <a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
     <div class="nav-right">
         <div class="nav-deadline">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Deadline: <span class="deadline-val">5 June 2026</span>
+            Deadline: <span class="deadline-val">30 Jun 2026</span>
         </div>
         <div class="nav-user">
             <div class="user-avatar">@initials</div>
@@ -360,8 +298,8 @@
 <!-- STEP BAR -->
 <div class="step-bar">
     @foreach (var s in steps) {
-        var status = StepStatus(s.Num);
-        <a asp-action="@s.Action" asp-controller="Application" class="step-item @status" title="@s.Name">
+        var st = StepStatus(s.Num);
+        <a asp-action="@s.Action" asp-controller="Application" class="step-item @st" title="@s.Name">
             <div class="step-num">
                 <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
                 <span>@s.Num</span>
@@ -374,10 +312,7 @@
 <!-- MOBILE DRAWER -->
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <aside class="side-drawer" id="sideDrawer">
-    <div class="drawer-header">
-        <div class="drawer-brand-icon"><svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg></div>
-        <div class="drawer-brand-text"><strong>NSIA</strong><span>Prize for Innovation</span></div>
-    </div>
+    <div class="drawer-header"> <a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
     <div class="drawer-user">
         <div class="drawer-avatar">@initials</div>
         <div><div class="drawer-uname">@applicantName</div><div class="drawer-uemail">NPI 4.0 Applicant</div></div>
@@ -385,26 +320,26 @@
     <div class="drawer-steps">
         <span class="drawer-step-label">Application Steps</span>
         @foreach (var s in steps) {
-            var status = StepStatus(s.Num);
-            var statusLabel = status == "completed" ? "Completed" : status == "active" ? "In progress" : "Locked";
-            @* <a asp-action="@s.Action" asp-controller="Application"
-               class="drawer-item @status"
-               @(status == "locked" ? "style=pointer-events:none;opacity:.45" : "")>
+            var st    = StepStatus(s.Num);
+            var label = st == "completed" ? "Completed" : st == "active" ? "In progress" : "Locked";
+            <a asp-action="@s.Action" asp-controller="Application"
+               class="drawer-item @st"
+               style="@(st == "locked" ? "pointer-events:none;opacity:.4" : null)">
                 <div class="drawer-item-num">
                     <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
                     <span>@s.Num</span>
                 </div>
                 <div>
                     <div class="drawer-item-name">@s.Name</div>
-                    <div class="drawer-item-status">@statusLabel</div>
+                    <div class="drawer-item-status">@label</div>
                 </div>
-            </a> *@
+            </a>
         }
     </div>
     <div class="drawer-footer">
         <a asp-action="Logout" asp-controller="Account" class="drawer-logout">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Sign out of account
+            Sign out
         </a>
     </div>
 </aside>
@@ -417,165 +352,196 @@
             <div class="breadcrumb">
                 <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
                 <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-                <span>Team Info</span>
+                <span>Team Information</span>
             </div>
             <h1 class="page-title">Team Information</h1>
-            <p class="page-sub">Tell us about the people driving your innovation — founders, their backgrounds, and your full team size.</p>
+            <p class="page-sub">Tell us about the people behind the business — your founding team, their experience, and the employees who power your operations.</p>
         </div>
 
         <div class="step-mini">
-            <div class="step-mini-dot">3</div>
+            <div class="step-mini-dot">4</div>
             <div>
-                <div class="step-mini-label">Step 3 of 7</div>
-                <div class="step-mini-name">Team Info</div>
+                <div class="step-mini-label">Step 4 of 10</div>
+                <div class="step-mini-name">Team Information</div>
             </div>
             <div class="step-mini-spacer"></div>
-            <span class="step-mini-progress">Step 3 of 7</span>
+            <span class="step-mini-progress">Step 4 of 10</span>
             <div class="step-mini-bar"><div class="step-mini-fill"></div></div>
         </div>
 
-        <form asp-action="SaveTeamInfo" asp-controller="Application" method="post" id="teamForm" novalidate>
+        <form asp-action="SaveTeamInfo" asp-controller="Application"
+              method="post" id="teamForm" novalidate>
             @Html.AntiForgeryToken()
 
-            <!-- ── CARD 1: Team Overview ── -->
+            <!-- ── CARD 1: Team Structure ── -->
             <div class="form-card">
                 <div class="form-card-header">
-                    <div class="form-card-icon teal">
+                    <div class="form-card-icon">
                         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </div>
                     <div>
-                        <div class="form-card-title">Team Overview</div>
-                        <div class="form-card-desc">High-level information about your founding team size and composition.</div>
+                        <div class="form-card-title">Team Structure</div>
+                        <div class="form-card-desc">Number of founders, team composition and total employees.</div>
                     </div>
                 </div>
                 <div class="form-card-body">
-                    <div class="form-grid-2">
 
-                        <!-- Number of founders -->
-                        <div class="form-group" id="grp-foundercount">
-                            <label for="NumberOfFounders">
-                                How many founders are on the team?
-                                <span class="label-req">*</span>
-                            </label>
-                            <div class="input-wrap">
-                                <span class="input-icon">
-                                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                </span>
-                                <select id="NumberOfFounders" name="NumberOfFounders">
-                                    <option value="" disabled selected="@(ViewBag.NumberOfFounders == null)">Select number</option>
-                                    @for (int i = 1; i <= 2; i++)
-                                    {
-                                        <option value="@i" selected="@(ViewBag.NumberOfFounders == i)">
-                                            @i founder@(i > 1 ? "s" : "")
-                                        </option>
-                                    }
-                                </select>
-
-                            </div>
-                            <div class="field-error">Please select the number of founders.</div>
+                    <!-- Number of founders -->
+                    <div class="form-group" id="grp-numfounders">
+                        <label class="field-label">
+                            How many founders are on your team? <span class="label-req">*</span>
+                        </label>
+                        <div class="radio-options cols-4">
+                            @foreach (var val in new[]{"1","2","3","4+"}) {
+                                <div class="r-option">
+                                    <input type="radio" id="nf-@val" name="NumberOfFounders" value="@val"
+                                           @(ViewBag.NumberOfFounders == val ? "checked" : "") />
+                                    <label class="r-label" for="nf-@val">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-text" style="text-align:center;width:100%">@val</span>
+                                    </label>
+                                </div>
+                            }
                         </div>
-
-                        <!-- Total employees -->
-                        <div class="form-group" id="grp-employees">
-                            <label for="TotalEmployees">
-                                Total number of employees
-                                <span class="label-req">*</span>
-                            </label>
-                            <div class="input-wrap">
-                                <span class="input-icon">
-                                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                </span>
-                                <input type="number" id="TotalEmployees" name="TotalEmployees"
-                                       placeholder="e.g. 12" min="1" max="10000"
-                                       value="@ViewBag.TotalEmployees" />
-                            </div>
-                            <div class="field-error">Please enter the total number of employees.</div>
-                        </div>
-
+                        <div class="field-error">Please select the number of founders.</div>
                     </div>
 
-                    <!-- Founding team composition -->
-                    <div class="form-group" id="grp-teamcomp">
-                        <label>
-                            Who is on your founding team?
-                            <span class="label-req">*</span>
+                    <!-- Founding team type -->
+                    <div class="form-group" id="grp-teamtype">
+                        <label class="field-label">
+                            Who is on your founding team? <span class="label-req">*</span>
                             <span class="label-opt">(select all that apply)</span>
                         </label>
                         <div class="mc-options">
-                        <div class="mc-option">
-                            <input type="checkbox" id="tc-A" name="TeamComposition"
-                                value="Experienced professionals with industry expertise"
-                                @@(savedTeamComp.Contains("Experienced professionals with industry expertise") ? "checked" : "") />
-                            <label class="mc-label" for="tc-A">
-                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                <span class="mc-letter">A)</span>
-                                <span class="mc-text">Experienced professionals with industry expertise</span>
-                            </label>
+                            @{
+                                var teamTypes = new[]
+                                {
+                                    ("Business Expert",      "Commercial, strategy and operations experience"),
+                                    ("Technical Expert",     "Engineering, software or scientific expertise"),
+                                    ("Industry Professional","Specialist experience in your target sector"),
+                                    ("Academic/Researcher",  "Research, academia or scientific background"),
+                                };
+                                var savedTeamType = (ViewBag.FoundingTeamType as string ?? "")
+                                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(s => s.Trim()).ToList();
+                            }
+                            @foreach (var (val, desc) in teamTypes) {
+                                <div class="mc-option">
+                                    <input type="checkbox" id="tt-@val.Replace(" ","-").ToLower()"
+                                           name="FoundingTeamType" value="@val"
+                                           @(savedTeamType.Contains(val) ? "checked" : "") />
+                                    <label class="mc-label" for="tt-@val.Replace(" ","-").ToLower()">
+                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                        <div>
+                                            <div class="mc-text">@val</div>
+                                            <div style="font-size:.7rem;color:var(--muted);margin-top:1px">@desc</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            }
                         </div>
-
-                        <div class="mc-option">
-                            <input type="checkbox" id="tc-B" name="TeamComposition"
-                                value="Innovators with a track record of success"
-                                @@(savedTeamComp.Contains("Innovators with a track record of success") ? "checked" : "") />
-                            <label class="mc-label" for="tc-B">
-                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                <span class="mc-letter">B)</span>
-                                <span class="mc-text">Innovators with a track record of success</span>
-                            </label>
-                        </div>
-
-                        <div class="mc-option">
-                            <input type="checkbox" id="tc-C" name="TeamComposition"
-                                value="Recent graduates with fresh perspectives"
-                                @@(savedTeamComp.Contains("Recent graduates with fresh perspectives") ? "checked" : "") />
-                            <label class="mc-label" for="tc-C">
-                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                <span class="mc-letter">C)</span>
-                                <span class="mc-text">Recent graduates with fresh perspectives</span>
-                            </label>
-                        </div>
-
-                        <div class="mc-option">
-                            <input type="checkbox" id="tc-D" name="TeamComposition"
-                                value="A diverse mix of technical and business skills"
-                                @@(savedTeamComp.Contains("A diverse mix of technical and business skills") ? "checked" : "") />
-                            <label class="mc-label" for="tc-D">
-                                <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                <span class="mc-letter">D)</span>
-                                <span class="mc-text">A diverse mix of technical and business skills</span>
-                            </label>
-                        </div>
-                    </div>
                         <div class="field-error">Please select at least one option.</div>
                     </div>
+
+                    <!-- Experience -->
+                    <div class="form-grid-2">
+
+                        <div class="form-group" id="grp-founderexp">
+                            <label class="field-label">
+                                Years of relevant industry experience of the founder(s) <span class="label-req">*</span>
+                            </label>
+                            <div class="radio-options">
+                                @{
+                                    var founderExpOptions = new[]{"0-2 years","3-5 years","6-9 years","10+ years"};
+                                }
+                                @foreach (var val in founderExpOptions) {
+                                    <div class="r-option">
+                                        <input type="radio" id="fe-@val.Replace(" ","-").Replace("+","")"
+                                               name="FounderIndustryExperience" value="@val"
+                                               @(ViewBag.FounderIndustryExperience == val ? "checked" : "") />
+                                        <label class="r-label" for="fe-@val.Replace(" ","-").Replace("+","")">
+                                            <div class="r-radio"><div class="r-dot"></div></div>
+                                            <span class="r-text">@val</span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="field-error">Please select an option.</div>
+                        </div>
+
+                        <div class="form-group" id="grp-mgmtexp">
+                            <label class="field-label">
+                                Combined years of experience of the management team <span class="label-req">*</span>
+                            </label>
+                            <div class="radio-options">
+                                @{
+                                    var mgmtExpOptions = new[]{"0-5 years","6-10 years","11-15 years","16+ years"};
+                                }
+                                @foreach (var val in mgmtExpOptions) {
+                                    <div class="r-option">
+                                        <input type="radio" id="me-@val.Replace(" ","-").Replace("+","")"
+                                               name="ManagementTeamExperience" value="@val"
+                                               @(ViewBag.ManagementTeamExperience == val ? "checked" : "") />
+                                        <label class="r-label" for="me-@val.Replace(" ","-").Replace("+","")">
+                                            <div class="r-radio"><div class="r-dot"></div></div>
+                                            <span class="r-text">@val</span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="field-error">Please select an option.</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Total employees -->
+                    <div class="form-group" id="grp-employees">
+                        <label class="field-label">
+                            Total number of full-time employees <span class="label-req">*</span>
+                        </label>
+                        <div class="radio-options cols-2">
+                            @{
+                                var empOptions = new[]{"1-5","6-10","11-20","21+"};
+                            }
+                            @foreach (var val in empOptions) {
+                                <div class="r-option">
+                                    <input type="radio" id="emp-@val" name="TotalFullTimeEmployees" value="@val"
+                                           @(ViewBag.TotalFullTimeEmployees == val ? "checked" : "") />
+                                    <label class="r-label" for="emp-@val">
+                                        <div class="r-radio"><div class="r-dot"></div></div>
+                                        <span class="r-text">@val</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
                 </div>
             </div>
 
             <!-- ── CARD 2: Founders' Details ── -->
             <div class="form-card">
                 <div class="form-card-header">
-                    <div class="form-card-icon green">
+                    <div class="form-card-icon">
                         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </div>
                     <div>
-                        <div class="form-card-title">
-                            Founders' Details
-                            <span class="founder-count-badge" id="founderCountBadge">0 founders</span>
-                        </div>
-                        <div class="form-card-desc">Provide the name, phone number, role, LinkedIn/profile URL, and nationality for each founder.</div>
+                        <div class="form-card-title">Founders' Details</div>
+                        <div class="form-card-desc">Full name, phone, role, LinkedIn and nationality for each founder.</div>
                     </div>
                 </div>
                 <div class="form-card-body">
-                    <div class="founders-list" id="foundersList"></div>
-                    <div class="form-group" id="grp-founders-error" style="display:none">
-                        <div class="field-error" style="display:block;color:#b91c1c;font-size:.78rem">
-                            Please add at least one founder and fill in all required fields.
-                        </div>
+
+                    <div class="founders-list" id="foundersList">
+                        <!-- Rendered by JS -->
                     </div>
-                    <button type="button" class="btn-add-founder" id="btnAddFounder">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                        Add a founder
+
+                    <button type="button" class="btn-add-founder" id="addFounderBtn">
+                        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Add another founder
                     </button>
+
                 </div>
             </div>
 
@@ -603,10 +569,153 @@
 
 <div class="toast" id="toast">
     <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    <span id="toastMsg">Draft saved successfully</span>
+    <span id="toastMsg">Draft saved</span>
 </div>
 
 <script>
+    // ── Saved founders from server
+    const savedFounders = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        (ViewBag.Founders as IEnumerable<dynamic> ?? new List<dynamic>())
+        .Select(f => new {
+            name        = (string)(f.name        ?? ""),
+            phone       = (string)(f.phone       ?? ""),
+            role        = (string)(f.role        ?? ""),
+            linkedin    = (string)(f.linkedin    ?? ""),
+            nationality = (string)(f.nationality ?? ""),
+        })
+    ));
+
+    const foundersList  = document.getElementById('foundersList');
+    let   founderCount  = 0;
+
+    function createFounderCard(index, data = {}) {
+        const num  = index + 1;
+        const card = document.createElement('div');
+        card.className = 'founder-card';
+        card.dataset.index = index;
+        card.innerHTML = `
+            <div class="founder-card-header" onclick="toggleFounder(this)">
+                <div class="founder-card-header-left">
+                    <div class="founder-num">${num}</div>
+                    <div>
+                        <div class="founder-title" id="ftitle-${index}">
+                            ${data.name || 'Founder ' + num}
+                        </div>
+                        <div class="founder-subtitle">${data.role || 'Click to expand'}</div>
+                    </div>
+                </div>
+                <button type="button" class="founder-card-toggle">
+                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+            </div>
+            <div class="founder-card-body">
+                <div class="founder-grid">
+                    <div class="form-group">
+                        <label class="field-label">Full name <span style="color:#e53e3e">*</span></label>
+                        <div class="input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                            <input type="text" name="FounderName" placeholder="Full name"
+                                   value="${escHtml(data.name || '')}"
+                                   oninput="updateFounderTitle(${index}, this.value)" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="field-label">Phone number</label>
+                        <div class="input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+                            <input type="tel" name="FounderPhone" placeholder="+234 800 000 0000"
+                                   value="${escHtml(data.phone || '')}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="field-label">Role in company <span style="color:#e53e3e">*</span></label>
+                        <div class="input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+                            <input type="text" name="FounderRole" placeholder="e.g. CEO, CTO"
+                                   value="${escHtml(data.role || '')}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="field-label">LinkedIn / Profile URL</label>
+                        <div class="input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
+                            <input type="text" name="FounderLinkedIn" placeholder="linkedin.com/in/..."
+                                   value="${escHtml(data.linkedin || '')}" />
+                        </div>
+                    </div>
+                    <div class="form-group full">
+                        <label class="field-label">Nationality</label>
+                        <div class="input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+                            <input type="text" name="FounderNationality" placeholder="e.g. Nigerian"
+                                   value="${escHtml(data.nationality || '')}" />
+                        </div>
+                    </div>
+                </div>
+                ${index > 0 ? `<button type="button" class="btn-remove-founder" onclick="removeFounder(${index})">
+                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                    Remove founder
+                </button>` : ''}
+            </div>`;
+        return card;
+    }
+
+    function escHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function updateFounderTitle(index, name) {
+        const el = document.getElementById('ftitle-' + index);
+        if (el) el.textContent = name || ('Founder ' + (index + 1));
+    }
+
+    function toggleFounder(header) {
+        header.closest('.founder-card').classList.toggle('collapsed');
+    }
+
+    function removeFounder(index) {
+        const card = foundersList.querySelector(`[data-index="${index}"]`);
+        if (card) card.remove();
+        renumberFounders();
+    }
+
+    function renumberFounders() {
+        foundersList.querySelectorAll('.founder-card').forEach((card, i) => {
+            card.dataset.index = i;
+            const numEl = card.querySelector('.founder-num');
+            if (numEl) numEl.textContent = i + 1;
+            const titleEl = card.querySelector('.founder-title');
+            const nameInput = card.querySelector('input[name="FounderName"]');
+            if (titleEl && nameInput)
+                titleEl.textContent = nameInput.value || ('Founder ' + (i + 1));
+            // Update remove btn onclick
+            const rmBtn = card.querySelector('.btn-remove-founder');
+            if (rmBtn) rmBtn.setAttribute('onclick', `removeFounder(${i})`);
+            // Update name oninput
+            if (nameInput) nameInput.setAttribute('oninput', `updateFounderTitle(${i}, this.value)`);
+        });
+        founderCount = foundersList.querySelectorAll('.founder-card').length;
+    }
+
+    // Init with saved data or 1 empty card
+    if (savedFounders.length > 0) {
+        savedFounders.forEach((f, i) => {
+            foundersList.appendChild(createFounderCard(i, f));
+            founderCount++;
+        });
+    } else {
+        foundersList.appendChild(createFounderCard(0));
+        founderCount = 1;
+    }
+
+    document.getElementById('addFounderBtn').addEventListener('click', () => {
+        if (founderCount >= 10) return;
+        foundersList.appendChild(createFounderCard(founderCount));
+        founderCount++;
+        // Scroll to new card
+        foundersList.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
     // ── Drawer
     const hamburger     = document.getElementById('hamburger');
     const sideDrawer    = document.getElementById('sideDrawer');
@@ -616,237 +725,48 @@
     hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
     drawerOverlay.addEventListener('click', closeDrawer);
 
-    // ── Founder card builder
-    let founderIndex = 0;
-    const foundersList = document.getElementById('foundersList');
-    const countBadge   = document.getElementById('founderCountBadge');
-
-    // Pre-load saved founders from server (populate from ViewBag in controller)
-    const savedFounders = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Founders ?? new object[0]));
-
-    function getInitials(name) {
-        if (!name || !name.trim()) return '?';
-        return name.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('');
-    }
-
-    function updateCountBadge() {
-        const count = foundersList.querySelectorAll('.founder-card').length;
-        countBadge.textContent = count + ' founder' + (count !== 1 ? 's' : '');
-    }
-
-    function updateAvatarInitials(card) {
-        const nameInput = card.querySelector('.founder-name-input');
-        const avatar    = card.querySelector('.founder-avatar');
-        if (nameInput && avatar) {
-            avatar.textContent = getInitials(nameInput.value);
-        }
-    }
-
-    function updateCardLabel(card) {
-        const nameInput = card.querySelector('.founder-name-input');
-        const roleInput = card.querySelector('.founder-role-input');
-        const label     = card.querySelector('.founder-card-label');
-        const sublabel  = card.querySelector('.founder-card-sublabel');
-        if (label)    label.textContent    = nameInput?.value.trim() || 'New Founder';
-        if (sublabel) sublabel.textContent = roleInput?.value.trim() || 'Role not set';
-    }
-
-    function addFounder(data) {
-        const idx  = founderIndex++;
-        const card = document.createElement('div');
-        card.className = 'founder-card';
-        card.dataset.index = idx;
-
-        const name        = data?.name        || '';
-        const phone       = data?.phone       || '';
-        const role        = data?.role        || '';
-        const linkedin    = data?.linkedin    || '';
-        const nationality = data?.nationality || '';
-
-        card.innerHTML = `
-        <div class="founder-card-header" onclick="toggleFounderCard(this.closest('.founder-card'))">
-            <div class="founder-card-header-left">
-                <div class="founder-avatar">${getInitials(name)}</div>
-                <div>
-                    <div class="founder-card-label">${name || 'New Founder'}</div>
-                    <div class="founder-card-sublabel">${role || 'Role not set'}</div>
-                </div>
-            </div>
-            <div class="founder-card-actions">
-                <button type="button" class="btn-remove-founder" onclick="removeFounder(event, this)" title="Remove founder">
-                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                </button>
-                <button type="button" class="founder-toggle" title="Collapse">
-                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-            </div>
-        </div>
-        <div class="founder-card-body">
-            <div class="form-group founder-field-full" id="grp-fname-${idx}">
-                <label>Full name <span class="label-req">*</span></label>
-                <div class="input-wrap">
-                    <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-                    <input type="text" class="founder-name-input" name="Founders[${idx}].Name"
-                           placeholder="e.g. Emeka Okafor" value="${escHtml(name)}" />
-                </div>
-                <div class="field-error">Please enter the founder's name.</div>
-            </div>
-            <div class="form-group" id="grp-fphone-${idx}">
-                <label>Phone number <span class="label-req">*</span></label>
-                <div class="input-wrap">
-                    <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-                    <input type="tel" name="Founders[${idx}].PhoneNumber"
-                           placeholder="+234 800 000 0000" value="${escHtml(phone)}"
-                           inputmode="tel" />
-                </div>
-                <div class="field-error">Please enter a valid phone number.</div>
-            </div>
-            <div class="form-group" id="grp-frole-${idx}">
-                <label>Role / Title <span class="label-req">*</span></label>
-                <div class="input-wrap">
-                    <span class="input-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
-                    <input type="text" class="founder-role-input" name="Founders[${idx}].Role"
-                           placeholder="e.g. CEO &amp; Co-Founder" value="${escHtml(role)}" />
-                </div>
-                <div class="field-error">Please enter the founder's role.</div>
-            </div>
-            <div class="form-group" id="grp-fnationality-${idx}">
-                <label>Nationality <span class="label-req">*</span></label>
-                <div class="input-wrap">
-                    <span class="input-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-                    <input type="text" name="Founders[${idx}].Nationality"
-                           placeholder="e.g. Nigerian" value="${escHtml(nationality)}" />
-                </div>
-                <div class="field-error">Please enter the founder's nationality.</div>
-            </div>
-            <div class="form-group founder-field-full" id="grp-flinkedin-${idx}">
-                <label>LinkedIn or Profile URL <span class="label-opt">(optional)</span></label>
-                <div class="input-wrap">
-                    <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
-                    <input type="url" name="Founders[${idx}].LinkedInUrl"
-                           placeholder="https://linkedin.com/in/username" value="${escHtml(linkedin)}" />
-                </div>
-            </div>
-        </div>`;
-
-        // Live update avatar + label on name/role change
-        card.querySelector('.founder-name-input').addEventListener('input', () => {
-            updateAvatarInitials(card);
-            updateCardLabel(card);
-        });
-        card.querySelector('.founder-role-input').addEventListener('input', () => updateCardLabel(card));
-
-        foundersList.appendChild(card);
-        updateCountBadge();
-        syncFounderCountSelect();
-    }
-
-    function toggleFounderCard(card) {
-        card.classList.toggle('collapsed');
-    }
-
-    function removeFounder(e, btn) {
-        e.stopPropagation();
-        const card = btn.closest('.founder-card');
-        card.style.opacity = '0';
-        card.style.transform = 'scale(0.97)';
-        card.style.transition = 'opacity .2s, transform .2s';
-        setTimeout(() => { card.remove(); updateCountBadge(); syncFounderCountSelect(); }, 200);
-    }
-
-    function syncFounderCountSelect() {
-        const count = foundersList.querySelectorAll('.founder-card').length;
-        const sel = document.getElementById('NumberOfFounders');
-        if (count > 0) sel.value = count;
-    }
-
-    function escHtml(str) {
-        return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    // Add founder button
-    document.getElementById('btnAddFounder').addEventListener('click', () => {
-        addFounder({});
-        // Scroll new card into view
-        const cards = foundersList.querySelectorAll('.founder-card');
-        cards[cards.length - 1]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    });
-
-    // When number of founders select changes, sync card count
-    document.getElementById('NumberOfFounders').addEventListener('change', function () {
-        const target  = parseInt(this.value);
-        const current = foundersList.querySelectorAll('.founder-card').length;
-        if (target > current) {
-            for (let i = current; i < target; i++) addFounder({});
-        }
-    });
-
-    // Load saved founders on page load
-    if (savedFounders && savedFounders.length > 0) {
-        savedFounders.forEach(f => addFounder(f));
-    }
-
-    // ── Validation helpers
-    function setInvalid(id) { document.getElementById(id)?.classList.add('invalid'); }
+    // ── Validation
+    function setInvalid(id)   { document.getElementById(id)?.classList.add('invalid'); }
     function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
-    function isValidPhone(v) { return /^[+\d][\d\s\-(). ]{6,19}$/.test(v.trim()); }
 
-    ['NumberOfFounders'].forEach(id => {
-        document.getElementById(id)?.addEventListener('change', () => clearInvalid('grp-foundercount'));
+    ['NumberOfFounders','FounderIndustryExperience','ManagementTeamExperience','TotalFullTimeEmployees'].forEach(name => {
+        document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.addEventListener('change', () => {
+            const map = {
+                NumberOfFounders:          'grp-numfounders',
+                FounderIndustryExperience: 'grp-founderexp',
+                ManagementTeamExperience:  'grp-mgmtexp',
+                TotalFullTimeEmployees:    'grp-employees',
+            };
+            clearInvalid(map[name]);
+        }));
     });
-    document.getElementById('TotalEmployees')?.addEventListener('input', () => clearInvalid('grp-employees'));
-    document.querySelectorAll('input[name="TeamComposition"]').forEach(c => c.addEventListener('change', () => clearInvalid('grp-teamcomp')));
+    document.querySelectorAll('input[name="FoundingTeamType"]').forEach(c =>
+        c.addEventListener('change', () => clearInvalid('grp-teamtype'))
+    );
 
     function validate() {
         let ok = true;
-
-        if (!document.getElementById('NumberOfFounders').value) { setInvalid('grp-foundercount'); ok = false; } else clearInvalid('grp-foundercount');
-
-        const emp = parseInt(document.getElementById('TotalEmployees').value);
-        if (!emp || emp < 1) { setInvalid('grp-employees'); ok = false; } else clearInvalid('grp-employees');
-
-        if (!document.querySelector('input[name="TeamComposition"]:checked')) { setInvalid('grp-teamcomp'); ok = false; } else clearInvalid('grp-teamcomp');
-
-        // Validate each founder card
-        const cards = foundersList.querySelectorAll('.founder-card');
-        if (cards.length === 0) {
-            document.getElementById('grp-founders-error').style.display = 'block';
-            ok = false;
-        } else {
-            document.getElementById('grp-founders-error').style.display = 'none';
-        }
-
-        cards.forEach(card => {
-            const idx  = card.dataset.index;
-            const name = card.querySelector(`input[name="Founders[${idx}].Name"]`);
-            const ph   = card.querySelector(`input[name="Founders[${idx}].PhoneNumber"]`);
-            const role = card.querySelector(`input[name="Founders[${idx}].Role"]`);
-            const nat  = card.querySelector(`input[name="Founders[${idx}].Nationality"]`);
-
-            if (!name?.value.trim()) { document.getElementById(`grp-fname-${idx}`)?.classList.add('invalid'); ok = false; card.classList.remove('collapsed'); }
-            else document.getElementById(`grp-fname-${idx}`)?.classList.remove('invalid');
-
-            if (!ph?.value.trim() || !isValidPhone(ph.value)) { document.getElementById(`grp-fphone-${idx}`)?.classList.add('invalid'); ok = false; card.classList.remove('collapsed'); }
-            else document.getElementById(`grp-fphone-${idx}`)?.classList.remove('invalid');
-
-            if (!role?.value.trim()) { document.getElementById(`grp-frole-${idx}`)?.classList.add('invalid'); ok = false; card.classList.remove('collapsed'); }
-            else document.getElementById(`grp-frole-${idx}`)?.classList.remove('invalid');
-
-            if (!nat?.value.trim()) { document.getElementById(`grp-fnationality-${idx}`)?.classList.add('invalid'); ok = false; card.classList.remove('collapsed'); }
-            else document.getElementById(`grp-fnationality-${idx}`)?.classList.remove('invalid');
-        });
-
-        if (!ok) document.querySelector('.invalid, [style*="block"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!document.querySelector('input[name="NumberOfFounders"]:checked'))
+            { setInvalid('grp-numfounders'); ok = false; }
+        if (!document.querySelector('input[name="FoundingTeamType"]:checked'))
+            { setInvalid('grp-teamtype'); ok = false; }
+        if (!document.querySelector('input[name="FounderIndustryExperience"]:checked'))
+            { setInvalid('grp-founderexp'); ok = false; }
+        if (!document.querySelector('input[name="ManagementTeamExperience"]:checked'))
+            { setInvalid('grp-mgmtexp'); ok = false; }
+        if (!document.querySelector('input[name="TotalFullTimeEmployees"]:checked'))
+            { setInvalid('grp-employees'); ok = false; }
+        if (!ok) document.querySelector('.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return ok;
     }
 
     // ── Toast
     function showToast(msg, isError) {
-        const toast = document.getElementById('toast');
-        toast.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--lime)';
+        const t = document.getElementById('toast');
+        t.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--green)';
         document.getElementById('toastMsg').textContent = msg;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
     }
 
     // ── Save draft
@@ -856,8 +776,8 @@
         try {
             const fd  = new FormData(document.getElementById('teamForm'));
             const res = await fetch('/Application/SaveTeamInfoDraft', { method: 'POST', body: fd });
-            showToast(res.ok ? 'Draft saved successfully' : 'Could not save draft', !res.ok);
-        } catch { showToast('Could not save draft', true); }
+            showToast(res.ok ? 'Draft saved' : 'Could not save', !res.ok);
+        } catch { showToast('Could not save', true); }
         finally {
             btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save draft';
             btn.disabled = false;
@@ -865,7 +785,7 @@
     });
 
     // ── Submit
-    document.getElementById('teamForm').addEventListener('submit', function (e) {
+    document.getElementById('teamForm').addEventListener('submit', function(e) {
         if (!validate()) { e.preventDefault(); return; }
         const btn = document.getElementById('nextBtn');
         btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Saving...';

@@ -1,13 +1,9 @@
 @{
-    ViewData["Title"] = "Impact — NSIA Prize for Innovation";
+    ViewData["Title"] = "Commercial I — Revenue & Funding — NSIA Prize for Innovation";
     Layout = null;
     var applicantName = ViewBag.ApplicantName as string ?? "";
-    var completedStep = (int)(ViewBag.CompletedStep ?? 8);
-    var initials = string.Join("",
-        applicantName
-            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-            .Take(2)
-            .Select(w => w[0]));
+    var completedStep = (int)(ViewBag.CompletedStep ?? 5);
+    var initials      = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
 
     var steps = new[] {
         new { Num = 1,  Name = "Pre-Checklist",    Action = "PreChecklist"   },
@@ -19,7 +15,7 @@
         new { Num = 7,  Name = "Commercial II",    Action = "Commercial2"    },
         new { Num = 8,  Name = "Sustainability",   Action = "Sustainability" },
         new { Num = 9,  Name = "Impact",           Action = "Impact"         },
-        new { Num = 10, Name = "Additional Info",       Action = "Additional"     },
+        new { Num = 10, Name = "Additional Info",       Action = "Additional"       },
     };
 
     string StepStatus(int num) {
@@ -28,13 +24,13 @@
         return "locked";
     }
 
-    string Saved(string field) =>
-        ViewBag.GetType().GetProperty(field)?.GetValue(ViewBag) as string ?? "";
-    bool IsC(string field, string val) => Saved(field) == val;
-
-    List<string> SavedList(string field) =>
-        (ViewBag.GetType().GetProperty(field)?.GetValue(ViewBag) as string ?? "")
+    var savedFundingTypes = (ViewBag.TypesOfFunding as string ?? "")
         .Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
+
+    bool IsC(string field, string val) {
+        var saved = ViewBag.GetType().GetProperty(field)?.GetValue(ViewBag) as string ?? "";
+        return saved == val;
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -78,7 +74,7 @@
         .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
         .hamburger.open span:nth-child(2) { opacity: 0; }
         .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-       
+        
         /* ── STEP BAR ── */
         .step-bar { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190; height: var(--step-h); background: white; border-bottom: 1px solid var(--green); display: flex; align-items: stretch; overflow: hidden; }
         .step-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 .35rem; text-decoration: none; color: var(--green); border-right: 1px solid var(--green); position: relative; transition: background .2s; min-width: 0; }
@@ -144,7 +140,7 @@
         .step-mini-spacer { flex: 1; }
         .step-mini-progress { font-size: 11px; color: var(--muted); white-space: nowrap; }
         .step-mini-bar { width: 120px; height: 4px; background: var(--off); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
-        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--green)); border-radius: 10px; width: 90%; }
+        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--green)); border-radius: 10px; width: 60%; }
         .form-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
         .form-card-header { padding: 1.1rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
         .form-card-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--teal-light); }
@@ -157,9 +153,10 @@
         .label-req { color: #e53e3e; margin-left: 2px; }
         .label-opt { font-size: .68rem; color: var(--muted); font-weight: 400; margin-left: 4px; }
 
+        /* Radio options */
         .radio-options { display: flex; flex-direction: column; gap: .6rem; }
         .radio-options.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
-        .radio-options.cols-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: .65rem; }
+        .radio-options.cols-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: .65rem; }
         .r-option { position: relative; }
         .r-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
         .r-label { display: flex; align-items: flex-start; gap: .75rem; padding: .8rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
@@ -172,23 +169,29 @@
         .r-text { font-size: .82rem; color: var(--ink); flex: 1; line-height: 1.45; }
         .r-option input:checked + .r-label .r-text { color: var(--teal-deep); font-weight: 500; }
 
-        .mc-options { display: flex; flex-direction: column; gap: .6rem; }
-        .mc-option { position: relative; }
-        .mc-option input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
-        .mc-label { display: flex; align-items: flex-start; gap: .75rem; padding: .8rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
-        .mc-label:hover { border-color: var(--teal); background: var(--teal-pale); }
-        .mc-option input:checked + .mc-label { border-color: var(--teal); background: var(--teal-light); }
-        .mc-box { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .15s; margin-top: 1px; }
-        .mc-option input:checked + .mc-label .mc-box { background: var(--teal); border-color: var(--teal); }
-        .mc-box svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; opacity: 0; }
-        .mc-option input:checked + .mc-label .mc-box svg { opacity: 1; }
-        .mc-text { font-size: .82rem; color: var(--ink); flex: 1; line-height: 1.45; }
-        .mc-option input:checked + .mc-label .mc-text { color: var(--teal-deep); font-weight: 500; }
+        /* Check grid */
+        .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+        .c-option { position: relative; }
+        .c-option input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        .c-label { display: flex; align-items: center; gap: .75rem; padding: .8rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
+        .c-label:hover { border-color: var(--teal); background: var(--teal-pale); }
+        .c-option input:checked + .c-label { border-color: var(--teal); background: var(--teal-light); }
+        .c-box { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .15s; }
+        .c-option input:checked + .c-label .c-box { background: var(--teal); border-color: var(--teal); }
+        .c-box svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; opacity: 0; }
+        .c-option input:checked + .c-label .c-box svg { opacity: 1; }
+        .c-text { font-size: .82rem; color: var(--ink); flex: 1; line-height: 1.4; }
+        .c-option input:checked + .c-label .c-text { color: var(--teal-deep); font-weight: 500; }
 
+        /* Conditional */
+        .conditional { display: none; }
+        .conditional.show { display: block; }
+
+        /* Validation */
         .field-error { font-size: .71rem; color: #b91c1c; display: none; margin-top: .2rem; }
         .form-group.invalid .field-error { display: block; }
         .form-group.invalid .r-label { border-color: #f87171; }
-        .form-group.invalid .mc-label { border-color: #f87171; }
+        .form-group.invalid .c-label { border-color: #f87171; }
 
         .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
         .actions-left { display: flex; align-items: center; gap: .75rem; }
@@ -215,12 +218,13 @@
             .content { padding: 1.5rem 1rem 3rem; }
             .step-mini-bar, .step-mini-progress { display: none; }
             .radio-options.cols-2 { grid-template-columns: 1fr; }
-            .radio-options.cols-4 { grid-template-columns: 1fr 1fr; }
+            .radio-options.cols-3 { grid-template-columns: 1fr 1fr; }
+            .check-grid { grid-template-columns: 1fr; }
         }
         @@media (max-width: 560px) {
             .page-title { font-size: 1.65rem; }
             .form-card-body { padding: 1.25rem; }
-            .radio-options.cols-4 { grid-template-columns: 1fr 1fr; }
+            .radio-options.cols-3 { grid-template-columns: 1fr; }
             .form-actions { flex-direction: column; align-items: stretch; }
             .actions-left { justify-content: space-between; }
             .btn-next { justify-content: center; padding: 1rem; }
@@ -230,6 +234,7 @@
 </head>
 <body>
 
+<!-- TOP NAV -->
 <nav class="top-nav">
     <div class="nav-brand"> <a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
     <div class="nav-right">
@@ -248,6 +253,7 @@
     </div>
 </nav>
 
+<!-- STEP BAR -->
 <div class="step-bar">
     @foreach (var s in steps) {
         var st = StepStatus(s.Num);
@@ -261,6 +267,7 @@
     }
 </div>
 
+<!-- MOBILE DRAWER -->
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <aside class="side-drawer" id="sideDrawer">
     <div class="drawer-header"> <a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
@@ -295,6 +302,7 @@
     </div>
 </aside>
 
+<!-- MAIN -->
 <main class="main">
     <div class="content">
 
@@ -302,126 +310,174 @@
             <div class="breadcrumb">
                 <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
                 <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-                <span>Impact</span>
+                <span>Commercial I — Revenue &amp; Funding</span>
             </div>
-            <h1 class="page-title">Impact</h1>
-            <p class="page-sub">Tell us about the social, economic and community impact your business creates — and how you measure and share it.</p>
+            <h1 class="page-title">Commercial I</h1>
+            <p class="page-sub">Tell us about your revenue history, funding received to date, and your financial projections.</p>
         </div>
 
         <div class="step-mini">
-            <div class="step-mini-dot">9</div>
+            <div class="step-mini-dot">6</div>
             <div>
-                <div class="step-mini-label">Step 9 of 10</div>
-                <div class="step-mini-name">Impact</div>
+                <div class="step-mini-label">Step 6 of 10</div>
+                <div class="step-mini-name">Commercial I — Revenue &amp; Funding</div>
             </div>
             <div class="step-mini-spacer"></div>
-            <span class="step-mini-progress">Step 9 of 10</span>
+            <span class="step-mini-progress">Step 6 of 10</span>
             <div class="step-mini-bar"><div class="step-mini-fill"></div></div>
         </div>
 
-        <form asp-action="SaveImpact" asp-controller="Application"
-              method="post" id="impactForm" novalidate>
+        <form asp-action="SaveCommercial1" asp-controller="Application"
+              method="post" id="comm1Form" novalidate>
             @Html.AntiForgeryToken()
 
+            <!-- ── CARD 1: Sales & Revenue ── -->
             <div class="form-card">
                 <div class="form-card-header">
                     <div class="form-card-icon">
-                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     </div>
                     <div>
-                        <div class="form-card-title">Market Reach &amp; Equity</div>
-                        <div class="form-card-desc">Who your solution serves and how it addresses systemic inequalities.</div>
+                        <div class="form-card-title">Sales &amp; Revenue</div>
+                        <div class="form-card-desc">Your current sales status and financial performance.</div>
                     </div>
                 </div>
                 <div class="form-card-body">
 
-                    <div class="form-group" id="grp-underserved">
-                        <label class="field-label">What percentage of your market consists of underserved populations? <span class="label-req">*</span></label>
-                        <div class="radio-options cols-4">
-                            @foreach (var val in new[]{">80%","60–80%","40–60%","<40%"}) {
-                                var underservedId = val.Replace(">","gt").Replace("<","lt").Replace("–","-").Replace("%","");
-                                <div class="r-option">
-                                    <input type="radio" id="um-@underservedId"
-                                           name="UnderservedMarketPercentage" value="@val"
-                                           @(IsC("UnderservedMarketPercentage",val) ? "checked" : "") />
-                                    <label class="r-label" for="um-@underservedId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text" style="text-align:center;width:100%">@val</span>
-                                    </label>
-                                </div>
-                            }
+                    <!-- Has started generating sales -->
+                    <div class="form-group" id="grp-hassales">
+                        <label class="field-label">
+                            Have you started generating sales? <span class="label-req">*</span>
+                        </label>
+                        <div class="radio-options cols-2">
+                            <div class="r-option">
+                                <input type="radio" id="sales-yes" name="HasStartedGeneratingSales"
+                                       value="Yes, we are generating revenue"
+                                       @(IsC("HasStartedGeneratingSales","Yes, we are generating revenue") ? "checked" : "") />
+                                <label class="r-label" for="sales-yes">
+                                    <div class="r-radio"><div class="r-dot"></div></div>
+                                    <span class="r-text">Yes, we are generating revenue</span>
+                                </label>
+                            </div>
+                            <div class="r-option">
+                                <input type="radio" id="sales-no" name="HasStartedGeneratingSales"
+                                       value="No, we have not yet made any sales"
+                                       @(IsC("HasStartedGeneratingSales","No, we have not yet made any sales") ? "checked" : "") />
+                                <label class="r-label" for="sales-no">
+                                    <div class="r-radio"><div class="r-dot"></div></div>
+                                    <span class="r-text">No, we have not yet made any sales</span>
+                                </label>
+                            </div>
                         </div>
                         <div class="field-error">Please select an option.</div>
                     </div>
 
-                    <div class="form-group" id="grp-inequality">
-                        <label class="field-label">How does your solution actively address systemic inequities (e.g., gender, income, ethnicity)? <span class="label-req">*</span></label>
+                    <!-- Year of first sale — conditional -->
+                    <div class="conditional" id="cond-firstsale">
+                        <div class="form-group" id="grp-firstsale">
+                            <label class="field-label">
+                                What year did you make your first sale? <span class="label-req">*</span>
+                            </label>
+                            <div class="radio-options cols-2">
+                                @{
+                                    var saleYears = new[]
+                                    {
+                                        "Before 2020",
+                                        "2021 - 2022",
+                                        "2023 - 2024",
+                                        "No sales history",
+                                    };
+                                }
+                                @foreach (var val in saleYears) {
+                                    <div class="r-option">
+                                        <input type="radio" id="sy-@val.Replace(" ","-").ToLower()"
+                                               name="YearOfFirstSale" value="@val"
+                                               @(IsC("YearOfFirstSale", val) ? "checked" : "") />
+                                        <label class="r-label" for="sy-@val.Replace(" ","-").ToLower()">
+                                            <div class="r-radio"><div class="r-dot"></div></div>
+                                            <span class="r-text">@val</span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="field-error">Please select an option.</div>
+                        </div>
+                    </div>
+
+                    <!-- Yearly Sales Revenue -->
+                    <div class="form-group" id="grp-revenue">
+                        <label class="field-label">
+                            Yearly sales revenue (in Naira) <span class="label-req">*</span>
+                        </label>
                         <div class="radio-options cols-2">
-                            @foreach (var val in new[]{
-                                "Targets 2+ inequities",
-                                "Addresses 1 inequity",
-                                "Indirect benefits",
-                                "No focus"}) {
-                                var systemicInequalityIdBase = val.Replace(" ","-").Replace("+","p").ToLower();
-                                var systemicInequalityId = systemicInequalityIdBase.Substring(0, Math.Min(systemicInequalityIdBase.Length, 12));
+                            @{
+                                var revenueRanges = new[]
+                                {
+                                    "Above ₦500M",
+                                    "₦100M – ₦499M",
+                                    "₦10M – ₦99M",
+                                    "Less than ₦10M",
+                                    "Zero sales",
+                                };
+                            }
+                            @foreach (var val in revenueRanges) {
+                                var revenueIdBase = val.Replace(" ", "-")
+                                    .Replace("₦", "")
+                                    .Replace("–", "")
+                                    .ToLower();
+
+                                var revenueId = revenueIdBase.Substring(0, Math.Min(revenueIdBase.Length, 14));
+
                                 <div class="r-option">
-                                    <input type="radio" id="si-@systemicInequalityId"
-                                           name="SystemicInequalityApproach" value="@val"
-                                           @(IsC("SystemicInequalityApproach",val) ? "checked" : "") />
-                                    <label class="r-label" for="si-@systemicInequalityId">
+                                    <input type="radio" id="rev-@revenueId"
+                                        name="YearlySalesRevenue" value="@val"
+                                        @(IsC("YearlySalesRevenue", val) ? "checked" : "") />
+                                    <label class="r-label" for="rev-@revenueId">
                                         <div class="r-radio"><div class="r-dot"></div></div>
                                         <span class="r-text">@val</span>
                                     </label>
                                 </div>
                             }
+
                         </div>
                         <div class="field-error">Please select an option.</div>
                     </div>
 
-                    <div class="form-group" id="grp-beneficiary">
-                        <label class="field-label">To what extent are beneficiaries involved in designing your solution? <span class="label-req">*</span></label>
+                    <!-- Yearly Profit -->
+                    <div class="form-group" id="grp-profit">
+                        <label class="field-label">
+                            Yearly profit (in Naira) <span class="label-req">*</span>
+                        </label>
                         <div class="radio-options cols-2">
-                            @foreach (var val in new[]{
-                                "Co-created with community input",
-                                "Piloted with user feedback",
-                                "Minimal involvement",
-                                "No involvement"}) {
-                                var beneficiaryIdBase = val.Replace(" ","-").ToLower();
-                                var beneficiaryId = beneficiaryIdBase.Substring(0, Math.Min(beneficiaryIdBase.Length, 12));
+                            @{
+                                var profitRanges = new[]
+                                {
+                                    "Above ₦200M",
+                                    "₦50M – ₦199M",
+                                    "₦10M – ₦49M",
+                                    "Less than ₦10M",
+                                    "Zero profit",
+                                };
+                            }
+                            @foreach (var val in profitRanges) {
+                                var profitIdBase = val.Replace(" ", "-")
+                                    .Replace("₦", "")
+                                    .Replace("–", "")
+                                    .ToLower();
+
+                                var profitId = profitIdBase.Substring(0, Math.Min(profitIdBase.Length, 14));
+
                                 <div class="r-option">
-                                    <input type="radio" id="bi-@beneficiaryId"
-                                           name="BeneficiaryInvolvement" value="@val"
-                                           @(IsC("BeneficiaryInvolvement",val) ? "checked" : "") />
-                                    <label class="r-label" for="bi-@beneficiaryId">
+                                    <input type="radio" id="prf-@profitId"
+                                        name="YearlyProfit" value="@val"
+                                        @(IsC("YearlyProfit", val) ? "checked" : "") />
+                                    <label class="r-label" for="prf-@profitId">
                                         <div class="r-radio"><div class="r-dot"></div></div>
                                         <span class="r-text">@val</span>
                                     </label>
                                 </div>
                             }
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
 
-                    <div class="form-group" id="grp-gender">
-                        <label class="field-label">How does your product/service help bridge gender gaps? <span class="label-req">*</span></label>
-                        <div class="radio-options cols-2">
-                            @foreach (var val in new[]{
-                                "50%+ female leadership/beneficiaries",
-                                "Targeted programs for women/girls",
-                                "Neutral (no focus)",
-                                "Worsens gaps"}) {
-                                var genderGapIdBase = val.Replace(" ","-").Replace("/","-").Replace("+","p").Replace("(","").Replace(")","").ToLower();
-                                var genderGapId = genderGapIdBase.Substring(0, Math.Min(genderGapIdBase.Length, 12));
-                                <div class="r-option">
-                                    <input type="radio" id="gg-@genderGapId"
-                                           name="GenderGapApproach" value="@val"
-                                           @(IsC("GenderGapApproach",val) ? "checked" : "") />
-                                    <label class="r-label" for="gg-@genderGapId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
                         </div>
                         <div class="field-error">Please select an option.</div>
                     </div>
@@ -429,148 +485,154 @@
                 </div>
             </div>
 
+            <!-- ── CARD 2: Funding ── -->
             <div class="form-card">
                 <div class="form-card-header">
                     <div class="form-card-icon">
-                        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     </div>
                     <div>
-                        <div class="form-card-title">Jobs, Access &amp; Data</div>
-                        <div class="form-card-desc">Jobs created, accessibility, data sharing and population impact.</div>
+                        <div class="form-card-title">Funding</div>
+                        <div class="form-card-desc">Proprietary investment, external funding received and fundraising status.</div>
                     </div>
                 </div>
                 <div class="form-card-body">
 
-                    <div class="form-group" id="grp-jobs">
-                        <label class="field-label">How many jobs has your business created in your operational regions? <span class="label-req">*</span></label>
-                        <div class="radio-options cols-4">
-                            @foreach (var val in new[]{"200+","50–200","10–50","<10"}) {
-                                var jobsId = val.Replace("–","-").Replace("+","p").Replace("<","lt");
-                                <div class="r-option">
-                                    <input type="radio" id="jb-@jobsId"
-                                           name="JobsCreated" value="@val"
-                                           @(IsC("JobsCreated",val) ? "checked" : "") />
-                                    <label class="r-label" for="jb-@jobsId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text" style="text-align:center;width:100%">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
-
-                    <div class="form-group" id="grp-access">
-                        <label class="field-label">In what ways does your solution improve access for underserved groups? <span class="label-req">*</span></label>
+                    <!-- Proprietary Funding -->
+                    <div class="form-group" id="grp-propfunding">
+                        <label class="field-label">
+                            How much proprietary/founder's funding has been invested (in Naira)? <span class="label-req">*</span>
+                        </label>
                         <div class="radio-options cols-2">
-                            @foreach (var val in new[]{
-                                "Free/low-cost for 10k+ users",
-                                "Affordable with proven outcomes",
-                                "Limited accessibility",
-                                "No focus"}) {
-                                var accessUnderservedIdBase = val.Replace(" ","-").Replace("/","-").Replace("+","p").ToLower();
-                                var accessUnderservedId = accessUnderservedIdBase.Substring(0, Math.Min(accessUnderservedIdBase.Length, 12));
+                            @{
+                                var propFunding = new[]
+                                {
+                                    "Above ₦50M",
+                                    "₦10M – ₦49M",
+                                    "₦1M – ₦9M",
+                                    "Less than ₦1M",
+                                };
+                            }
+                           @foreach (var val in propFunding) {
+                                var propFundingIdBase = val.Replace(" ", "-")
+                                    .Replace("₦", "")
+                                    .Replace("–", "")
+                                    .ToLower();
+
+                                var propFundingId = propFundingIdBase.Substring(0, Math.Min(propFundingIdBase.Length, 12));
+
                                 <div class="r-option">
-                                    <input type="radio" id="au-@accessUnderservedId"
-                                           name="AccessForUnderserved" value="@val"
-                                           @(IsC("AccessForUnderserved",val) ? "checked" : "") />
-                                    <label class="r-label" for="au-@accessUnderservedId">
+                                    <input type="radio" id="pf-@propFundingId"
+                                        name="ProprietaryFunding" value="@val"
+                                        @(IsC("ProprietaryFunding", val) ? "checked" : "") />
+                                    <label class="r-label" for="pf-@propFundingId">
                                         <div class="r-radio"><div class="r-dot"></div></div>
                                         <span class="r-text">@val</span>
                                     </label>
                                 </div>
                             }
+
                         </div>
                         <div class="field-error">Please select an option.</div>
                     </div>
 
-                    <div class="form-group" id="grp-resources">
-                        <label class="field-label">How does your business optimize resource use to enhance sustainability? <span class="label-req">*</span></label>
+                    <!-- External Funding -->
+                    <div class="form-group" id="grp-extfunding">
+                        <label class="field-label">
+                            How much external funding has been invested (in Naira)? <span class="label-req">*</span>
+                        </label>
                         <div class="radio-options cols-2">
-                            @foreach (var val in new[]{
-                                "Reduces waste by 70%+",
-                                "Reduces waste by 30–70%",
-                                "Minimal efficiency gains",
-                                "No focus"}) {
-                                var resourceOptimizationIdBase = val.Replace(" ","-").Replace("–","-").Replace("+","p").Replace("%","").ToLower();
-                                var resourceOptimizationId = resourceOptimizationIdBase.Substring(0, Math.Min(resourceOptimizationIdBase.Length, 12));
+                            @{
+                                var extFunding = new[]
+                                {
+                                    "Above ₦500M",
+                                    "₦100M – ₦499M",
+                                    "₦10M – ₦99M",
+                                    "Less than ₦10M",
+                                    "Zero external funding",
+                                };
+                            }
+                            @foreach (var val in extFunding) {
+                                var extFundingIdBase = val.Replace(" ", "-")
+                                    .Replace("₦", "")
+                                    .Replace("–", "")
+                                    .ToLower();
+
+                                var extFundingId = extFundingIdBase.Substring(0, Math.Min(extFundingIdBase.Length, 14));
+
                                 <div class="r-option">
-                                    <input type="radio" id="ro-@resourceOptimizationId"
-                                           name="ResourceOptimization" value="@val"
-                                           @(IsC("ResourceOptimization",val) ? "checked" : "") />
-                                    <label class="r-label" for="ro-@resourceOptimizationId">
+                                    <input type="radio" id="ef-@extFundingId"
+                                        name="ExternalFunding" value="@val"
+                                        @(IsC("ExternalFunding", val) ? "checked" : "") />
+                                    <label class="r-label" for="ef-@extFundingId">
                                         <div class="r-radio"><div class="r-dot"></div></div>
                                         <span class="r-text">@val</span>
                                     </label>
                                 </div>
                             }
+
                         </div>
                         <div class="field-error">Please select an option.</div>
                     </div>
 
-                    <div class="form-group" id="grp-datasharing">
-                        <label class="field-label">How transparently do you share impact data? <span class="label-req">*</span></label>
-                        <div class="radio-options cols-2">
-                            @foreach (var val in new[]{
-                                "Public reports with audits",
-                                "Regular stakeholder updates",
-                                "Internal reports only",
-                                "No sharing"}) {
-                                var dataSharingIdBase = val.Replace(" ","-").ToLower();
-                                var dataSharingId = dataSharingIdBase.Substring(0, Math.Min(dataSharingIdBase.Length, 12));
+                    <!-- Types of Funding -->
+                    <div class="form-group" id="grp-fundingtypes">
+                        <label class="field-label">
+                            What type(s) of investments or external funding have you received?
+                            <span class="label-req">*</span>
+                            <span class="label-opt">(select all that apply)</span>
+                        </label>
+                        <div class="check-grid">
+                            @{
+                                var fundOpts = new[]{"Grants","Equity Investment","Donations","Debt financing","Not applicable"};
+                            }
+                            @foreach (var val in fundOpts) {
+                                var fundingTypeId = val.Replace(" ", "-").ToLower();
+
+                                <div class="c-option">
+                                    <input type="checkbox" name="TypesOfFunding" id="ft-@fundingTypeId"
+                                        value="@val"
+                                        @(savedFundingTypes.Contains(val) ? "checked" : "") />
+                                    <label class="c-label" for="ft-@fundingTypeId">
+                                        <div class="c-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+                                        <span class="c-text">@val</span>
+                                    </label>
+                                </div>
+                            }
+
+                        </div>
+                        <div class="field-error">Please select at least one option.</div>
+                    </div>
+
+                    <!-- Currently Fundraising -->
+                    <div class="form-group" id="grp-fundraising">
+                        <label class="field-label">
+                            Are you currently fundraising? <span class="label-req">*</span>
+                        </label>
+                        <div class="radio-options">
+                            @{
+                                var fundraisingOpts = new[]
+                                {
+                                    "Yes, actively raising funds",
+                                    "No, not fundraising currently",
+                                    "Planning to raise funds in the next 6-12 months",
+                                };
+                            }
+                            @foreach (var val in fundraisingOpts) {
+                                var fundraisingIdBase = val.Replace(" ", "-").ToLower();
+                                var fundraisingId = fundraisingIdBase.Substring(0, Math.Min(fundraisingIdBase.Length, 10));
+
                                 <div class="r-option">
-                                    <input type="radio" id="ds-@dataSharingId"
-                                           name="ImpactDataSharing" value="@val"
-                                           @(IsC("ImpactDataSharing",val) ? "checked" : "") />
-                                    <label class="r-label" for="ds-@dataSharingId">
+                                    <input type="radio" id="fr-@fundraisingId"
+                                        name="IsCurrentlyFundraising" value="@val"
+                                        @(IsC("IsCurrentlyFundraising", val) ? "checked" : "") />
+                                    <label class="r-label" for="fr-@fundraisingId">
                                         <div class="r-radio"><div class="r-dot"></div></div>
                                         <span class="r-text">@val</span>
                                     </label>
                                 </div>
                             }
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
 
-                    <div class="form-group" id="grp-dataprotect">
-                        <label class="field-label">What measures do you have in place to protect user/customer data? <span class="label-req">*</span></label>
-                        <div class="radio-options cols-2">
-                            @foreach (var val in new[]{
-                                "NDPR/ISO-certified compliance",
-                                "Internal encryption/policies",
-                                "Basic safeguards",
-                                "No protection"}) {
-                                var dataProtectionIdBase = val.Replace(" ","-").Replace("/","-").ToLower();
-                                var dataProtectionId = dataProtectionIdBase.Substring(0, Math.Min(dataProtectionIdBase.Length, 12));
-                                <div class="r-option">
-                                    <input type="radio" id="dp-@dataProtectionId"
-                                           name="DataProtection" value="@val"
-                                           @(IsC("DataProtection",val) ? "checked" : "") />
-                                    <label class="r-label" for="dp-@dataProtectionId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
-
-                    <div class="form-group" id="grp-population">
-                        <label class="field-label">What percentage of your target population has been impacted by your solution? <span class="label-req">*</span></label>
-                        <div class="radio-options cols-4">
-                            @foreach (var val in new[]{">80%","60–80%","40–60%","<40%"}) {
-                                var populationImpactedId = val.Replace(">","gt").Replace("<","lt").Replace("–","-").Replace("%","");
-                                <div class="r-option">
-                                    <input type="radio" id="pi-@populationImpactedId"
-                                           name="PopulationImpacted" value="@val"
-                                           @(IsC("PopulationImpacted",val) ? "checked" : "") />
-                                    <label class="r-label" for="pi-@populationImpactedId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text" style="text-align:center;width:100%">@val</span>
-                                    </label>
-                                </div>
-                            }
                         </div>
                         <div class="field-error">Please select an option.</div>
                     </div>
@@ -578,187 +640,104 @@
                 </div>
             </div>
 
+            <!-- ── CARD 3: Projections ── -->
             <div class="form-card">
                 <div class="form-card-header">
                     <div class="form-card-icon">
-                        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
                     </div>
                     <div>
-                        <div class="form-card-title">Social Contribution &amp; Ethics</div>
-                        <div class="form-card-desc">How your business contributes to the community and operates responsibly.</div>
+                        <div class="form-card-title">Financial Projections</div>
+                        <div class="form-card-desc">Projected revenue for next year and current company valuation.</div>
                     </div>
                 </div>
                 <div class="form-card-body">
 
-                    <div class="form-group" id="grp-socialgood">
-                        <label class="field-label">How does your business model contribute to social good or community development? <span class="label-req">*</span></label>
+                    <!-- Projected Revenue -->
+                    <div class="form-group" id="grp-projected">
+                        <label class="field-label">
+                            What is your projected revenue for the next year (2027)? <span class="label-req">*</span>
+                        </label>
                         <div class="radio-options cols-2">
-                            @foreach (var val in new[]{
-                                "Expanding access to vital services",
-                                "Driving sustainable, community-based growth",
-                                "Empowering underserved populations",
-                                "Innovating for enhanced quality of life"}) {
-                                var socialGoodIdBase = val.Replace(" ","-").ToLower();
-                                var socialGoodId = socialGoodIdBase.Substring(0, Math.Min(socialGoodIdBase.Length, 12));
+                            @{
+                                var projRevenue = new[]
+                                {
+                                    "Revenue of ₦300M+",
+                                    "Revenue between ₦200M & ₦300M",
+                                    "Revenue between ₦100M & ₦200M",
+                                    "Revenue < ₦100M",
+                                };
+                            }
+                           @foreach (var val in projRevenue) {
+                            var projRevenueIdBase = val.Replace(" ", "-")
+                                .Replace("₦", "")
+                                .Replace("&", "")
+                                .Replace("<", "")
+                                .ToLower();
+
+                            var projRevenueId = projRevenueIdBase.Substring(0, Math.Min(projRevenueIdBase.Length, 14));
+
+                            <div class="r-option">
+                                <input type="radio" id="pr-@projRevenueId"
+                                    name="ProjectedRevenue" value="@val"
+                                    @(IsC("ProjectedRevenue", val) ? "checked" : "") />
+                                <label class="r-label" for="pr-@projRevenueId">
+                                    <div class="r-radio"><div class="r-dot"></div></div>
+                                    <span class="r-text">@val</span>
+                                </label>
+                            </div>
+                        }
+
+
+                        </div>
+                        <div class="field-error">Please select an option.</div>
+                    </div>
+
+                    <!-- Company Valuation -->
+                    <div class="form-group" id="grp-valuation">
+                        <label class="field-label">
+                            What is your current company valuation? <span class="label-req">*</span>
+                        </label>
+                        <div class="radio-options cols-2">
+                            @{
+                                var valuations = new[]
+                                {
+                                    "Less than ₦100M",
+                                    "₦100M - ₦500M",
+                                    "₦500M - ₦1B",
+                                    "Over ₦1B",
+                                };
+                            }
+                           @foreach (var val in valuations) {
+                                var valuationIdBase = val.Replace(" ", "-")
+                                    .Replace("₦", "")
+                                    .Replace("-", "")
+                                    .ToLower();
+
+                                var valuationId = valuationIdBase.Substring(0, Math.Min(valuationIdBase.Length, 12));
+
                                 <div class="r-option">
-                                    <input type="radio" id="sg-@socialGoodId"
-                                           name="SocialGoodContribution" value="@val"
-                                           @(IsC("SocialGoodContribution",val) ? "checked" : "") />
-                                    <label class="r-label" for="sg-@socialGoodId">
+                                    <input type="radio" id="val-@valuationId"
+                                        name="CompanyValuation" value="@val"
+                                        @(IsC("CompanyValuation", val) ? "checked" : "") />
+                                    <label class="r-label" for="val-@valuationId">
                                         <div class="r-radio"><div class="r-dot"></div></div>
                                         <span class="r-text">@val</span>
                                     </label>
                                 </div>
                             }
+
                         </div>
                         <div class="field-error">Please select an option.</div>
-                    </div>
-
-                    <div class="form-group" id="grp-ethical">
-                        <label class="field-label">
-                            What steps are you taking to ensure ethical and socially responsible business operations?
-                            <span class="label-req">*</span>
-                            <span class="label-opt">(select all that apply)</span>
-                        </label>
-                        <div class="mc-options">
-                            @{
-                                var ethicalOpts = new[]
-                                {
-                                    "Implementing transparent supply chains",
-                                    "Adhering to strict regulatory standards",
-                                    "Upholding ethical sourcing and labor practices",
-                                    "Engaging local stakeholders for accountability",
-                                    "Integrating sustainability and impact audits",
-                                };
-                                var savedEthical = SavedList("EthicalOperations");
-                            }
-                            @foreach (var val in ethicalOpts) {
-                                var ethicalIdBase = val.Replace(" ","-").ToLower();
-                                var ethicalId = ethicalIdBase.Substring(0, Math.Min(ethicalIdBase.Length, 15));
-                                <div class="mc-option">
-                                    <input type="checkbox" id="eo-@ethicalId"
-                                           name="EthicalOperations" value="@val"
-                                           @(savedEthical.Contains(val) ? "checked" : "") />
-                                    <label class="mc-label" for="eo-@ethicalId">
-                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="mc-text">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select at least one option.</div>
-                    </div>
-
-                    <div class="form-group" id="grp-diversity">
-                        <label class="field-label">
-                            What initiatives have you implemented to promote diversity and inclusion within your company?
-                            <span class="label-req">*</span>
-                            <span class="label-opt">(select all that apply)</span>
-                        </label>
-                        <div class="mc-options">
-                            @{
-                                var diversityOpts = new[]
-                                {
-                                    "Targeted recruitment from underrepresented groups",
-                                    "Mandatory diversity training and inclusive leadership programs",
-                                    "Employee resource groups and mentorship initiatives",
-                                    "Policy updates with transparent accountability measures",
-                                };
-                                var savedDiversity = SavedList("DiversityInclusion");
-                            }
-                            @foreach (var val in diversityOpts) {
-                                var diversityIdBase = val.Replace(" ","-").ToLower();
-                                var diversityId = diversityIdBase.Substring(0, Math.Min(diversityIdBase.Length, 15));
-                                <div class="mc-option">
-                                    <input type="checkbox" id="di-@diversityId"
-                                           name="DiversityInclusion" value="@val"
-                                           @(savedDiversity.Contains(val) ? "checked" : "") />
-                                    <label class="mc-label" for="di-@diversityId">
-                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="mc-text">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select at least one option.</div>
-                    </div>
-
-                    <div class="form-group" id="grp-equitable">
-                        <label class="field-label">
-                            How does your product or service create equitable opportunities for employees and stakeholders?
-                            <span class="label-req">*</span>
-                            <span class="label-opt">(select all that apply)</span>
-                        </label>
-                        <div class="mc-options">
-                            @{
-                                var equitableOpts = new[]
-                                {
-                                    "Incorporating universal design principles for accessible use",
-                                    "Offering built-in training to upskill diverse users",
-                                    "Tailoring features to meet varied cultural and regional needs",
-                                    "Leveraging adaptive technology to reduce bias in decision-making",
-                                    "Engaging stakeholders for continuous product refinement toward equity",
-                                };
-                                var savedEquitable = SavedList("EquitableOpportunities");
-                            }
-                            @foreach (var val in equitableOpts) {
-                                var equitableIdBase = val.Replace(" ","-").ToLower();
-                                var equitableId = equitableIdBase.Substring(0, Math.Min(equitableIdBase.Length, 15));
-                                <div class="mc-option">
-                                    <input type="checkbox" id="eq-@equitableId"
-                                           name="EquitableOpportunities" value="@val"
-                                           @(savedEquitable.Contains(val) ? "checked" : "") />
-                                    <label class="mc-label" for="eq-@equitableId">
-                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="mc-text">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select at least one option.</div>
-                    </div>
-
-                    <div class="form-group" id="grp-accessibility">
-                        <label class="field-label">
-                            What makes your product or service accessible to underrepresented or disadvantaged groups?
-                            <span class="label-req">*</span>
-                            <span class="label-opt">(select all that apply)</span>
-                        </label>
-                        <div class="mc-options">
-                            @{
-                                var accessOpts = new[]
-                                {
-                                    "Affordable pricing and flexible payment options",
-                                    "User-friendly design with localized language support",
-                                    "Partnerships with community groups for targeted outreach",
-                                    "Customization to address diverse literacy or digital access",
-                                    "Inclusive product testing with feedback from underrepresented users",
-                                };
-                                var savedAccess = SavedList("AccessibilityForDisadvantaged");
-                            }
-                            @foreach (var val in accessOpts) {
-                                var accessibilityIdBase = val.Replace(" ","-").ToLower();
-                                var accessibilityId = accessibilityIdBase.Substring(0, Math.Min(accessibilityIdBase.Length, 15));
-                                <div class="mc-option">
-                                    <input type="checkbox" id="ac-@accessibilityId"
-                                           name="AccessibilityForDisadvantaged" value="@val"
-                                           @(savedAccess.Contains(val) ? "checked" : "") />
-                                    <label class="mc-label" for="ac-@accessibilityId">
-                                        <div class="mc-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="mc-text">@val</span>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                        <div class="field-error">Please select at least one option.</div>
                     </div>
 
                 </div>
             </div>
 
+            <!-- Actions -->
             <div class="form-actions">
                 <div class="actions-left">
-                    <a asp-action="Sustainability" asp-controller="Application" class="btn-back">
+                    <a asp-action="ProductInfo" asp-controller="Application" class="btn-back">
                         <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
                         Back
                     </a>
@@ -783,6 +762,18 @@
 </div>
 
 <script>
+    // ── Conditional: show year of first sale when generating revenue
+    function toggleFirstSale() {
+        const hasSales = document.querySelector('input[name="HasStartedGeneratingSales"]:checked')?.value;
+        const cond = document.getElementById('cond-firstsale');
+        if (hasSales === 'Yes, we are generating revenue') cond.classList.add('show');
+        else cond.classList.remove('show');
+    }
+    document.querySelectorAll('input[name="HasStartedGeneratingSales"]')
+        .forEach(r => r.addEventListener('change', toggleFirstSale));
+    toggleFirstSale();
+
+    // ── Drawer
     const hamburger     = document.getElementById('hamburger');
     const sideDrawer    = document.getElementById('sideDrawer');
     const drawerOverlay = document.getElementById('drawerOverlay');
@@ -791,39 +782,29 @@
     hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
     drawerOverlay.addEventListener('click', closeDrawer);
 
+    // ── Validation
     function setInvalid(id)   { document.getElementById(id)?.classList.add('invalid'); }
     function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
 
     const radioGroups = {
-        UnderservedMarketPercentage: 'grp-underserved',
-        SystemicInequalityApproach:  'grp-inequality',
-        BeneficiaryInvolvement:      'grp-beneficiary',
-        GenderGapApproach:           'grp-gender',
-        JobsCreated:                 'grp-jobs',
-        AccessForUnderserved:        'grp-access',
-        ResourceOptimization:        'grp-resources',
-        ImpactDataSharing:           'grp-datasharing',
-        DataProtection:              'grp-dataprotect',
-        PopulationImpacted:          'grp-population',
-        SocialGoodContribution:      'grp-socialgood',
+        HasStartedGeneratingSales: 'grp-hassales',
+        YearlySalesRevenue:        'grp-revenue',
+        YearlyProfit:              'grp-profit',
+        ProprietaryFunding:        'grp-propfunding',
+        ExternalFunding:           'grp-extfunding',
+        IsCurrentlyFundraising:    'grp-fundraising',
+        ProjectedRevenue:          'grp-projected',
+        CompanyValuation:          'grp-valuation',
     };
-    const checkGroups = {
-        EthicalOperations:            'grp-ethical',
-        DiversityInclusion:           'grp-diversity',
-        EquitableOpportunities:       'grp-equitable',
-        AccessibilityForDisadvantaged:'grp-accessibility',
-    };
-
     Object.keys(radioGroups).forEach(name => {
         document.querySelectorAll(`input[name="${name}"]`).forEach(r =>
             r.addEventListener('change', () => clearInvalid(radioGroups[name]))
         );
     });
-    Object.keys(checkGroups).forEach(name => {
-        document.querySelectorAll(`input[name="${name}"]`).forEach(c =>
-            c.addEventListener('change', () => clearInvalid(checkGroups[name]))
-        );
-    });
+    document.querySelectorAll('input[name="YearOfFirstSale"]')
+        .forEach(r => r.addEventListener('change', () => clearInvalid('grp-firstsale')));
+    document.querySelectorAll('input[name="TypesOfFunding"]')
+        .forEach(c => c.addEventListener('change', () => clearInvalid('grp-fundingtypes')));
 
     function validate() {
         let ok = true;
@@ -831,14 +812,17 @@
             if (!document.querySelector(`input[name="${name}"]:checked`))
                 { setInvalid(grp); ok = false; }
         });
-        Object.entries(checkGroups).forEach(([name, grp]) => {
-            if (!document.querySelector(`input[name="${name}"]:checked`))
-                { setInvalid(grp); ok = false; }
-        });
+        const hasSales = document.querySelector('input[name="HasStartedGeneratingSales"]:checked')?.value;
+        if (hasSales === 'Yes, we are generating revenue' &&
+            !document.querySelector('input[name="YearOfFirstSale"]:checked'))
+            { setInvalid('grp-firstsale'); ok = false; }
+        if (!document.querySelector('input[name="TypesOfFunding"]:checked'))
+            { setInvalid('grp-fundingtypes'); ok = false; }
         if (!ok) document.querySelector('.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return ok;
     }
 
+    // ── Toast
     function showToast(msg, isError) {
         const t = document.getElementById('toast');
         t.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--green)';
@@ -847,12 +831,13 @@
         setTimeout(() => t.classList.remove('show'), 3000);
     }
 
+    // ── Save draft
     document.getElementById('saveBtn').addEventListener('click', async () => {
         const btn = document.getElementById('saveBtn');
         btn.textContent = 'Saving...'; btn.disabled = true;
         try {
-            const fd  = new FormData(document.getElementById('impactForm'));
-            const res = await fetch('/Application/SaveImpactDraft', { method: 'POST', body: fd });
+            const fd  = new FormData(document.getElementById('comm1Form'));
+            const res = await fetch('/Application/SaveCommercial1Draft', { method: 'POST', body: fd });
             showToast(res.ok ? 'Draft saved' : 'Could not save', !res.ok);
         } catch { showToast('Could not save', true); }
         finally {
@@ -861,7 +846,8 @@
         }
     });
 
-    document.getElementById('impactForm').addEventListener('submit', function(e) {
+    // ── Submit
+    document.getElementById('comm1Form').addEventListener('submit', function(e) {
         if (!validate()) { e.preventDefault(); return; }
         const btn = document.getElementById('nextBtn');
         btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Saving...';

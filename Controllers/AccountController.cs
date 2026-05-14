@@ -24,6 +24,7 @@ namespace Nsia.Controllers
             _logger = logger;
         }
 
+
         // ── GET /Account/Register
         [HttpGet]
         public IActionResult Register() =>
@@ -61,15 +62,15 @@ namespace Nsia.Controllers
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
                 Phone = model.PhoneNumber.Trim(),
                 Gender = model.Gender,
-                Location = model.Location?.Trim(),
-                HowDidYouHear = model.HowDidYouHear?.Trim(),
+                // Location = model.Location?.Trim(),
+                // HowDidYouHear = model.HowDidYouHear?.Trim(),
                 IsEmailVerified = false,
                 EmailVerificationOtp = otp,
                 OtpExpiresAt = DateTime.UtcNow.AddMinutes(10),
                 ReferenceNumber = refNumber,
                 Status = "Draft",
                 ApplicationStep = 1,
-                AgreesToNsiaPrivacyPolicy = model.AgreeToTerms
+                // AgreesToNsiaPrivacyPolicy = model.AgreeToTerms
             };
 
             _db.Applications.Add(application);

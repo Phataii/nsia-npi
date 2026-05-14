@@ -6,372 +6,321 @@ namespace nsia.Models
 {
     public class Application
     {
-        // ======================
-        // IDENTITY & STATUS
-        // ======================
-
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        // ── Meta
         public int ApplicationStep { get; set; } = 1;
 
-        [MaxLength(20)]
-        public string? ReferenceNumber { get; set; }
 
-        [Required, MaxLength(30)]
         public string Status { get; set; } = "Draft";
 
-        // ======================
-        // SECTION A – Applicant Profile
-        // ======================
 
-        [Required, MaxLength(100)]
-        public string FullName { get; set; } = default!;
-
-        [Required, EmailAddress, MaxLength(150)]
-        public string Email { get; set; } = default!;
-
-        [Required, MaxLength(255)]
-        public string PasswordHash { get; set; } = default!;
-
-        [Required, MaxLength(20)]
-        public string Phone { get; set; } = default!;
-
-        [MaxLength(20)]
-        public string? Gender { get; set; }
-        [MaxLength(100)]
-        public string? Location { get; set; }
-
-        [MaxLength(100)]
-        public string? HowDidYouHear { get; set; }
+        public string? ReferenceNumber { get; set; }
 
         public bool IsEmailVerified { get; set; } = false;
+
 
         public string? EmailVerificationOtp { get; set; }
 
         public DateTime? OtpExpiresAt { get; set; }
 
-        // ======================
-        // SECTION B – Company Info
-        // ======================
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? SubmittedAt { get; set; }
 
-        [MaxLength(200)]
+        // ── PRE-SUBMISSION CHECKLIST (Step 1)
+
+        public string? IsRegisteredInNigeria { get; set; } // Yes / No
+
+
+        public string? BusinessSector { get; set; } // Manufacturing / Healthcare / Climate & Food Security
+
+
+        public string? CountryOfOrigin { get; set; }
+
+        // ── PERSONAL INFORMATION (Step 2)
+
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
+
+        public string? PasswordHash { get; set; }
+
+
+        public string? Phone { get; set; }
+
+
+        public string? Gender { get; set; }
+
+        // NIN stored encrypted
+
+        public string? NinEncrypted { get; set; }
+
+
+        public string? RelationshipToBusiness { get; set; } // Founder / Partner / Team Member / Agent
+
+        // ── COMPANY INFORMATION (Step 3)
+
         public string? CompanyName { get; set; }
 
-        [MaxLength(500)]
-        public string? CompanyUrl { get; set; }
 
-        public SocialMedia SocialMedia { get; set; } = new();
+        public string? CompanyWebsite { get; set; }
 
-        [Column(TypeName = "text")]
-        public string? CompanyDescription { get; set; }
+        // Social media stored as owned type
+        public SocialMedia? SocialMedia { get; set; }
 
-        [MaxLength(300)]
-        public string? BusinessAddress { get; set; }
 
-        public bool IsLegallyRegisteredInNigeria { get; set; }
+        public string? BusinessState { get; set; }
 
-        public int? YearOfIncorporation { get; set; }
 
-        [MaxLength(30)]
-        public string? CacRegistrationNumber { get; set; }
+        public string? BusinessLga { get; set; }
 
-        public bool HasForeignAffiliates { get; set; }
 
-        [Column(TypeName = "text")]
-        public string? ForeignAffiliateDetails { get; set; }
+        public string? CompanyHqAddress { get; set; }
 
-        public bool IsNigerianEntityOperational { get; set; }
 
-        /// <summary>
-        /// Comma-separated milestone option values e.g. "A,C"
-        /// </summary>
-        [MaxLength(200)]
-        public string? Milestones { get; set; }
+        public string? GeographicScope { get; set; } // State-wide / Regional / Nationwide / International
 
-        /// <summary>
-        /// Comma-separated success metric option values e.g. "B,D"
-        /// </summary>
-        [MaxLength(200)]
-        public string? SuccessMetrics { get; set; }
 
-        /// <summary>
-        /// Comma-separated vision option values e.g. "A,B"
-        /// </summary>
-        [MaxLength(200)]
-        public string? LongTermVision { get; set; }
+        public string? CompanyRegistrationNumber { get; set; }
 
-        // ======================
-        // SECTION C – Team Info
-        // ======================
 
-        public int? NumberOfFounders { get; set; }
-
-        /// <summary>
-        /// Comma-separated team composition option values e.g. "A,D"
-        /// </summary>
-        [MaxLength(20)]
-        public string? TeamComposition { get; set; }
-
-        public int? TotalEmployees { get; set; }
-
-        /// <summary>
-        /// Navigation property — founder records stored in separate table
-        /// </summary>
-        public List<Founder> Founders { get; set; } = new();
-
-        // ======================
-        // SECTION D – Product Info
-        // ======================
-
-        [MaxLength(30)]
-        public string? GrowthStage { get; set; }
-
-        [MaxLength(500)]
-        public string? MvpLink { get; set; }
-
-        [MaxLength(50)]
-        public string? Sector { get; set; }
-
-        [Column(TypeName = "text")]
-        public string? ProductDescription { get; set; }
-
-        [MaxLength(30)]
-        public string? UserCountRange { get; set; }
-
-        /// <summary>
-        /// Comma-separated business model option values e.g. "A,C"
-        /// </summary>
-        [MaxLength(20)]
-        public string? BusinessModel { get; set; }
-
-        /// <summary>
-        /// Comma-separated USP option values
-        /// </summary>
-        [MaxLength(20)]
-        public string? UniqueSellingPoint { get; set; }
-
-        /// <summary>
-        /// Comma-separated competitor option values
-        /// </summary>
-        [MaxLength(20)]
-        public string? MainCompetitors { get; set; }
-
-        /// <summary>
-        /// Comma-separated go-to-market option values
-        /// </summary>
-        [MaxLength(20)]
-        public string? GoToMarketStrategy { get; set; }
-
-        /// <summary>
-        /// Comma-separated key feature option values
-        /// </summary>
-        [MaxLength(20)]
-        public string? KeyFeatures { get; set; }
-
-        // ======================
-        // SECTION E – Commercial
-        // ======================
-
-        public bool? HasStartedGeneratingRevenue { get; set; }
-
-        /// <summary>
-        /// Comma-separated funding type option values e.g. "A,B"
-        /// </summary>
-        [MaxLength(50)]
-        public string? FundingTypes { get; set; }
-
-        public bool? IsCurrentlyFundraising { get; set; }
-
-        [MaxLength(50)]
-        public string? CompanyValuation { get; set; }
-
-        [MaxLength(50)]
-        public string? ProjectedRevenueNextYear { get; set; }
-
-        [MaxLength(20)]
-        public string? GrossMargins { get; set; }
-
-        [MaxLength(50)]
-        public string? PricingStrategy { get; set; }
-
-        [MaxLength(20)]
-        public string? RevenueStreams { get; set; }
-
-        [MaxLength(20)]
-        public string? RepeatCustomerRevenuePercentage { get; set; }
-
-        [MaxLength(20)]
-        public string? OperatingRunway { get; set; }
-
-        [MaxLength(50)]
-        public string? DemandEvidence { get; set; }
-
-        [MaxLength(20)]
-        public string? EstimatedMarketShare { get; set; }
-
-        [MaxLength(50)]
-        public string? PrimaryCompetitiveEdge { get; set; }
-
-        [MaxLength(50)]
-        public string? GeographicScalability { get; set; }
-
-        [MaxLength(50)]
-        public string? CrossIndustryApplicability { get; set; }
-
-        [MaxLength(50)]
-        public string? LongTermGrowthPlan { get; set; }
-
-        [MaxLength(30)]
-        public string? FeedbackUpdateFrequency { get; set; }
-
-        [MaxLength(20)]
-        public string? CustomersAcquiredPastSixMonths { get; set; }
-
-        [MaxLength(20)]
-        public string? CustomerGrowthRatePastYear { get; set; }
-
-        [MaxLength(30)]
-        public string? AverageCustomerAcquisitionCost { get; set; }
-
-        [MaxLength(50)]
-        public string? SupplyChainReliability { get; set; }
-
-        [MaxLength(50)]
         public string? RegulatoryCompliance { get; set; }
 
-        /// <summary>
-        /// Comma-separated risk option values e.g. "A,C"
-        /// </summary>
-        [MaxLength(50)]
-        public string? BiggestRisks { get; set; }
 
-        [MaxLength(50)]
+        public string? TaxCompliance { get; set; }
+
+
+        public string? HasForeignAffiliates { get; set; } // Yes / No
+
+
+        public string? IsNigerianEntityPrimary { get; set; } // Yes / No
+
+
+        public string? CompanyStructure { get; set; } // Parent Company / Subsidiary
+
+
+        public string? ParentOrganizationName { get; set; }
+
+
+        public string? OtherCompetitions { get; set; } // free text or "No"
+
+        // ── TEAM INFORMATION (Step 4)
+
+        public string? NumberOfFounders { get; set; } // 1 / 2 / 3 / 4+
+
+
+        public string? FoundingTeamType { get; set; } // comma-separated full text values
+
+
+        public string? FounderIndustryExperience { get; set; }
+
+
+        public string? ManagementTeamExperience { get; set; }
+
+
+        public string? TotalFullTimeEmployees { get; set; }
+
+        public List<Founder> Founders { get; set; } = new();
+
+        // ── PRODUCT, GROWTH & TRACTION (Step 5)
+
+        public string? GrowthStage { get; set; }
+
+
+        public string? KeyMilestones { get; set; } // comma-separated full text values
+
+
+        public string? ExistingUsers { get; set; }
+
+
+        public string? TotalUsersReached { get; set; }
+
+
+        public string? CoreBusinessModel { get; set; }
+
+
+        public string? UniqueSellingPoint { get; set; }
+
+
+        public string? MainCompetitors { get; set; }
+
+
+        public string? MarketPenetrationStrategy { get; set; }
+
+
+        public string? KeyFeatures { get; set; } // comma-separated full text values
+
+        // ── COMMERCIAL PART 1 — REVENUE/FUNDING (Step 6)
+
+        public string? HasStartedGeneratingSales { get; set; }
+
+
+        public string? YearOfFirstSale { get; set; }
+
+
+        public string? YearlySalesRevenue { get; set; }
+
+
+        public string? YearlyProfit { get; set; }
+
+
+        public string? ProprietaryFunding { get; set; }
+
+
+        public string? ExternalFunding { get; set; }
+
+
+        public string? TypesOfFunding { get; set; } // comma-separated full text values
+
+
+        public string? IsCurrentlyFundraising { get; set; }
+
+
+        public string? ProjectedRevenue { get; set; }
+
+
+        public string? CompanyValuation { get; set; }
+
+        // ── COMMERCIAL PART 2 — STRATEGY/MARKET (Step 7)
+
+        public string? DemandEvidence { get; set; }
+
+
+        public string? RevenueStreams { get; set; }
+
+
+        public string? GeographicScalability { get; set; }
+
+
+        public string? GrossMargins { get; set; }
+
+
+        public string? PrimaryCompetitiveAdvantage { get; set; }
+
+
+        public string? OperatingRunway { get; set; }
+
+
         public string? ActivePartnerships { get; set; }
 
-        [MaxLength(50)]
+
+        public string? RegulatoryApproach { get; set; }
+
+
+        public string? CrossIndustryApplication { get; set; }
+
+
+        public string? LongTermGrowthStrategy { get; set; }
+
+
+        public string? SupplyChainReliability { get; set; }
+
+
         public string? IpOwnership { get; set; }
 
-        // ======================
-        // SECTION F – Impact & Sustainability
-        // ======================
 
-        // SDG
-        public bool? AlignsWithUnSdgs { get; set; }
+        public string? PricingStrategy { get; set; }
 
-        [MaxLength(10)]
-        public string? SdgsAddressed { get; set; }
 
-        // Environmental
-        public bool? ReducesEnvironmentalHarm { get; set; }
+        public string? BiggestRisks { get; set; }
 
-        [MaxLength(60)]
-        public string? EnvironmentalHarmReduction { get; set; }
 
-        [MaxLength(50)]
-        public string? ResourceOptimisation { get; set; }
+        public string? NewCustomersSixMonths { get; set; }
 
-        // Social & Inclusion
-        [MaxLength(20)]
+
+        public string? CustomerGrowthRate { get; set; }
+
+
+        public string? AverageCAC { get; set; }
+
+
+        public string? RepeatCustomerRevenue { get; set; }
+
+        // ── SUSTAINABILITY (Step 8)
+
+        public string? SdgAlignment { get; set; } // comma-separated SDG names
+
+
+        public string? BusinessReplicability { get; set; }
+
+
+        public string? SustainabilityIntegration { get; set; }
+
+
+        public string? EnergyWasteReduction { get; set; }
+
+
+        public string? SustainabilityTechnology { get; set; }
+
+
+        public string? ScalingWithSustainability { get; set; }
+
+
+        public string? ClimateChangeApproach { get; set; }
+
+
+        public string? DigitalAccessibility { get; set; }
+
+        // ── IMPACT (Step 9)
+
         public string? UnderservedMarketPercentage { get; set; }
 
-        [MaxLength(50)]
-        public string? SystemicInequalityReduction { get; set; }
 
-        [MaxLength(60)]
-        public string? GenderGapApproach { get; set; }
+        public string? SystemicInequalityApproach { get; set; }
 
-        [MaxLength(60)]
-        public string? AccessForUnderservedGroups { get; set; }
 
-        [MaxLength(30)]
+        public string? BeneficiaryInvolvement { get; set; }
+
+
+        public string? ImpactDataSharing { get; set; }
+
+
         public string? JobsCreated { get; set; }
 
-        [MaxLength(30)]
-        public string? PeopleImpacted { get; set; }
 
-        [MaxLength(50)]
-        public string? UserSelfRelianceLevel { get; set; }
+        public string? GenderGapApproach { get; set; }
 
-        // Measurement & Governance
-        [MaxLength(50)]
-        public string? SocialOutcomeTracking { get; set; }
+        public string? AccessForUnderserved { get; set; }
+        public string? ResourceOptimization { get; set; }
 
-        [MaxLength(60)]
-        public string? ImpactMeasurementMethod { get; set; }
+        public string? DataProtection { get; set; }
 
-        [MaxLength(50)]
-        public string? ImpactDataSharingLevel { get; set; }
 
-        [MaxLength(60)]
-        public string? BeneficiaryInvolvementLevel { get; set; }
+        public string? PopulationImpacted { get; set; }
 
-        [MaxLength(50)]
-        public string? LocalContextTailoring { get; set; }
 
-        [MaxLength(60)]
-        public string? EthicalPracticesApproach { get; set; }
+        public string? SocialGoodContribution { get; set; }
 
-        [MaxLength(50)]
-        public string? DataProtectionApproach { get; set; }
 
-        [MaxLength(60)]
-        public string? TrustBuildingApproach { get; set; }
+        public string? EthicalOperations { get; set; } // comma-separated
 
-        // Scalability & Longevity
-        [MaxLength(50)]
-        public string? ModelReplicability { get; set; }
 
-        [MaxLength(60)]
-        public string? ImpactDurability { get; set; }
+        public string? DiversityInclusion { get; set; } // comma-separated
 
-        [MaxLength(50)]
-        public string? CrisisPerformance { get; set; }
 
-        [MaxLength(50)]
-        public string? PolicyAdvocacy { get; set; }
+        public string? EquitableOpportunities { get; set; } // comma-separated
 
-        // Open-text evidence
+
+        public string? AccessibilityForDisadvantaged { get; set; } // comma-separated
+
+        // ── ADDITIONAL / DOCUMENTS (Step 10)
         [Column(TypeName = "text")]
-        public string? ImpactDataAndStatistics { get; set; }
-
-        [Column(TypeName = "text")]
-        public string? MeasurableCommunityDifferences { get; set; }
-        [Column(TypeName = "text")]
-        public string? TopImpactExamplesDetails { get; set; }
-
-        // Declarations
-        public bool AgreesToNsiaPrivacyPolicy { get; set; }
-
-        public bool AgreesToCompetitionSubmissionAgreement { get; set; }
-
-        // ======================
-        // SECTION G – Additional Information
-        // (populated in Step 7)
-        // ======================
-
-        [MaxLength(3000)]
         public string? AdditionalInformation { get; set; }
+
         [Column(TypeName = "text")]
         public string? DocumentDetails { get; set; }
+
         public List<ApplicationDocument> Documents { get; set; } = new();
 
-        // ======================
-        // AUDITING
-        // ======================
-
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
-        public Guid? SubmittedByUserId { get; set; }
-
-        public DateTime? SubmittedAt { get; set; }
+        // ── AGREEMENTS
+        public bool AgreesToTermsOfService { get; set; } = false;
+        public bool AgreesToPrivacyPolicy { get; set; } = false;
     }
 
     // ======================
     // FOUNDER — separate table
     // ======================
-
     public class Founder
     {
         [Key]
@@ -379,22 +328,18 @@ namespace nsia.Models
 
         [ForeignKey(nameof(Application))]
         public Guid ApplicationId { get; set; }
-
         public Application Application { get; set; } = default!;
+        public string? FullName { get; set; }
 
-        [Required, MaxLength(100)]
-        public string FullName { get; set; } = default!;
-
-        [MaxLength(20)]
         public string? PhoneNumber { get; set; }
 
-        [MaxLength(100)]
+
         public string? Role { get; set; }
 
-        [MaxLength(500)]
+
         public string? LinkedInUrl { get; set; }
 
-        [MaxLength(60)]
+
         public string? Nationality { get; set; }
 
         public int DisplayOrder { get; set; }
@@ -408,18 +353,15 @@ namespace nsia.Models
         public Guid ApplicationId { get; set; }
         public Application Application { get; set; } = default!;
 
-        [MaxLength(255)]
         public string OriginalFileName { get; set; } = default!;
 
-        [MaxLength(500)]
+
         public string StoredFilePath { get; set; } = default!;
 
-        [MaxLength(30)]
+
         public string DocumentType { get; set; } = "Other";
 
         public long FileSizeBytes { get; set; }
-
-        [MaxLength(20)]
         public string FileExtension { get; set; } = default!;
 
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
@@ -431,16 +373,16 @@ namespace nsia.Models
     [Owned]
     public class SocialMedia
     {
-        [MaxLength(200)]
+
         public string? LinkedIn { get; set; }
 
-        [MaxLength(100)]
+
         public string? Twitter { get; set; }
 
-        [MaxLength(100)]
+
         public string? Instagram { get; set; }
 
-        [MaxLength(200)]
+
         public string? Facebook { get; set; }
     }
 }

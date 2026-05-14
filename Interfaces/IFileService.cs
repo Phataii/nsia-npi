@@ -6,6 +6,7 @@ namespace nsia.Services
             IFormFile file,
             Guid applicationId);
 
-        void DeleteDocument(string storedPath);
+        // void DeleteDocument(string storedPath);
+        void DeleteFile(string storedPath);
     }
 }

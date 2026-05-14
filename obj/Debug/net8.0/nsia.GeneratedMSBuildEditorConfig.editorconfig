@@ -54,8 +54,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwbGljYXRpb24vQWRkaXRpb25hbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/phataii/Documents/work/wennovationhub/nsia/Views/Application/Commercial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwbGljYXRpb24vQ29tbWVyY2lhbC5jc2h0bWw=
+[/Users/phataii/Documents/work/wennovationhub/nsia/Views/Application/Commercial1.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwbGljYXRpb24vQ29tbWVyY2lhbDEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/phataii/Documents/work/wennovationhub/nsia/Views/Application/Commercial2.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwbGljYXRpb24vQ29tbWVyY2lhbDIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/phataii/Documents/work/wennovationhub/nsia/Views/Application/CompanyInfo.cshtml]
@@ -70,6 +74,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwbGljYXRpb24vSW1wYWN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/phataii/Documents/work/wennovationhub/nsia/Views/Application/PersonalInfo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwbGljYXRpb24vUGVyc29uYWxJbmZvLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/phataii/Documents/work/wennovationhub/nsia/Views/Application/PreChecklist.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwbGljYXRpb24vUHJlQ2hlY2tsaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/phataii/Documents/work/wennovationhub/nsia/Views/Application/ProductInfo.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwbGljYXRpb24vUHJvZHVjdEluZm8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -80,6 +92,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/phataii/Documents/work/wennovationhub/nsia/Views/Application/Submitted.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwbGljYXRpb24vU3VibWl0dGVkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/phataii/Documents/work/wennovationhub/nsia/Views/Application/Sustainability.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXBwbGljYXRpb24vU3VzdGFpbmFiaWxpdHkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/phataii/Documents/work/wennovationhub/nsia/Views/Application/TeamInfo.cshtml]

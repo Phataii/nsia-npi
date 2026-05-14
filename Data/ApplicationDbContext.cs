@@ -66,32 +66,6 @@ namespace nsia.Data
 
                         entity.HasIndex(e => e.CreatedAt)
                         .HasDatabaseName("IX_Applications_CreatedAt");
-
-                        // Large text fields — use TEXT in MySQL instead of varchar(3000)
-                        entity.Property(e => e.CompanyDescription)
-                        .HasColumnType("text");
-
-                        entity.Property(e => e.ForeignAffiliateDetails)
-                        .HasColumnType("text");
-
-                        entity.Property(e => e.ProductDescription)
-                        .HasColumnType("text");
-
-                        entity.Property(e => e.ImpactDataAndStatistics)
-                        .HasColumnType("text");
-
-                        entity.Property(e => e.MeasurableCommunityDifferences)
-                        .HasColumnType("text");
-
-                        entity.Property(e => e.TopImpactExamplesDetails)
-                        .HasColumnType("text");
-
-                        entity.Property(e => e.AdditionalInformation)
-                        .HasColumnType("text");
-
-                        // SubmittedByUserId as char(36)
-                        entity.Property(e => e.SubmittedByUserId)
-                        .HasColumnType("char(36)");
                   });
 
                   // ── FOUNDER ──
