@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "T0AjcrRyxQVUUvPppJm10bb5QsN3zVyY7Ms0V5IiOI0=",
+  "Hash": "amGn0qOM8zd4ovvvU4feW2SedIyvxNcwou+PiQybwKg=",
   "Source": "nsia",
   "BasePath": "_content/nsia",
   "Mode": "Default",
@@ -1383,6 +1383,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/index.html"
+    },
+    {
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/logo.png",
+      "SourceId": "nsia",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
+      "BasePath": "_content/nsia",
+      "RelativePath": "logo.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/logo.png"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/NPI_4_0_Privacy_Policy.pdf",

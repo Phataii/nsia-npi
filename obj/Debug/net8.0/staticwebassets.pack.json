@@ -53,6 +53,10 @@
       "PackagePath": "staticwebassets/index.html"
     },
     {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/logo.png",
+      "PackagePath": "staticwebassets/logo.png"
+    },
+    {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/prizes.html",
       "PackagePath": "staticwebassets/prizes.html"
     },
