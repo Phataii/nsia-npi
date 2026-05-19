@@ -28,7 +28,7 @@
             --white:      #FFFFFF;
         }
         body {
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
             background: var(--cream); color: var(--ink);
             min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
         }
@@ -53,7 +53,7 @@
         .step-dot.inactive { background: var(--teal-light); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); }
         .step-line { width: 28px; height: 1px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
         .step-label { font-size: 10px; color: var(--ink); letter-spacing: .06em; text-transform: uppercase; margin-left: .25rem; }
-        .left-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 2.5vw, 3rem); font-weight: 700; color: var(--ink); line-height: 1.05; margin-bottom: 1rem; }
+        .left-title { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: clamp(1.8rem, 2.5vw, 3rem); font-weight: 700; color: var(--ink); line-height: 1.05; margin-bottom: 1rem; }
         .left-title em { color: var(--ink); font-style: italic; }
         .left-desc { font-size: .84rem; line-height: 1.8; color: var(--ink); max-width: 340px; font-weight: 300; margin-bottom: 2rem; }
         .checklist { display: flex; flex-direction: column; gap: .75rem; }
@@ -78,7 +78,7 @@
         .panel-right { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 3.5rem; background: var(--cream); }
         .form-wrap { width: 100%; max-width: 420px; }
         .form-header { margin-bottom: 1.75rem; }
-        .form-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
+        .form-title { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
         .form-subtitle { font-size: .82rem; color: var(--muted); }
         .form-subtitle a { color: var(--teal); text-decoration: none; font-weight: 500; }
         .form-subtitle a:hover { text-decoration: underline; }
@@ -95,7 +95,7 @@
         input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select {
             width: 100%; padding: .72rem .9rem .72rem 2.5rem;
             border: 1px solid var(--border); border-radius: 6px;
-            font-size: .84rem; font-family: 'DM Sans', sans-serif;
+            font-size: .84rem; font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
             background: white; color: var(--ink);
             transition: border-color .2s, box-shadow .2s;
             outline: none; -webkit-appearance: none; appearance: none;
@@ -129,7 +129,7 @@
         .terms-row span { font-size: .78rem; color: var(--muted); line-height: 1.6; }
         .terms-row a { color: var(--teal); text-decoration: none; font-weight: 500; }
         .terms-row a:hover { text-decoration: underline; }
-        .btn-submit { width: 100%; padding: .88rem; background: var(--teal); color: white; border: none; border-radius: 6px; font-size: .88rem; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; letter-spacing: .03em; transition: background .2s, transform .15s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 1rem; touch-action: manipulation; }
+        .btn-submit { width: 100%; padding: .88rem; background: var(--teal); color: white; border: none; border-radius: 6px; font-size: .88rem; font-weight: 500; font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; cursor: pointer; letter-spacing: .03em; transition: background .2s, transform .15s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 1rem; touch-action: manipulation; }
         .btn-submit:hover { background: var(--teal-dark); transform: translateY(-1px); }
         .btn-submit:active { transform: scale(0.98); }
         .btn-submit:disabled { opacity: .65; cursor: not-allowed; transform: none; }
@@ -169,7 +169,7 @@
         <div class="mobile-brand-icon">
             <svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg>
         </div>
-        <span class="mobile-brand-text">NSIA — Prize for Innovation</span>
+        <span class="mobile-brand-text">NSIA Prize for Innovation</span>
     </div>
     <span class="mobile-step-badge">Step 1 of 3</span>
 </header>
@@ -186,14 +186,14 @@
             <div class="step-dot inactive">2</div>
             <div class="step-line"></div>
             <div class="step-dot inactive">3</div>
-            <span class="step-label">Step 1 of 3 — Personal Info</span>
+            <span class="step-label">Step 1 of 3 Personal Info</span>
         </div>
-        <h1 class="left-title">Join the<br /><em>NSIA Prize for</em><br />Innovation.</h1>
+        <h1 class="left-title">Join the<br /> NSIA Prize for <br />Innovation.</h1>
         <p class="left-desc">Create your account in minutes. You'll complete your innovation profile and submit your application after registration.</p>
         <div class="checklist">
             <div class="check-item">
                 <div class="check-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                <span class="check-text">Free to apply — no application fee</span>
+                <span class="check-text">Free to apply</span>
             </div>
             <div class="check-item">
                 <div class="check-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>

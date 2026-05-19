@@ -132,7 +132,7 @@
         .breadcrumb a { color: var(--teal); text-decoration: none; }
         .breadcrumb a:hover { text-decoration: underline; }
         .breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); stroke-width: 2; fill: none; }
-        .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
+        .page-title { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
         .page-sub { font-size: .84rem; color: var(--muted); line-height: 1.65; }
         .step-mini { display: flex; align-items: center; gap: .75rem; background: white; border-radius: 8px; border: 1px solid var(--border); padding: .85rem 1.25rem; margin-bottom: 2rem; }
         .step-mini-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
@@ -147,6 +147,11 @@
         .form-card-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--teal-light); }
         .form-card-icon svg { width: 17px; height: 17px; stroke: var(--teal); stroke-width: 1.75; fill: none; }
         .form-card-title { font-size: .92rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+        .form-card-title .req {
+                color: #e53e3e;
+                margin-left: 2px;
+            }
+        
         .form-card-desc { font-size: .74rem; color: var(--muted); line-height: 1.4; }
         .form-card-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.35rem; }
         .form-group { display: flex; flex-direction: column; gap: .38rem; }
@@ -176,6 +181,11 @@
         }
         .upload-zone:hover, .upload-zone.drag { border-color: var(--teal); background: var(--teal-light); }
         .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+        
+        .upload-zone.error { border-color: #f87171; background: #fff5f5; }
+        .upload-error { font-size: .71rem; color: #b91c1c; display: none; margin-top: .4rem; }
+        .upload-error.show { display: block; }
+
         .upload-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(45,184,176,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
         .upload-icon svg { width: 20px; height: 20px; stroke: var(--teal); stroke-width: 1.75; fill: none; }
         .upload-title { font-size: .88rem; font-weight: 500; color: var(--ink); margin-bottom: .25rem; }
@@ -395,7 +405,7 @@
                     <div class="form-group">
                         <label class="field-label" for="additionalInfo">
                             Additional information
-                            <span class="label-opt">(optional — max 1,000 characters)</span>
+                            <span class="label-opt">(optional - max 1,000 characters)</span>
                         </label>
                         <textarea id="additionalInfo" name="AdditionalInformation"
                                   placeholder="Share any additional context, recent developments, or information that strengthens your application..."
@@ -413,8 +423,9 @@
                         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                     </div>
                     <div>
-                        <div class="form-card-title">Supporting Documents</div>
-                        <div class="form-card-desc">Upload pitch decks, financial statements, product demos, or any relevant supporting files. PDF, Word, Excel, images accepted — max 10MB each.</div>
+                        <div class="form-card-title">Supporting Documents <span class="req">*</span></div>
+                        <div class="form-card-desc">Upload pitch decks, financial statements, product demos, or any relevant supporting files. PDF, Word, Excel, images accepted, max 10MB each.</div>
+                        <div class="upload-error" id="uploadError">Please upload at least one supporting document.</div>
                     </div>
                 </div>
                 <div class="form-card-body">
@@ -698,10 +709,23 @@
 
     function validate() {
         let ok = true;
+
+        // Checkboxes
         if (!document.getElementById('agreeTerms').checked)    { setInvalid('grp-terms');    ok = false; }
         if (!document.getElementById('agreePrivacy').checked)  { setInvalid('grp-privacy');  ok = false; }
         if (!document.getElementById('agreeAccuracy').checked) { setInvalid('grp-accuracy'); ok = false; }
-        if (!ok) document.querySelector('.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // File upload — at least one pending or existing doc required
+        const hasPending  = pendingFiles.some(pf => pf !== null);
+        const hasExisting = document.querySelectorAll('#fileList .file-item[data-docid]').length > 0;
+        if (!hasPending && !hasExisting) {
+            document.getElementById('uploadZone').classList.add('error');
+            document.getElementById('uploadError').classList.add('show');
+            ok = false;
+        }
+
+        if (!ok) document.querySelector('.invalid, .upload-zone.error')
+                        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return ok;
     }
 

@@ -160,7 +160,7 @@ namespace Nsia.Controllers
             if (app == null) return RedirectToLogin();
 
             ViewBag.ApplicantName = app.FullName;
-            ViewBag.CompletedStep = app.ApplicationStep - 1;
+            ViewBag.CompletedStep = app.ApplicationStep;
             return View();
         }
 

@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Verify Your Email — NSIA Prize for Innovation";
+    ViewData["Title"] = "Verify Your Email - NSIA Prize for Innovation";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -13,13 +13,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --teal: #0e86ab; --teal-d: #0a6b8a;
-            --green: #08703a; --green-d: #065a2f;
-            --lime: #83c240;
-            --ink: #0d1a12; --cream: #faf8f3;
-            --muted: #5a6b60; --border: rgba(0,0,0,0.1);
-        }
+            :root {
+                --teal: #20A1B8;
+                --teal-dark: #1a9990;
+                --teal-deep: #088192;
+                --teal-light: #f2f8fa;
+                --teal-pale: #F0FAF9;
+                --green: #7BC144;
+                --green-dark: #5a9130;
+                --ink: #1C2B2A;
+                --muted: #4A6260;
+                --border: rgba(45, 184, 176, 0.2);
+                --white: #FFFFFF;
+            }
 
         body {
             font-family: 'DM Sans', sans-serif;
@@ -32,7 +38,7 @@
 
         /* ── LEFT PANEL ── */
         .panel-left {
-            background: var(--ink);
+            background: var(--teal);
             padding: 3rem;
             display: flex;
             flex-direction: column;
@@ -44,9 +50,6 @@
         .panel-left::before {
             content: '';
             position: absolute; inset: 0;
-            background:
-                radial-gradient(ellipse at 15% 40%, rgba(14,134,171,0.25) 0%, transparent 60%),
-                radial-gradient(ellipse at 85% 70%, rgba(8,112,58,0.2) 0%, transparent 55%);
         }
         .panel-left > * { position: relative; z-index: 1; }
 
@@ -102,7 +105,7 @@
         @@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
 
         .left-title {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
             font-size: clamp(1.8rem, 2.5vw, 2.8rem);
             font-weight: 700; color: white; line-height: 1.1;
             margin-bottom: 1rem;
@@ -180,7 +183,7 @@
         }
         .email-chip svg { width: 12px; height: 12px; stroke: var(--teal); stroke-width: 2; fill: none; }
         .form-title {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
             font-size: 2rem; font-weight: 700;
             color: var(--ink); line-height: 1.1; margin-bottom: .5rem;
         }
@@ -204,7 +207,7 @@
             width: 52px; height: 58px;
             border: 1.5px solid var(--border); border-radius: 10px;
             background: white; color: var(--ink);
-            font-family: 'Cormorant Garamond', serif;
+            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
             font-size: 1.75rem; font-weight: 700;
             text-align: center; outline: none;
             transition: border-color .2s, box-shadow .2s, transform .15s;
@@ -328,7 +331,7 @@
         @@keyframes pop { 0%{transform:scale(0.5);opacity:0} 100%{transform:scale(1);opacity:1} }
         .success-icon-wrap svg { width: 36px; height: 36px; stroke: var(--green); stroke-width: 2; fill: none; }
         .success-title {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
             font-size: 1.9rem; font-weight: 700; color: var(--ink);
             margin-bottom: .5rem; line-height: 1.1;
         }
@@ -388,7 +391,7 @@
         <div class="mobile-brand-icon">
             <svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg>
         </div>
-        <span class="mobile-brand-text">NSIA — Prize for Innovation</span>
+        <span class="mobile-brand-text">NSIA Prize for Innovation</span>
     </div>
     <span class="mobile-step-badge">Verify Email</span>
 </header>
@@ -396,13 +399,12 @@
 <!-- LEFT PANEL -->
 <div class="panel-left">
     <div class="brand">
-        <div class="brand-icon">
-            <svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg>
-        </div>
-        <div class="brand-text">
+       
+            <a href="/"><div class="brand-icon"><img src="~/web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" alt="NSIA" /></div></a>
+        @* <div class="brand-text">
             <strong>NSIA</strong>
             <span>Nigeria Sovereign Investment Authority</span>
-        </div>
+        </div> *@
     </div>
 
     <div class="panel-center">
@@ -412,7 +414,7 @@
             <div class="step-dot active">2</div>
             <div class="step-line"></div>
             <div class="step-dot inactive">3</div>
-            <span class="step-label">Step 2 — Verify Email</span>
+            <span class="step-label">Step 2 Verify Email</span>
         </div>
 
         <div class="left-visual">
@@ -506,7 +508,7 @@
                     </div>
                     <div class="otp-hint">
                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                        Digits only — paste your code or type it in
+                        Digits only. paste your code or type it in
                     </div>
                 </div>
 

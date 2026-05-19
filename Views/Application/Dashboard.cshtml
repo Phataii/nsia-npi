@@ -48,7 +48,7 @@
             --nav-h: 62px; --step-h: 56px;
         }
         html { scroll-behavior: smooth; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
+        body { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
 
         /* ── NAV ── */
         .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: white; display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
@@ -152,7 +152,7 @@
         }
         .wb-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); animation: pulse 2s ease-in-out infinite; flex-shrink: 0; }
         @@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
-        .wb-title { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .5rem; }
+        .wb-title { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: 1.9rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .5rem; }
         .wb-title em { color: var(--green); font-style: italic; }
         .wb-sub { font-size: .84rem; color: var(--ink); font-weight: 300; max-width: 400px; line-height: 1.7; }
 
@@ -163,7 +163,7 @@
             text-align: center;
         }
         .ref-label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .3rem; }
-        .ref-value { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: white; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); padding: .3rem .9rem; border-radius: 6px; letter-spacing: .05em; }
+        .ref-value { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: 1.2rem; font-weight: 700; color: white; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); padding: .3rem .9rem; border-radius: 6px; letter-spacing: .05em; }
 
         /* Progress ring */
         .ring-wrap { position: relative; width: 86px; height: 86px; flex-shrink: 0; }
@@ -171,7 +171,7 @@
         .ring-bg { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 5; }
         .ring-fill { fill: none; stroke: var(--green); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 220; transition: stroke-dashoffset 1s ease; }
         .ring-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .ring-pct { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--ink); line-height: 1; }
+        .ring-pct { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--ink); line-height: 1; }
         .ring-sub { font-size: 9px; color: var(--ink); text-transform: uppercase; letter-spacing: .07em; margin-top: 2px; }
 
         /* ── SECTION LABEL ── */
@@ -246,7 +246,7 @@
             padding: 1.75rem 2rem;
             display: flex; align-items: center; justify-content: space-between; gap: 2rem;
         }
-        .cta-left h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--ink); margin-bottom: .3rem; }
+        .cta-left h3 { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--ink); margin-bottom: .3rem; }
         .cta-left p  { font-size: .82rem; color: var(--muted); line-height: 1.65; max-width: 480px; }
         .btn-cta {
             flex-shrink: 0; background: var(--teal); color: white;
@@ -373,11 +373,11 @@
                 </h1>
                 <p class="wb-sub">
                     @if (completedStep == 0) {
-                        <text>You haven't started yet — let's go! Complete all 10 steps to submit your application.</text>
+                        <text>You haven't started yet. Let's go! Complete all 10 steps to submit your application.</text>
                     } else if (completedStep < totalSteps) {
-                        <text>You're @completedStep of @totalSteps steps done. Keep going — you're making great progress!</text>
+                        <text>You're @completedStep of @totalSteps steps done. Keep going! You're making great progress!</text>
                     } else {
-                        <text>All 10 steps completed. Review your application and submit before the deadline.</text>
+                        <text>All 10 steps completed. Check your email for more info.</text>
                     }
                 </p>
             </div>

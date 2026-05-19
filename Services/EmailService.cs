@@ -11,7 +11,7 @@ namespace nsia.Services
 
         private string ApiKey => _config["Brevo:ApiKey"] ?? throw new InvalidOperationException("Brevo API key not configured.");
         private string SenderName => _config["Brevo:SenderName"] ?? "NSIA Prize for Innovation";
-        private string SenderEmail => _config["Brevo:SenderEmail"] ?? "npi@nsia.com.ng";
+        private string SenderEmail => _config["Brevo:SenderEmail"] ?? "corporatecommunications@loftyincltd.biz";
 
         public EmailService(
             HttpClient http,
@@ -77,8 +77,8 @@ namespace nsia.Services
         {
             var html = $@"
             <div style='font-family:DM Sans,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#faf8f3'>
-                <div style='background:#0d1a12;border-radius:12px;padding:32px;margin-bottom:24px'>
-                    <p style='font-size:11px;color:#0e86ab;letter-spacing:.08em;text-transform:uppercase;margin:0 0 16px'>
+                <div style='background:#20A1B8;border-radius:12px;padding:32px;margin-bottom:24px'>
+                    <p style='font-size:11px;color:white;letter-spacing:.08em;text-transform:uppercase;margin:0 0 16px'>
                         NSIA · Prize for Innovation
                     </p>
                     <h1 style='font-family:Georgia,serif;font-size:28px;color:white;margin:0 0 8px;line-height:1.1'>
@@ -88,9 +88,11 @@ namespace nsia.Services
                         Enter this code to confirm your account.
                     </p>
                 </div>
-                <div style='background:white;border-radius:12px;border:1px solid rgba(0,0,0,0.08);padding:32px;text-align:center;margin-bottom:16px'>
+                <div
+                    style='background:white;border-radius:12px;border:1px solid rgba(0,0,0,0.08);padding:32px;text-align:center;margin-bottom:16px'>
                     <p style='font-size:13px;color:#5a6b60;margin:0 0 16px'>Your verification code</p>
-                    <div style='font-family:Georgia,serif;font-size:48px;font-weight:700;color:#0d1a12;letter-spacing:.25em;margin:0 0 16px'>
+                    <div
+                        style='font-family:Georgia,serif;font-size:48px;font-weight:700;color:#0d1a12;letter-spacing:.25em;margin:0 0 16px'>
                         {otp}
                     </div>
                     <p style='font-size:12px;color:#5a6b60;margin:0'>
@@ -98,7 +100,8 @@ namespace nsia.Services
                         Never share it with anyone, including NSIA staff.
                     </p>
                 </div>
-                <div style='background:rgba(14,134,171,0.06);border:1px solid rgba(14,134,171,0.15);border-radius:8px;padding:14px 16px;margin-bottom:16px'>
+                <div
+                    style='background:rgba(14,134,171,0.06);border:1px solid rgba(14,134,171,0.15);border-radius:8px;padding:14px 16px;margin-bottom:16px'>
                     <p style='font-size:12px;color:#0a6b8a;margin:0'>
                         If you did not create an NSIA NPI account, you can safely ignore this email.
                     </p>
@@ -124,8 +127,8 @@ namespace nsia.Services
 
             var html = $@"
             <div style='font-family:DM Sans,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#faf8f3'>
-                <div style='background:#0d1a12;border-radius:12px;padding:32px;margin-bottom:24px'>
-                    <p style='font-size:11px;color:#0e86ab;letter-spacing:.08em;text-transform:uppercase;margin:0 0 16px'>
+                <div style='background:#20A1B8;border-radius:12px;padding:32px;margin-bottom:24px'>
+                    <p style='font-size:11px;color:white;letter-spacing:.08em;text-transform:uppercase;margin:0 0 16px'>
                         NSIA · Prize for Innovation
                     </p>
                     <h1 style='font-family:Georgia,serif;font-size:28px;color:white;margin:0 0 8px;line-height:1.1'>
@@ -139,7 +142,8 @@ namespace nsia.Services
                     <p style='font-size:12px;color:#5a6b60;margin:0 0 8px;text-transform:uppercase;letter-spacing:.06em'>
                         Your application reference
                     </p>
-                    <p style='font-family:Georgia,serif;font-size:24px;font-weight:700;color:#0d1a12;letter-spacing:.05em;margin:0 0 16px'>
+                    <p
+                        style='font-family:Georgia,serif;font-size:24px;font-weight:700;color:#0d1a12;letter-spacing:.05em;margin:0 0 16px'>
                         {referenceNumber}
                     </p>
                     <p style='font-size:13px;color:#5a6b60;margin:0;line-height:1.6'>
@@ -147,7 +151,8 @@ namespace nsia.Services
                         with the NSIA NPI team.
                     </p>
                 </div>
-                <div style='background:rgba(8,112,58,0.06);border:1px solid rgba(8,112,58,0.15);border-radius:8px;padding:14px 16px;margin-bottom:16px'>
+                <div
+                    style='background:rgba(8,112,58,0.06);border:1px solid rgba(8,112,58,0.15);border-radius:8px;padding:14px 16px;margin-bottom:16px'>
                     <p style='font-size:12px;color:#065a2f;margin:0 0 4px;font-weight:500'>Next steps</p>
                     <p style='font-size:12px;color:#08703a;margin:0;line-height:1.6'>
                         Log in to your dashboard and complete all 7 sections of your application
@@ -156,7 +161,7 @@ namespace nsia.Services
                 </div>
                 <p style='font-size:11px;color:#aab5af;text-align:center;margin:0'>
                     Questions? Email
-                    <a href='mailto:npi@nsia.com.ng' style='color:#0e86ab;text-decoration:none'>npi@nsia.com.ng</a>
+                    <a href='mailto:corporatecommunications@loftyincltd.biz' style='color:#0e86ab;text-decoration:none'>corporatecommunications@loftyincltd.biz</a>
                     &nbsp;·&nbsp;
                     &copy; {DateTime.UtcNow.Year} Nigeria Sovereign Investment Authority
                 </p>
@@ -184,8 +189,8 @@ namespace nsia.Services
 
             var html = $@"
             <div style='font-family:DM Sans,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#faf8f3'>
-                <div style='background:#0d1a12;border-radius:12px;padding:32px;margin-bottom:24px'>
-                    <p style='font-size:11px;color:#0e86ab;letter-spacing:.08em;text-transform:uppercase;margin:0 0 16px'>
+                <div style='background:#20A1B8;border-radius:12px;padding:32px;margin-bottom:24px'>
+                    <p style='font-size:11px;color: white;letter-spacing:.08em;text-transform:uppercase;margin:0 0 16px'>
                         NSIA · Prize for Innovation
                     </p>
                     <h1 style='font-family:Georgia,serif;font-size:28px;color:white;margin:0 0 8px;line-height:1.1'>
@@ -198,30 +203,37 @@ namespace nsia.Services
                 <div style='background:white;border-radius:12px;border:1px solid rgba(0,0,0,0.08);padding:24px;margin-bottom:16px'>
                     <table style='width:100%;border-collapse:collapse'>
                         <tr>
-                            <td style='font-size:12px;color:#5a6b60;padding:6px 0;text-transform:uppercase;letter-spacing:.06em;width:45%'>Reference</td>
+                            <td
+                                style='font-size:12px;color:#5a6b60;padding:6px 0;text-transform:uppercase;letter-spacing:.06em;width:45%'>
+                                Reference</td>
                             <td style='font-family:Georgia,serif;font-size:16px;font-weight:700;color:#0d1a12;padding:6px 0'>
                                 {referenceNumber}
                             </td>
                         </tr>
                         <tr>
-                            <td style='font-size:12px;color:#5a6b60;padding:6px 0;text-transform:uppercase;letter-spacing:.06em'>Submitted on</td>
+                            <td style='font-size:12px;color:#5a6b60;padding:6px 0;text-transform:uppercase;letter-spacing:.06em'>
+                                Submitted on</td>
                             <td style='font-size:14px;color:#0d1a12;padding:6px 0'>{submittedOn}</td>
                         </tr>
                         <tr>
-                            <td style='font-size:12px;color:#5a6b60;padding:6px 0;text-transform:uppercase;letter-spacing:.06em'>Time</td>
+                            <td style='font-size:12px;color:#5a6b60;padding:6px 0;text-transform:uppercase;letter-spacing:.06em'>
+                                Time</td>
                             <td style='font-size:14px;color:#0d1a12;padding:6px 0'>{submittedAt}</td>
                         </tr>
                         <tr>
-                            <td style='font-size:12px;color:#5a6b60;padding:6px 0;text-transform:uppercase;letter-spacing:.06em'>Status</td>
+                            <td style='font-size:12px;color:#5a6b60;padding:6px 0;text-transform:uppercase;letter-spacing:.06em'>
+                                Status</td>
                             <td style='padding:6px 0'>
-                                <span style='background:rgba(8,112,58,0.1);color:#08703a;font-size:11px;font-weight:500;padding:3px 10px;border-radius:100px'>
+                                <span
+                                    style='background:rgba(8,112,58,0.1);color:#08703a;font-size:11px;font-weight:500;padding:3px 10px;border-radius:100px'>
                                     Submitted
                                 </span>
                             </td>
                         </tr>
                     </table>
                 </div>
-                <div style='background:rgba(14,134,171,0.06);border:1px solid rgba(14,134,171,0.15);border-radius:8px;padding:14px 16px;margin-bottom:16px'>
+                <div
+                    style='background:rgba(14,134,171,0.06);border:1px solid rgba(14,134,171,0.15);border-radius:8px;padding:14px 16px;margin-bottom:16px'>
                     <p style='font-size:12px;color:#0a6b8a;margin:0 0 4px;font-weight:500'>What happens next?</p>
                     <p style='font-size:12px;color:#0e86ab;margin:0;line-height:1.7'>
                         Our review panel will assess your application. Shortlisted applicants will be
@@ -231,8 +243,8 @@ namespace nsia.Services
                 </div>
                 <p style='font-size:11px;color:#aab5af;text-align:center;margin:0;line-height:1.8'>
                     Questions? Email
-                    <a href='mailto:npi@nsia.com.ng' style='color:#0e86ab;text-decoration:none'>npi@nsia.com.ng</a>
-                    <br/>
+                    <a href='mailto:corporatecommunications@loftyincltd.biz' style='color:#0e86ab;text-decoration:none'>corporatecommunications@loftyincltd.biz</a>
+                    <br />
                     &copy; {DateTime.UtcNow.Year} Nigeria Sovereign Investment Authority &nbsp;·&nbsp; Abuja, Nigeria
                 </p>
             </div>";

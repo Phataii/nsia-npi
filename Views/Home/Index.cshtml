@@ -56,7 +56,7 @@
         .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
         .mobile-menu { display: none; position: fixed; inset: 0; z-index: 150; background: var(--teal-deep); flex-direction: column; align-items: center; justify-content: center; gap: 2rem; }
         .mobile-menu.open { display: flex; }
-        .mobile-menu a { font-size: 1.4rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; color: white; text-decoration: none; }
+        .mobile-menu a { font-size: 1.4rem; font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-weight: 600; color: white; text-decoration: none; }
         .mobile-menu a:hover { color: var(--green); }
         .mobile-menu .m-cta { background: white; color: var(--teal-deep); padding: .85rem 2.5rem; border-radius: 100px; font-size: .9rem; font-family: 'DM Sans', sans-serif; font-weight: 600; margin-top: .5rem; }
         .mobile-menu-close { position: absolute; top: 1.25rem; right: 1.5rem; background: none; border: none; cursor: pointer; color: white; font-size: 1.75rem; line-height: 1; }
@@ -75,7 +75,7 @@
         .hero::after {
             content: 'NPI 4.0';
             position: absolute; right: -2rem; bottom: -3rem;
-            font-family: 'Cormorant Garamond', serif;
+            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
             font-size: 22rem; font-weight: 700; line-height: 1;
             color: rgba(255,255,255,0.06); pointer-events: none; white-space: nowrap;
         }
@@ -93,7 +93,7 @@
         @@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
 
         .hero-title {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
             font-size: clamp(3rem, 5.5vw, 7rem);
             font-weight: 700; line-height: .95; color: white; margin-bottom: 1.75rem;
         }
@@ -126,7 +126,7 @@
             display: flex; gap: 2.5rem; margin-top: 3.5rem;
             padding-top: 2.5rem; border-top: 1px solid rgba(255,255,255,0.2); flex-wrap: wrap;
         }
-        .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 700; color: var(--ink); line-height: 1; }
+        .stat-value { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--ink); line-height: 1; }
         .stat-label { font-size: .72rem; color: var(--ink); letter-spacing: .08em; text-transform: uppercase; margin-top: .25rem; }
 
         /* HERO RIGHT CARD */
@@ -176,7 +176,7 @@
         .p-dot.s svg { stroke: var(--teal-dark); }
         .p-row-name { font-size: .76rem; font-weight: 600; color: var(--ink); flex: 1; }
         .p-row-desc { font-size: .65rem; color: var(--muted); }
-        .p-row-amount { font-family: 'Cormorant Garamond', serif; font-size: .95rem; font-weight: 700; color: var(--teal); flex-shrink: 0; }
+        .p-row-amount { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: .95rem; font-weight: 700; color: var(--teal); flex-shrink: 0; }
         .p-row-amount.g { color: var(--green-dark); }
         .p-row-amount.r { color: #dc2626; }
         .p-row-amount.pill {
@@ -191,7 +191,7 @@
             border-top: 1.5px solid rgba(45,184,176,0.15);
         }
         .partners-total span { font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
-        .partners-total strong { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--teal); }
+        .partners-total strong { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--teal); }
 
         /* ══ DIVIDER BAND ══ */
         .band {
@@ -212,7 +212,7 @@
             display: flex; align-items: center; gap: .6rem;
         }
         .section-label::before { content: ''; display: block; width: 24px; height: 2px; background: var(--teal); }
-        .section-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem,3.5vw,3.4rem); font-weight: 700; line-height: 1.1; max-width: 640px; color: var(--ink); }
+        .section-heading { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: clamp(1.8rem,3.5vw,3.4rem); font-weight: 700; line-height: 1.1; max-width: 640px; color: var(--ink); }
 
         /* ══ ABOUT ══ */
         .about { background: white; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
@@ -293,7 +293,7 @@
         .steps-list { display: flex; flex-direction: column; gap: 0; margin-top: 2rem; position: relative; }
         .steps-list::before { content: ''; position: absolute; left: 20px; top: 24px; bottom: 24px; width: 2px; background: linear-gradient(to bottom, var(--teal), var(--green)); }
         .step { display: flex; gap: 1.5rem; padding: 1.5rem 0; position: relative; }
-        .step-num { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; background: var(--teal); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1.1rem; color: white; z-index: 1; }
+        .step-num { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; background: var(--teal); display: flex; align-items: center; justify-content: center; font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-weight: 700; font-size: 1.1rem; color: white; z-index: 1; }
         .step-title { font-weight: 600; font-size: .92rem; margin-bottom: .3rem; color: var(--ink); }
         .step-desc { font-size: .8rem; color: var(--muted); line-height: 1.6; }
 
@@ -307,7 +307,7 @@
             
         }
         .cta-banner > * { position: relative; z-index: 1; }
-        .cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem,4vw,3.8rem); font-weight: 700; color: var(--ink); margin-bottom: 1rem; line-height: 1.1; }
+        .cta-title { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: clamp(1.8rem,4vw,3.8rem); font-weight: 700; color: var(--ink); margin-bottom: 1rem; line-height: 1.1; }
         .cta-sub { font-size: 1rem; color: var(--ink); margin-bottom: 2.5rem; max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.7; }
         .cta-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
         .btn-white-solid {
@@ -437,7 +437,7 @@
             <p class="hero-sub">
                 The NSIA Prize for Innovation is Nigeria's premier platform for early-stage
                 innovators with digital solutions that drive transformative impact across
-                healthcare, agriculture, and climate.
+                healthcare, Manufacturing, and climate.
             </p>
             <div class="hero-actions">
                 <a href="/Account/Register" class="btn-white">
@@ -594,7 +594,7 @@
             </div>
             <div class="programme-intro-right">
                 <p>A multi-year programme designed to fund, mentor, and accelerate early-stage Nigerian digital innovations — from first idea to global-ready startup.</p>
-                <p>We back bold innovators solving real problems in three critical sectors. If your solution drives measurable impact in healthcare, agriculture, or climate and ESG, this programme is for you.</p>
+                <p>We back bold innovators solving real problems in three critical sectors. If your solution drives measurable impact in healthcare, Manufacturing, or climate and ESG, this programme is for you.</p>
             </div>
         </div>
 
@@ -608,12 +608,12 @@
                 </div>
                 <div class="sector-item">
                     <div class="sector-icon">🌾</div>
-                    <div class="sector-name">Agriculture</div>
+                    <div class="sector-name">Manufacturing</div>
                     <div class="sector-desc">AgriTech, supply chains, smallholder finance and food security solutions</div>
                 </div>
                 <div class="sector-item">
                     <div class="sector-icon">🌱</div>
-                    <div class="sector-name">Climate &amp; ESG Solutions</div>
+                    <div class="sector-name">Climate &amp; Climate & Food security</div>
                     <div class="sector-desc">Clean energy, carbon reduction, sustainable finance and environmental impact</div>
                 </div>
             </div>
@@ -647,7 +647,7 @@
         <div class="elig-list">
             <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Nigerian-owned or Nigerian-registered startup or early-stage company</div></div>
             <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Technology-enabled digital solution with demonstrable social or economic impact</div></div>
-            <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Solution must address Healthcare, Agriculture, or Climate &amp; ESG</div></div>
+            <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Solution must address Healthcare, Manufacturing, or Climate &amp; ESG</div></div>
             <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Early-stage — must not have received more than Series A funding</div></div>
             <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Scalable model with potential for national or continental reach</div></div>
             <div class="elig-item"><div class="elig-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="elig-text">Founder(s) must be available for the full duration of the programme</div></div>
@@ -700,7 +700,7 @@
             <li><a href="#">Our Mandate</a></li>
             <li><a href="#">Investments</a></li>
             <li><a href="#">News &amp; Press</a></li>
-            <li><a href="#">nsia.com.ng</a></li>
+            <li><a href="#">nsia-ip.com</a></li>
         </ul>
     </div>
     <div>

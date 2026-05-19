@@ -70,7 +70,7 @@ using (var scope = app.Services.CreateScope())
         db.AdminUsers.Add(new nsia.Models.AdminUser
         {
             FullName = "NSIA Admin",
-            Email = "admin@nsia.com.ng",
+            Email = "admin@nsia-ip.com",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@1234"),
             Role = "SuperAdmin",
         });
