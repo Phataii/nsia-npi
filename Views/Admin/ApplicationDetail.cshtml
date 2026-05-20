@@ -1,0 +1,991 @@
+@{
+    ViewData["Title"] = "Application Detail";
+    var app = ViewBag.Application as dynamic;
+    var founders = ViewBag.Founders as IEnumerable<dynamic> ?? new List<dynamic>();
+    var docs = ViewBag.Documents as IEnumerable<dynamic> ?? new List<dynamic>();
+}
+
+@section Styles {
+    <style>
+        .detail-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .detail-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: .35rem;
+        }
+
+        .detail-ref {
+            font-size: .78rem;
+            color: var(--muted);
+        }
+
+        .detail-ref code {
+            font-size: .78rem;
+            background: var(--off);
+            padding: .15rem .5rem;
+            border-radius: 4px;
+        }
+
+        .status-actions {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            flex-wrap: wrap;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: .3rem .9rem;
+            border-radius: 100px;
+            font-size: .75rem;
+            font-weight: 500;
+        }
+
+        .pill-submitted {
+            background: rgba(45, 184, 176, 0.12);
+            color: var(--teal-deep);
+        }
+
+        .pill-draft {
+            background: rgba(245, 158, 11, 0.1);
+            color: #92400e;
+        }
+
+        .pill-reviewed {
+            background: rgba(123, 193, 68, 0.12);
+            color: var(--green-dark);
+        }
+
+        .pill-shortlisted {
+            background: rgba(139, 92, 246, 0.1);
+            color: #6d28d9;
+        }
+
+        .pill-rejected {
+            background: rgba(220, 38, 38, 0.08);
+            color: #b91c1c;
+        }
+
+        select.status-select {
+            padding: .55rem 2rem .55rem .9rem;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            font-size: .82rem;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
+            background: white;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234A6260' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        select.status-select:focus {
+            border-color: var(--teal);
+        }
+
+        .btn-update {
+            padding: .55rem 1.25rem;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: .82rem;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        .btn-update:hover {
+            background: var(--teal-d);
+        }
+
+        /* Step progress */
+        .step-progress {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-progress-label {
+            font-size: .72rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            margin-bottom: .85rem;
+        }
+
+        .step-dots {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+        }
+
+        .step-dot-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .3rem;
+        }
+
+        .step-dot-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .step-dot-circle.done {
+            background: var(--teal);
+            color: white;
+        }
+
+        .step-dot-circle.todo {
+            background: var(--off);
+            color: var(--muted);
+            border: 1.5px solid var(--border);
+        }
+
+        .step-dot-name {
+            font-size: 9px;
+            color: var(--muted);
+            text-align: center;
+            max-width: 52px;
+            line-height: 1.3;
+        }
+
+        /* Section cards */
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .section-card.full {
+            grid-column: 1/-1;
+        }
+
+        .section-card-header {
+            padding: .9rem 1.4rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            background: var(--off);
+        }
+
+        .section-card-header svg {
+            width: 15px;
+            height: 15px;
+            stroke: var(--teal);
+            stroke-width: 1.75;
+            fill: none;
+        }
+
+        .section-card-header span {
+            font-size: .8rem;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .section-card-body {
+            padding: 1.25rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            gap: .85rem;
+        }
+
+        .field-row {
+            display: flex;
+            flex-direction: column;
+            gap: .2rem;
+        }
+
+        .field-label {
+            font-size: .68rem;
+            font-weight: 500;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .field-value {
+            font-size: .83rem;
+            color: var(--ink);
+            line-height: 1.55;
+        }
+
+        .field-value.empty {
+            color: #b0bcba;
+            font-style: italic;
+        }
+
+        .field-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .85rem;
+        }
+
+        /* Founders */
+        .founder-card {
+            background: var(--teal-pale);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+        }
+
+        .founder-name {
+            font-size: .88rem;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: .5rem;
+        }
+
+        .founder-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .4rem;
+        }
+
+        .founder-meta-item {
+            font-size: .76rem;
+            color: var(--muted);
+        }
+
+        .founder-meta-item strong {
+            color: var(--ink);
+            font-weight: 400;
+        }
+
+        /* Documents */
+        .doc-item {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            padding: .75rem 1rem;
+            background: var(--teal-pale);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .doc-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 7px;
+            background: var(--teal-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .doc-icon svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--teal);
+            stroke-width: 1.75;
+            fill: none;
+        }
+
+        .doc-name {
+            font-size: .8rem;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .doc-meta {
+            font-size: .7rem;
+            color: var(--muted);
+            margin-top: 1px;
+        }
+
+        .doc-link {
+            margin-left: auto;
+            font-size: .75rem;
+            color: var(--teal);
+            text-decoration: none;
+        }
+
+        .doc-link:hover {
+            text-decoration: underline;
+        }
+
+        .nin-value {
+            font-family: monospace;
+            background: var(--off);
+            padding: .2rem .5rem;
+            border-radius: 4px;
+            font-size: .8rem;
+            letter-spacing: .1em;
+        }
+
+        @@media (max-width: 800px) {
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field-grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .founder-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+}
+
+<div class="breadcrumb">
+    <a asp-action="Dashboard" asp-controller="Admin">Admin</a>
+    <svg viewBox="0 0 24 24">
+        <polyline points="9 18 15 12 9 6" />
+    </svg>
+    <a asp-action="Applications" asp-controller="Admin">Applications</a>
+    <svg viewBox="0 0 24 24">
+        <polyline points="9 18 15 12 9 6" />
+    </svg>
+    <span>@app.ReferenceNumber</span>
+</div>
+
+<!-- Header -->
+<div class="detail-header">
+    <div>
+        <div class="detail-title">@app.FullName</div>
+        <div class="detail-ref">@app.CompanyName &nbsp;·&nbsp; Ref: <code>@app.ReferenceNumber</code></div>
+    </div>
+    <div class="status-actions">
+        @{
+            var pillCls = app.Status == "Submitted" ? "pill-submitted"
+                        : app.Status == "Reviewed" ? "pill-reviewed"
+                        : app.Status == "Shortlisted" ? "pill-shortlisted"
+                        : app.Status == "Rejected" ? "pill-rejected"
+                        : "pill-draft";
+        }
+        <span class="status-pill @pillCls">@app.Status</span>
+        @* <form asp-action="UpdateStatus" asp-controller="Admin" method="post"
+        style="display:flex;gap:.6rem;align-items:center">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@app.Id" />
+            <select name="status" class="status-select">
+                @foreach (var s in new[] { "Draft", "Submitted", "Reviewed", "Shortlisted", "Rejected" })
+                {
+                    <option value="@s" selected="@(app.Status == s)">@s</option>
+                }
+            </select>
+
+            <button type="submit" class="btn-update">Update</button>
+        </form> *@
+    </div>
+</div>
+
+<!-- Step Progress -->
+@{
+    var stepNames = new[] { "Pre-Check", "Personal", "Company", "Team", "Product", "Comm I", "Comm II", "Sustain", "Impact", "Additional" };
+    var appStep = (int)(app.ApplicationStep ?? 0);
+}
+<div class="step-progress">
+    <div class="step-progress-label">Application Progress — Step @appStep of 10</div>
+    <div class="step-dots">
+        @for (int i = 0; i < 10; i++)
+        {
+            <div class="step-dot-item">
+                <div class="step-dot-circle @(i < appStep ? "done" : "todo")">@(i+1)</div>
+                <div class="step-dot-name">@stepNames[i]</div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Step 1: Pre-Checklist + Step 2: Personal -->
+<div class="section-grid">
+    <div class="section-card">
+        <div class="section-card-header">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 11l3 3L22 4" />
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+            </svg>
+            <span>Pre-Submission Checklist</span>
+        </div>
+        <div class="section-card-body">
+            <div class="field-grid-2">
+                <div class="field-row">
+                    <div class="field-label">Registered in Nigeria</div>
+                    <div class="field-value">@(app.IsRegisteredInNigeria ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Business Sector</div>
+                    <div class="field-value">@(app.BusinessSector ?? "—")</div>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field-label">Country of Origin</div>
+                <div class="field-value">@(app.CountryOfOrigin ?? "—")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-card-header">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span>Personal Information</span>
+        </div>
+        <div class="section-card-body">
+            <div class="field-grid-2">
+                <div class="field-row">
+                    <div class="field-label">Full Name</div>
+                    <div class="field-value">@(app.FullName ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Email</div>
+                    <div class="field-value">@(app.Email ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Phone</div>
+                    <div class="field-value">@(app.Phone ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Gender</div>
+                    <div class="field-value">@(app.Gender ?? "—")</div>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field-label">NIN</div>
+                <div class="field-value">
+                    @if (!string.IsNullOrEmpty((string)app.NinEncrypted))
+                    {
+                        <span class="nin-value">@ViewBag.DecryptedNin</span>
+                    }
+                    else
+                    {
+
+                        <span class="empty">Not provided</span>
+                    }
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field-label">Relationship to Business</div>
+                <div class="field-value">@(app.RelationshipToBusiness ?? "—")</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Step 3: Company -->
+<div class="section-grid">
+    <div class="section-card full">
+        <div class="section-card-header">
+            <svg viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M3 9h18M9 21V9" />
+            </svg>
+            <span>Company Information</span>
+        </div>
+        <div class="section-card-body">
+            <div class="field-grid-2">
+                <div class="field-row">
+                    <div class="field-label">Company Name</div>
+                    <div class="field-value">@(app.CompanyName ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Website</div>
+                    <div class="field-value">@(app.CompanyWebsite ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">State / LGA</div>
+                    <div class="field-value">@(app.BusinessState ?? "—") / @(app.BusinessLga ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Geographic Scope</div>
+                    <div class="field-value">@(app.GeographicScope ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Reg. Number</div>
+                    <div class="field-value">@(app.CompanyRegistrationNumber ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Company Structure</div>
+                    <div class="field-value">@(app.CompanyStructure ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Regulatory Compliance</div>
+                    <div class="field-value">@(app.RegulatoryCompliance ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Tax Compliance</div>
+                    <div class="field-value">@(app.TaxCompliance ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Foreign Affiliates</div>
+                    <div class="field-value">@(app.HasForeignAffiliates ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Nigerian Entity Primary</div>
+                    <div class="field-value">@(app.IsNigerianEntityPrimary ?? "—")</div>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field-label">HQ Address</div>
+                <div class="field-value">@(app.CompanyHqAddress ?? "—")</div>
+            </div>
+            <div class="field-row">
+                <div class="field-label">Social Media</div>
+                <div class="field-value">@(app.SocialMedia?.Twitter) @(app.SocialMedia?.Instagram)
+                    @(app.SocialMedia?.LinkedIn) @(app.SocialMedia?.Facebook)</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Other Competitions</div>
+                    <div class="field-value">@(app.OtherCompetitions ?? "—")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 4: Team -->
+    <div class="section-grid">
+        <div class="section-card">
+            <div class="section-card-header">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span>Team Information</span>
+            </div>
+            <div class="section-card-body">
+                <div class="field-grid-2">
+                    <div class="field-row">
+                        <div class="field-label">Number of Founders</div>
+                        <div class="field-value">@(app.NumberOfFounders ?? "—")</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Total Employees</div>
+                        <div class="field-value">@(app.TotalFullTimeEmployees ?? "—")</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Founder Industry Exp.</div>
+                        <div class="field-value">@(app.FounderIndustryExperience ?? "—")</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Management Team Exp.</div>
+                        <div class="field-value">@(app.ManagementTeamExperience ?? "—")</div>
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Founding Team Type</div>
+                    <div class="field-value">@(app.FoundingTeamType ?? "—")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-card-header">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span>Founders' Details</span>
+            </div>
+            <div class="section-card-body">
+                @if (!founders.Any())
+                {
+                    <div style="font-size:.8rem;color:var(--muted)">No founders added.</div>
+                }
+                @foreach (var f in founders)
+                {
+                    <div class="founder-card">
+                        <div class="founder-name">@f.FullName</div>
+                        <div class="founder-meta">
+                            <div class="founder-meta-item">Role: <strong>@f.Role</strong></div>
+                            <div class="founder-meta-item">Phone: <strong>@f.PhoneNumber</strong></div>
+                            <div class="founder-meta-item">Nationality: <strong>@f.Nationality</strong></div>
+                            <div class="founder-meta-item">LinkedIn: <strong>@f.LinkedInUrl</strong></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 5: Product -->
+    <div class="section-grid">
+        <div class="section-card full">
+            <div class="section-card-header">
+                <svg viewBox="0 0 24 24">
+                    <path
+                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                </svg>
+                <span>Product, Growth &amp; Traction</span>
+            </div>
+            <div class="section-card-body">
+                <div class="field-grid-2">
+                    <div class="field-row">
+                        <div class="field-label">Growth Stage</div>
+                        <div class="field-value">@(app.GrowthStage ?? "—")</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Existing Users</div>
+                        <div class="field-value">@(app.ExistingUsers ?? "—")</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Total Users Reached</div>
+                        <div class="field-value">@(app.TotalUsersReached ?? "—")</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Core Business Model</div>
+                        <div class="field-value">@(app.CoreBusinessModel ?? "—")</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Unique Selling Point</div>
+                        <div class="field-value">@(app.UniqueSellingPoint ?? "—")</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Main Competitors</div>
+                        <div class="field-value">@(app.MainCompetitors ?? "—")</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Market Penetration</div>
+                        <div class="field-value">@(app.MarketPenetrationStrategy ?? "—")</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Key Milestones</div>
+                        <div class="field-value">@(app.KeyMilestones ?? "—")</div>
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Key Features</div>
+                    <div class="field-value">@(app.KeyFeatures ?? "—")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Steps 6 & 7: Commercial -->
+    <div class="section-grid">
+        <div class="section-card">
+            <div class="section-card-header">
+                <svg viewBox="0 0 24 24">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+                <span>Commercial I — Revenue &amp; Funding</span>
+            </div>
+            <div class="section-card-body">
+                <div class="field-row">
+                    <div class="field-label">Generating Sales</div>
+                    <div class="field-value">@(app.HasStartedGeneratingSales ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Year of First Sale</div>
+                    <div class="field-value">@(app.YearOfFirstSale ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Yearly Sales Revenue</div>
+                    <div class="field-value">@(app.YearlySalesRevenue ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Yearly Profit</div>
+                    <div class="field-value">@(app.YearlyProfit ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Proprietary Funding</div>
+                    <div class="field-value">@(app.ProprietaryFunding ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">External Funding</div>
+                    <div class="field-value">@(app.ExternalFunding ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Types of Funding</div>
+                    <div class="field-value">@(app.TypesOfFunding ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Currently Fundraising</div>
+                    <div class="field-value">@(app.IsCurrentlyFundraising ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Projected Revenue (2027)</div>
+                    <div class="field-value">@(app.ProjectedRevenue ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Company Valuation</div>
+                    <div class="field-value">@(app.CompanyValuation ?? "—")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-card-header">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                    <polyline points="17 6 23 6 23 12" />
+                </svg>
+                <span>Commercial II — Strategy &amp; Market</span>
+            </div>
+            <div class="section-card-body">
+                <div class="field-row">
+                    <div class="field-label">Demand Evidence</div>
+                    <div class="field-value">@(app.DemandEvidence ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Revenue Streams</div>
+                    <div class="field-value">@(app.RevenueStreams ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Geographic Scalability</div>
+                    <div class="field-value">@(app.GeographicScalability ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Gross Margins</div>
+                    <div class="field-value">@(app.GrossMargins ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Competitive Advantage</div>
+                    <div class="field-value">@(app.PrimaryCompetitiveAdvantage ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Operating Runway</div>
+                    <div class="field-value">@(app.OperatingRunway ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Active Partnerships</div>
+                    <div class="field-value">@(app.ActivePartnerships ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">IP Ownership</div>
+                    <div class="field-value">@(app.IpOwnership ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Pricing Strategy</div>
+                    <div class="field-value">@(app.PricingStrategy ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Biggest Risks</div>
+                    <div class="field-value">@(app.BiggestRisks ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">New Customers (6mo)</div>
+                    <div class="field-value">@(app.NewCustomersSixMonths ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Customer Growth Rate</div>
+                    <div class="field-value">@(app.CustomerGrowthRate ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Avg. CAC</div>
+                    <div class="field-value">@(app.AverageCAC ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Repeat Customer Revenue</div>
+                    <div class="field-value">@(app.RepeatCustomerRevenue ?? "—")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Steps 8 & 9: Sustainability & Impact -->
+    <div class="section-grid">
+        <div class="section-card">
+            <div class="section-card-header">
+                <svg viewBox="0 0 24 24">
+                    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z" />
+                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                </svg>
+                <span>Sustainability</span>
+            </div>
+            <div class="section-card-body">
+                <div class="field-row">
+                    <div class="field-label">SDG Alignment</div>
+                    <div class="field-value">@(app.SdgAlignment ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Business Replicability</div>
+                    <div class="field-value">@(app.BusinessReplicability ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Sustainability Integration</div>
+                    <div class="field-value">@(app.SustainabilityIntegration ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Energy & Waste Reduction</div>
+                    <div class="field-value">@(app.EnergyWasteReduction ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Sustainability Technology</div>
+                    <div class="field-value">@(app.SustainabilityTechnology ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Scaling with Sustainability</div>
+                    <div class="field-value">@(app.ScalingWithSustainability ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Climate Change Approach</div>
+                    <div class="field-value">@(app.ClimateChangeApproach ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Digital Accessibility</div>
+                    <div class="field-value">@(app.DigitalAccessibility ?? "—")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-card-header">
+                <svg viewBox="0 0 24 24">
+                    <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                <span>Impact</span>
+            </div>
+            <div class="section-card-body">
+                <div class="field-row">
+                    <div class="field-label">Underserved Market %</div>
+                    <div class="field-value">@(app.UnderservedMarketPercentage ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Systemic Inequality Approach</div>
+                    <div class="field-value">@(app.SystemicInequalityApproach ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Beneficiary Involvement</div>
+                    <div class="field-value">@(app.BeneficiaryInvolvement ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Impact Data Sharing</div>
+                    <div class="field-value">@(app.ImpactDataSharing ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Jobs Created</div>
+                    <div class="field-value">@(app.JobsCreated ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Gender Gap Approach</div>
+                    <div class="field-value">@(app.GenderGapApproach ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Access for Underserved</div>
+                    <div class="field-value">@(app.AccessForUnderserved ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Resource Optimization</div>
+                    <div class="field-value">@(app.ResourceOptimization ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Data Protection</div>
+                    <div class="field-value">@(app.DataProtection ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Population Impacted</div>
+                    <div class="field-value">@(app.PopulationImpacted ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Social Good Contribution</div>
+                    <div class="field-value">@(app.SocialGoodContribution ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Ethical Operations</div>
+                    <div class="field-value">@(app.EthicalOperations ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Diversity &amp; Inclusion</div>
+                    <div class="field-value">@(app.DiversityInclusion ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Equitable Opportunities</div>
+                    <div class="field-value">@(app.EquitableOpportunities ?? "—")</div>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Accessibility for Disadvantaged</div>
+                    <div class="field-value">@(app.AccessibilityForDisadvantaged ?? "—")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 10: Additional & Documents -->
+    <div class="section-grid">
+        <div class="section-card @(docs.Any() ? "" : "full")">
+            <div class="section-card-header">
+                <svg viewBox="0 0 24 24">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+                <span>Additional Information</span>
+            </div>
+            <div class="section-card-body">
+                <div class="field-row">
+                    <div class="field-label">Additional Notes</div>
+                    <div class="field-value">@(string.IsNullOrEmpty((string)app.AdditionalInformation) ? "None provided" :
+                                            app.AdditionalInformation)</div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-label">Submitted At</div>
+                        <div class="field-value">@((app.SubmittedAt as DateTime?)?.ToString("d MMMM yyyy, HH:mm") ?? "Not yet submitted")</div>
+                    </div>
+                </div>
+            </div>
+
+            @if (docs.Any())
+            {
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <span>Supporting Documents (@docs.Count())</span>
+                    </div>
+                    <div class="section-card-body">
+                        @foreach (var doc in docs)
+                        {
+                            <div class="doc-item">
+                                <div class="doc-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="doc-name">@doc.OriginalFileName</div>
+                                    <div class="doc-meta">@doc.DocumentType &nbsp;·&nbsp; @(Math.Round((double)doc.FileSizeBytes / 1024,
+                                                                1)) KB</div>
+                                    </div>
+                                    <a href="@doc.PublicUrl" target="_blank" class="doc-link">Download →</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>

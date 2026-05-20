@@ -174,10 +174,33 @@
 
         /* Radio options */
         .radio-options { display: flex; flex-direction: column; gap: .6rem; }
-        .radio-options.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
-        .r-option { position: relative; }
+        .radio-options.cols-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .65rem;
+            align-items: stretch;
+        }
+
+        .r-option {
+            position: relative;
+            height: 100%;
+        }
+
         .r-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
-        .r-label { display: flex; align-items: flex-start; gap: .75rem; padding: .8rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
+        .r-label {
+            display: flex;
+            align-items: flex-start;
+            gap: .75rem;
+            padding: .8rem 1.1rem;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: white;
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+            user-select: none;
+            min-height: 72px;
+            height: 100%;
+        }
         .r-label:hover { border-color: var(--teal); background: var(--teal-pale); }
         .r-option input:checked + .r-label { border-color: var(--teal); background: var(--teal-light); }
         .r-radio { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .2s; margin-top: 1px; }
@@ -188,10 +211,32 @@
         .r-option input:checked + .r-label .r-text { color: var(--teal-deep); font-weight: 500; }
 
         /* SDG grid */
-        .sdg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
-        .sdg-option { position: relative; }
+        .sdg-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .6rem;
+            align-items: stretch;
+        }
+
+        .sdg-option {
+            position: relative;
+            height: 100%;
+        }
         .sdg-option input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
-        .sdg-label { display: flex; align-items: center; gap: .65rem; padding: .65rem .9rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
+        .sdg-label {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            padding: .65rem .9rem;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: white;
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+            user-select: none;
+                min-height: 64px;
+            height: 100%;
+        }
         .sdg-label:hover { border-color: var(--teal); background: var(--teal-pale); }
         .sdg-option input:checked + .sdg-label { border-color: var(--teal); background: var(--teal-light); }
         .sdg-box { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .15s; }

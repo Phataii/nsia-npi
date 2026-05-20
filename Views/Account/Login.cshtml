@@ -14,18 +14,21 @@
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --teal:       #21a1b8;
-            --teal-dark:  #1a9990;
-            --teal-deep:  #0d7a73;
-            --teal-light: #f2f8fa;
-            --teal-pale:  #F0FAF9;
-            --green:      #7BC144;
-            --green-dark: #5a9130;
-            --ink:        #1C2B2A;
-            --muted:      #4A6260;
-            --border:     rgba(45,184,176,0.2);
-            --white:      #FFFFFF;
-        }
+                --teal: #2DB8B0;
+                --teal-d: #1a9990;
+                --teal-deep: #0d7a73;
+                --teal-light: #E8F7F6;
+                --teal-pale: #F0FAF9;
+                --green: #7BC144;
+                --green-dark: #5a9130;
+                --ink: #1C2B2A;
+                --cream: #F5F9F8;
+                --off: #EEF4F3;
+                --muted: #4A6260;
+                --border: rgba(45, 184, 176, 0.2);
+                --nav-h: 62px;
+                --step-h: 56px;
+            }
         html, body { height: 100%; }
         body {
             font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
@@ -55,8 +58,6 @@
 
         .brand { display: flex; align-items: center; gap: 10px; }
         .brand-icon img { width: 150px; height: 40px; stroke: white; stroke-width: 2; fill: none; }
-        .brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; }
-        .brand-text span { display: block; font-size: 10px; color: rgba(255,255,255,0.4); }
 
         .panel-center { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 3rem 0; }
         .left-eyebrow {

@@ -38,7 +38,7 @@
 
         /* ── LEFT PANEL ── */
         .panel-left {
-            background: var(--teal);
+            background: var(--teal-light);
             padding: 3rem;
             display: flex;
             flex-direction: column;
@@ -54,12 +54,8 @@
         .panel-left > * { position: relative; z-index: 1; }
 
         .brand { display: flex; align-items: center; gap: 10px; }
-        .brand-icon {
-            width: 38px; height: 38px; border-radius: 8px;
-            background: linear-gradient(135deg, var(--teal), var(--green));
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
-        .brand-icon svg { width: 18px; height: 18px; stroke: white; stroke-width: 2; fill: none; }
+        .brand-icon img { width: 150px; height: 40px; stroke: white; stroke-width: 2; fill: none; }
+       
         .brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; }
         .brand-text span { display: block; font-size: 10px; color: rgba(255,255,255,0.4); }
 
@@ -71,12 +67,12 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 11px; font-weight: 500; flex-shrink: 0;
         }
-        .step-dot.done { background: var(--lime); color: var(--ink); }
+        .step-dot.done { background: var(--teal-deep); color: var(--ink); }
         .step-dot.active { background: var(--teal); color: white; }
-        .step-dot.inactive { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); }
+        .step-dot.inactive { background: var(--teal-light); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); }
         .step-line { width: 28px; height: 1px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
         .step-line.done { background: var(--lime); }
-        .step-label { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: .06em; text-transform: uppercase; margin-left: .25rem; }
+        .step-label { font-size: 10px; color: var(--ink); letter-spacing: .06em; text-transform: uppercase; margin-left: .25rem; }
 
         .left-visual {
             display: flex; align-items: center; justify-content: center;
@@ -107,13 +103,13 @@
         .left-title {
             font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
             font-size: clamp(1.8rem, 2.5vw, 2.8rem);
-            font-weight: 700; color: white; line-height: 1.1;
+            font-weight: 700; color: var(--ink); line-height: 1.1;
             margin-bottom: 1rem;
         }
-        .left-title em { color: var(--lime); font-style: italic; }
+        .left-title em { color: var(--ink); font-style: italic; }
         .left-desc {
             font-size: .84rem; line-height: 1.8;
-            color: rgba(255,255,255,0.5);
+            color: var(--ink);
             font-weight: 300; margin-bottom: 2rem;
         }
 
@@ -129,15 +125,18 @@
         .sec-icon svg { width: 15px; height: 15px; stroke-width: 1.75; fill: none; }
         .sec-icon.t svg { stroke: var(--teal); }
         .sec-icon.g svg { stroke: #4ade80; }
-        .sec-icon.l svg { stroke: var(--lime); }
-        .sec-text { font-size: .78rem; color: rgba(255,255,255,0.45); line-height: 1.4; font-weight: 300; }
+        .sec-icon.l svg { stroke: var(--teal-deep); }
+        .sec-text { font-size: .78rem; color: var(--ink); line-height: 1.4; font-weight: 300; }
 
         .left-footer {
             border-top: 1px solid rgba(255,255,255,0.1);
             padding-top: 1.5rem;
             display: flex; align-items: center; justify-content: space-between; gap: 1rem;
         }
-        .left-footer span { font-size: .72rem; color: rgba(255,255,255,0.3); }
+            .left-footer span {
+                font-size: .72rem;
+                color: var(--teal);
+            }
         .left-footer a { font-size: .72rem; color: var(--teal); text-decoration: none; }
         .left-footer a:hover { text-decoration: underline; }
 
@@ -265,7 +264,7 @@
         /* ── VERIFY BUTTON ── */
         .btn-verify {
             width: 100%; padding: .9rem;
-            background: var(--green); color: white;
+            background: var(--teal); color: white;
             border: none; border-radius: 6px;
             font-size: .9rem; font-weight: 500;
             font-family: 'DM Sans', sans-serif;
@@ -276,7 +275,7 @@
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
         }
-        .btn-verify:hover { background: var(--green-d); transform: translateY(-1px); }
+        .btn-verify:hover { background: var(--teal-dark); transform: translateY(-1px); }
         .btn-verify:active { transform: scale(0.98); }
         .btn-verify:disabled { opacity: .5; cursor: not-allowed; transform: none; }
         .btn-verify svg { width: 16px; height: 16px; stroke: white; stroke-width: 2; fill: none; flex-shrink: 0; }
@@ -399,12 +398,11 @@
 <!-- LEFT PANEL -->
 <div class="panel-left">
     <div class="brand">
-       
-            <a href="/"><div class="brand-icon"><img src="~/web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" alt="NSIA" /></div></a>
-        @* <div class="brand-text">
-            <strong>NSIA</strong>
-            <span>Nigeria Sovereign Investment Authority</span>
-        </div> *@
+        <a href="/">
+            <div class="brand-icon">
+                <img src="~/web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" alt="NSIA" />
+            </div>
+        </a>
     </div>
 
     <div class="panel-center">
@@ -429,7 +427,7 @@
             </div>
         </div>
 
-        <h1 class="left-title">Check your<br /><em>inbox.</em></h1>
+        <h1 class="left-title">Check your<br />inbox.</h1>
         <p class="left-desc">
             We've sent a 6-digit verification code to your email address.
             Enter it on the right to confirm your account and continue your application.

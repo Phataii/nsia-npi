@@ -203,37 +203,75 @@ namespace Nsia.Controllers
             return RedirectToAction("Login");
         }
 
-        // ── GET /Account/ForgotPassword
         [HttpGet]
-        public IActionResult ForgotPassword() => View();
-
-        // ── POST /Account/ForgotPassword
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        public IActionResult ForgotPassword()
         {
-            if (!ModelState.IsValid) return View(model);
-
-            var application = await _db.Applications
-                .FirstOrDefaultAsync(a => a.Email == model.Email.ToLowerInvariant());
-
-            // Always show success — don't reveal whether email exists
-            if (application != null)
-            {
-                var otp = GenerateOtp();
-                application.EmailVerificationOtp = otp;
-                application.OtpExpiresAt = DateTime.UtcNow.AddMinutes(10);
-                application.UpdatedAt = DateTime.UtcNow;
-                await _db.SaveChangesAsync();
-                await _email.SendOtpEmailAsync(application.Email, application.FullName, otp);
-
-                TempData["VerifyEmail"] = application.Email;
-                TempData["MaskedEmail"] = MaskEmail(application.Email);
-            }
-
-            TempData["ForgotPasswordSent"] = true;
-            return RedirectToAction("VerifyEmail");
+            return View();
         }
 
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(string Email)
+        {
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                ViewBag.Error = "Please enter your email address.";
+                return View();
+            }
+
+            var app = await _db.Applications
+                .FirstOrDefaultAsync(a => a.Email == Email.ToLowerInvariant().Trim());
+
+            // Always show success to prevent email enumeration
+            ViewBag.Success = true;
+            ViewBag.Email = Email;
+
+            if (app == null) return View();
+
+            // Generate OTP
+            var otp = new Random().Next(100000, 999999).ToString();
+            app.EmailVerificationOtp = otp;
+            app.OtpExpiresAt = DateTime.UtcNow.AddMinutes(15);
+            app.UpdatedAt = DateTime.UtcNow;
+            await _db.SaveChangesAsync();
+
+            // Send reset email
+            await _email.SendOtpEmailAsync(app.Email!, app.FullName!, otp);
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email)
+        {
+            ViewBag.Email = email;
+            return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(string Email, string Otp, string NewPassword)
+        {
+            ViewBag.Email = Email;
+
+            var app = await _db.Applications
+                .FirstOrDefaultAsync(a => a.Email == Email.ToLowerInvariant().Trim());
+
+            if (app == null ||
+                app.EmailVerificationOtp != Otp ||
+                app.OtpExpiresAt < DateTime.UtcNow)
+            {
+                ViewBag.Error = "Invalid or expired code. Please request a new one.";
+                return View();
+            }
+
+            app.PasswordHash = BCrypt.Net.BCrypt.HashPassword(NewPassword);
+            app.EmailVerificationOtp = null;
+            app.OtpExpiresAt = null;
+            app.UpdatedAt = DateTime.UtcNow;
+            await _db.SaveChangesAsync();
+
+            ViewBag.Done = true;
+            return View();
+        }
         // ─────────────────────────────────
         // PRIVATE HELPERS
         // ─────────────────────────────────

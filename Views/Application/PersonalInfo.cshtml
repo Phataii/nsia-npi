@@ -188,7 +188,26 @@
         .nin-toggle:hover { color: var(--teal); }
         .nin-note { display: flex; align-items: flex-start; gap: 6px; background: rgba(45,184,176,0.06); border: 1px solid rgba(45,184,176,0.15); border-radius: 6px; padding: .6rem .85rem; font-size: .75rem; color: var(--teal-deep); line-height: 1.55; margin-top: .35rem; }
         .nin-note svg { width: 13px; height: 13px; stroke: var(--teal); stroke-width: 2; fill: none; flex-shrink: 0; margin-top: 1px; }
+            input[type="password"],
+            input[type="text"].has-toggle {
+                width: 100%;
+                padding: .75rem .9rem .75rem 2.5rem;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: .85rem;
+                font-family: 'DM Sans', sans-serif;
+                color: var(--ink);
+                outline: none;
+                transition: border-color .2s, box-shadow .2s;
+                background: white;
+                padding-right: 2.5rem;
+            }
 
+            input[type="password"]:focus,
+            input[type="text"].has-toggle:focus {
+                border-color: var(--teal);
+                box-shadow: 0 0 0 3px rgba(45, 184, 176, 0.12);
+            }
         /* Radio option cards */
         .radio-options { display: flex; flex-direction: column; gap: .6rem; }
         .radio-options.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }

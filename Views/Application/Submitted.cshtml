@@ -1,515 +1,973 @@
 @{
     ViewData["Title"] = "Application Submitted — NSIA Prize for Innovation";
     Layout = null;
-    var applicantName   = ViewBag.ApplicantName   as string ?? "Applicant";
+    var applicantName = ViewBag.ApplicantName as string ?? "Applicant";
     var referenceNumber = ViewBag.ReferenceNumber as string ?? "NPI-2026-XXXXX";
-    var submittedAt     = ViewBag.SubmittedAt     as string ?? DateTime.UtcNow.ToString("dd MMMM yyyy, HH:mm") + " UTC";
-    var firstName       = applicantName.Split(' ')[0];
+    var submittedAt = ViewBag.SubmittedAt as string ?? DateTime.UtcNow.ToString("dd MMMM yyyy, HH:mm") + " UTC";
+    var firstName = applicantName.Split(' ')[0];
 }
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --teal: #21a1b8;
-            --teal-dark:  #1a9990;
-            --teal-deep:  #0d7a73;
-            --teal-light: #f2f8fa;
-            --green:      #7BC144;
-            --green-dark: #5a9130;
-            --lime: #83c240;
-            --ink:        #1C2B2A;
-            --muted:      #4A6260;
-            --cream: #faf8f3;
-            --off: #f4f2ec;
-            --border: rgba(0,0,0,0.08);
-            --nav-h: 62px; --step-h: 56px;
-        }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--off);
-            color: var(--ink);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-        /* ── TOP BAR ── */
-        .top-bar {
-            background: var(--ink);
-            padding: 1rem 2rem;
-            display: flex; align-items: center; justify-content: space-between;
-            position: relative; overflow: hidden; flex-shrink: 0;
-        }
-        .top-bar::after {
-            content: ''; position: absolute; inset: 0; pointer-events: none;
-            background: radial-gradient(ellipse at 30% 50%, rgba(14,134,171,0.12) 0%, transparent 60%);
-        }
-        .brand { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; }
-        .brand-icon {
-            width: 34px; height: 34px; border-radius: 7px;
-            background: linear-gradient(135deg, var(--teal), var(--green));
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
-        .brand-icon svg { width: 16px; height: 16px; stroke: white; stroke-width: 2; fill: none; }
-        .brand-text strong { display: block; font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
-        .brand-text span { display: block; font-size: 10px; color: rgba(255,255,255,0.35); }
-        .bar-right { position: relative; z-index: 1; }
-        .status-pill {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: rgba(8,112,58,0.15); border: 1px solid rgba(8,112,58,0.3);
-            padding: .28rem .75rem; border-radius: 100px;
-            font-size: 10px; font-weight: 500; color: #4ade80;
-            letter-spacing: .07em; text-transform: uppercase;
-        }
-        .status-pill-dot {
-            width: 5px; height: 5px; border-radius: 50%; background: #4ade80;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+            :root {
+                --teal: #21a1b8;
+                --teal-dark: #1a9990;
+                --teal-deep: #0d7a73;
+                --teal-light: #f2f8fa;
+                --green: #7BC144;
+                --green-dark: #5a9130;
+                --lime: #83c240;
+                --ink: #1C2B2A;
+                --muted: #4A6260;
+                --cream: #faf8f3;
+                --off: #f4f2ec;
+                --border: rgba(0, 0, 0, 0.08);
+                --nav-h: 62px;
+                --step-h: 56px;
+            }
 
-        /* ── MAIN ── */
-        .main {
-            flex: 1; display: flex; align-items: center; justify-content: center;
-            padding: 3rem 1.5rem;
-        }
-        .container { width: 100%; max-width: 640px; }
+            html {
+                scroll-behavior: smooth;
+            }
 
-        /* ── SUCCESS ICON ── */
-        .icon-wrap {
-            width: 88px; height: 88px; border-radius: 50%;
-            background: rgba(8,112,58,0.1); border: 1.5px solid rgba(8,112,58,0.2);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 2rem;
-            animation: pop .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @@keyframes pop { 0%{transform:scale(0.4);opacity:0} 100%{transform:scale(1);opacity:1} }
-        .icon-wrap svg { width: 40px; height: 40px; stroke: var(--green); stroke-width: 2; fill: none; }
+            body {
+                font-family: 'DM Sans', sans-serif;
+                background: var(--teal-light);
+                color: var(--ink);
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
 
-        /* ── HERO TEXT ── */
-        .hero { text-align: center; margin-bottom: 2.5rem; }
-        .eyebrow {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: rgba(131,194,64,0.1); border: 1px solid rgba(131,194,64,0.25);
-            padding: .25rem .75rem; border-radius: 100px;
-            font-size: 10px; font-weight: 500; color: var(--lime);
-            letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem;
-        }
-        .eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--lime); }
-        .hero-title {
-            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
-            font-size: clamp(2rem, 5vw, 3.2rem);
-            font-weight: 700; color: var(--ink); line-height: 1.05;
-            margin-bottom: .75rem;
-        }
-        .hero-title em { color: var(--green); font-style: italic; }
-        .hero-sub {
-            font-size: .9rem; color: var(--muted); line-height: 1.75;
-            max-width: 480px; margin: 0 auto;
-        }
+            /* ── TOP BAR ── */
+            .top-bar {
+                background: var(--ink);
+                padding: 1rem 2rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                position: relative;
+                overflow: hidden;
+                flex-shrink: 0;
+            }
 
-        /* ── REFERENCE CARD ── */
-        .ref-card {
-            background: var(--ink); border-radius: 12px;
-            padding: 1.75rem 2rem; margin-bottom: 1.25rem;
-            position: relative; overflow: hidden;
-            display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
-        }
-        .ref-card::before {
-            content: ''; position: absolute; inset: 0; pointer-events: none;
-            background: radial-gradient(ellipse at 10% 50%, rgba(14,134,171,0.2) 0%, transparent 55%),
-                        radial-gradient(ellipse at 90% 30%, rgba(8,112,58,0.15) 0%, transparent 50%);
-        }
-        .ref-card > * { position: relative; z-index: 1; }
-        .ref-left {}
-        .ref-label {
-            font-size: 10px; color: rgba(255,255,255,0.4);
-            text-transform: uppercase; letter-spacing: .1em; margin-bottom: .4rem;
-        }
-        .ref-number {
-            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
-            font-size: 1.9rem; font-weight: 700; color: white; line-height: 1;
-            letter-spacing: .04em; margin-bottom: .3rem;
-        }
-        .ref-date { font-size: .75rem; color: rgba(255,255,255,0.4); }
-        .ref-right { display: flex; flex-direction: column; align-items: flex-end; gap: .5rem; flex-shrink: 0; }
-        .ref-badge {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: rgba(8,112,58,0.2); border: 1px solid rgba(8,112,58,0.35);
-            padding: .3rem .8rem; border-radius: 100px;
-            font-size: 10px; font-weight: 500; color: #4ade80;
-            letter-spacing: .06em; text-transform: uppercase;
-        }
-        .ref-badge svg { width: 11px; height: 11px; stroke: #4ade80; stroke-width: 2.5; fill: none; }
-        .btn-copy {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
-            padding: .3rem .8rem; border-radius: 6px;
-            font-size: 11px; color: rgba(255,255,255,0.55);
-            cursor: pointer; font-family: 'DM Sans', sans-serif;
-            transition: background .2s, color .2s; white-space: nowrap;
-        }
-        .btn-copy:hover { background: rgba(255,255,255,0.14); color: white; }
-        .btn-copy svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2; fill: none; }
-        .btn-copy.copied { background: rgba(8,112,58,0.2); border-color: rgba(8,112,58,0.35); color: #4ade80; }
+            .top-bar::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background: radial-gradient(ellipse at 30% 50%, rgba(14, 134, 171, 0.12) 0%, transparent 60%);
+            }
 
-        /* ── DETAIL CARDS ── */
-        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
-        .detail-card {
-            background: white; border-radius: 10px; border: 1px solid var(--border);
-            padding: 1.25rem; display: flex; align-items: flex-start; gap: .9rem;
-        }
-        .detail-icon {
-            width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .detail-icon.teal { background: rgba(14,134,171,0.1); }
-        .detail-icon.teal svg { stroke: var(--teal); }
-        .detail-icon.green { background: rgba(8,112,58,0.1); }
-        .detail-icon.green svg { stroke: var(--green); }
-        .detail-icon.lime { background: rgba(131,194,64,0.1); }
-        .detail-icon.lime svg { stroke: #4d7a14; }
-        .detail-icon.ink { background: rgba(13,26,18,0.07); }
-        .detail-icon.ink svg { stroke: var(--ink); }
-        .detail-icon svg { width: 16px; height: 16px; stroke-width: 1.75; fill: none; }
-        .detail-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .25rem; }
-        .detail-value { font-size: .88rem; font-weight: 500; color: var(--ink); line-height: 1.3; }
-        .detail-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                position: relative;
+                z-index: 1;
+            }
 
-        /* ── NEXT STEPS CARD ── */
-        .next-card {
-            background: white; border-radius: 10px; border: 1px solid var(--border);
-            overflow: hidden; margin-bottom: 1.25rem;
-        }
-        .next-card-header {
-            padding: 1rem 1.5rem; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: .75rem;
-        }
-        .next-card-header svg { width: 16px; height: 16px; stroke: var(--teal); stroke-width: 1.75; fill: none; }
-        .next-card-title { font-size: .85rem; font-weight: 500; color: var(--ink); }
-        .next-steps { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: .75rem; }
-        .next-step { display: flex; align-items: flex-start; gap: .85rem; }
-        .next-step-num {
-            width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
-            background: rgba(14,134,171,0.1); border: 1px solid rgba(14,134,171,0.2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; font-weight: 500; color: var(--teal); margin-top: 1px;
-        }
-        .next-step-text { font-size: .82rem; color: var(--muted); line-height: 1.6; }
-        .next-step-text strong { color: var(--ink); font-weight: 500; }
+            .brand-icon {
+                width: 34px;
+                height: 34px;
+                border-radius: 7px;
+                background: linear-gradient(135deg, var(--teal), var(--green));
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
 
-        /* ── ACTIONS ── */
-        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-bottom: 2rem; }
-        .btn-primary {
-            display: flex; align-items: center; justify-content: center; gap: 7px;
-            padding: .85rem 1.5rem; border-radius: 7px;
-            background: var(--green); color: white; border: none;
-            font-size: .86rem; font-weight: 500; font-family: 'DM Sans', sans-serif;
-            cursor: pointer; text-decoration: none;
-            transition: background .2s, transform .15s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .btn-primary:hover { background: var(--green-d); transform: translateY(-1px); }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-primary svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
-        .btn-secondary {
-            display: flex; align-items: center; justify-content: center; gap: 7px;
-            padding: .85rem 1.5rem; border-radius: 7px;
-            background: white; color: var(--ink);
-            border: 1px solid var(--border);
-            font-size: .86rem; font-weight: 400; font-family: 'DM Sans', sans-serif;
-            cursor: pointer; text-decoration: none;
-            transition: border-color .2s, background .2s;
-        }
-        .btn-secondary:hover { border-color: rgba(0,0,0,0.2); background: var(--off); }
-        .btn-secondary svg { width: 15px; height: 15px; stroke: var(--muted); stroke-width: 2; fill: none; }
+            .brand-icon svg {
+                width: 16px;
+                height: 16px;
+                stroke: white;
+                stroke-width: 2;
+                fill: none;
+            }
 
-        /* ── FOOTER ── */
-        footer {
-            text-align: center; padding: 1.5rem 2rem 2rem;
-            border-top: 1px solid var(--border); flex-shrink: 0;
-        }
-        footer p { font-size: .75rem; color: var(--muted); line-height: 1.7; }
-        footer a { color: var(--teal); text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
+            .brand-text strong {
+                display: block;
+                font-size: 11px;
+                font-weight: 500;
+                color: var(--teal);
+                letter-spacing: .08em;
+                text-transform: uppercase;
+                line-height: 1.2;
+            }
 
-        /* ── CONFETTI CANVAS ── */
-        #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
+            .brand-text span {
+                display: block;
+                font-size: 10px;
+                color: rgba(255, 255, 255, 0.35);
+            }
 
-        /* ── RESPONSIVE ── */
-        @@media (max-width: 600px) {
-            .main { padding: 2rem 1rem; align-items: flex-start; }
-            .ref-card { flex-direction: column; align-items: flex-start; }
-            .ref-right { align-items: flex-start; flex-direction: row; }
-            .detail-grid { grid-template-columns: 1fr; }
-            .actions { grid-template-columns: 1fr; }
-            .hero-title { font-size: 2rem; }
-            .top-bar { padding: .9rem 1.25rem; }
-        }
+            .bar-right {
+                position: relative;
+                z-index: 1;
+            }
+
+            .status-pill {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                background: rgba(8, 112, 58, 0.15);
+                border: 1px solid rgba(8, 112, 58, 0.3);
+                padding: .28rem .75rem;
+                border-radius: 100px;
+                font-size: 10px;
+                font-weight: 500;
+                color: #4ade80;
+                letter-spacing: .07em;
+                text-transform: uppercase;
+            }
+
+            .status-pill-dot {
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: #4ade80;
+                animation: pulse 2s ease-in-out infinite;
+            }
+
+            @@keyframes pulse {
+
+                0%,
+                100% {
+                    opacity: 1
+                }
+
+                50% {
+                    opacity: .4
+                }
+            }
+
+            /* ── MAIN ── */
+            .main {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 3rem 1.5rem;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 640px;
+            }
+
+            /* ── SUCCESS ICON ── */
+            .icon-wrap {
+                width: 88px;
+                height: 88px;
+                border-radius: 50%;
+                background: rgba(8, 112, 58, 0.1);
+                border: 1.5px solid rgba(8, 112, 58, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 2rem;
+                animation: pop .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            @@keyframes pop {
+                0% {
+                    transform: scale(0.4);
+                    opacity: 0
+                }
+
+                100% {
+                    transform: scale(1);
+                    opacity: 1
+                }
+            }
+
+            .icon-wrap svg {
+                width: 40px;
+                height: 40px;
+                stroke: var(--green);
+                stroke-width: 2;
+                fill: none;
+            }
+
+            /* ── HERO TEXT ── */
+            .hero {
+                text-align: center;
+                margin-bottom: 2.5rem;
+            }
+
+            .eyebrow {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                background: rgba(131, 194, 64, 0.1);
+                border: 1px solid rgba(131, 194, 64, 0.25);
+                padding: .25rem .75rem;
+                border-radius: 100px;
+                font-size: 10px;
+                font-weight: 500;
+                color: var(--lime);
+                letter-spacing: .1em;
+                text-transform: uppercase;
+                margin-bottom: 1rem;
+            }
+
+            .eyebrow-dot {
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: var(--lime);
+            }
+
+            .hero-title {
+                font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+                font-size: clamp(2rem, 5vw, 3.2rem);
+                font-weight: 700;
+                color: var(--ink);
+                line-height: 1.05;
+                margin-bottom: .75rem;
+            }
+
+            .hero-title em {
+                color: var(--green);
+                font-style: italic;
+            }
+
+            .hero-sub {
+                font-size: .9rem;
+                color: var(--muted);
+                line-height: 1.75;
+                max-width: 480px;
+                margin: 0 auto;
+            }
+
+            /* ── REFERENCE CARD ── */
+            .ref-card {
+                background: var(--teal);
+                border-radius: 12px;
+                padding: 1.75rem 2rem;
+                margin-bottom: 1.25rem;
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1.5rem;
+            }
+
+            .ref-card::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background: radial-gradient(ellipse at 10% 50%, rgba(14, 134, 171, 0.2) 0%, transparent 55%),
+                    radial-gradient(ellipse at 90% 30%, rgba(8, 112, 58, 0.15) 0%, transparent 50%);
+            }
+
+            .ref-card>* {
+                position: relative;
+                z-index: 1;
+            }
+
+            .ref-left {}
+
+            .ref-label {
+                font-size: 10px;
+                color: rgba(255, 255, 255, 0.4);
+                text-transform: uppercase;
+                letter-spacing: .1em;
+                margin-bottom: .4rem;
+            }
+
+            .ref-number {
+                font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+                font-size: 1.9rem;
+                font-weight: 700;
+                color: white;
+                line-height: 1;
+                letter-spacing: .04em;
+                margin-bottom: .3rem;
+            }
+
+            .ref-date {
+                font-size: .75rem;
+                color: rgba(255, 255, 255, 0.4);
+            }
+
+            .ref-right {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: .5rem;
+                flex-shrink: 0;
+            }
+
+            .ref-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                background: rgba(8, 112, 58, 0.2);
+                border: 1px solid rgba(8, 112, 58, 0.35);
+                padding: .3rem .8rem;
+                border-radius: 100px;
+                font-size: 10px;
+                font-weight: 500;
+                color: #4ade80;
+                letter-spacing: .06em;
+                text-transform: uppercase;
+            }
+
+            .ref-badge svg {
+                width: 11px;
+                height: 11px;
+                stroke: #4ade80;
+                stroke-width: 2.5;
+                fill: none;
+            }
+
+            .btn-copy {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                background: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                padding: .3rem .8rem;
+                border-radius: 6px;
+                font-size: 11px;
+                color: rgba(255, 255, 255, 0.55);
+                cursor: pointer;
+                font-family: 'DM Sans', sans-serif;
+                transition: background .2s, color .2s;
+                white-space: nowrap;
+            }
+
+            .btn-copy:hover {
+                background: rgba(255, 255, 255, 0.14);
+                color: white;
+            }
+
+            .btn-copy svg {
+                width: 12px;
+                height: 12px;
+                stroke: currentColor;
+                stroke-width: 2;
+                fill: none;
+            }
+
+            .btn-copy.copied {
+                background: rgba(8, 112, 58, 0.2);
+                border-color: rgba(8, 112, 58, 0.35);
+                color: #4ade80;
+            }
+
+            /* ── DETAIL CARDS ── */
+            .detail-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .detail-card {
+                background: white;
+                border-radius: 10px;
+                border: 1px solid var(--border);
+                padding: 1.25rem;
+                display: flex;
+                align-items: flex-start;
+                gap: .9rem;
+            }
+
+            .detail-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .detail-icon.teal {
+                background: rgba(14, 134, 171, 0.1);
+            }
+
+            .detail-icon.teal svg {
+                stroke: var(--teal);
+            }
+
+            .detail-icon.green {
+                background: rgba(8, 112, 58, 0.1);
+            }
+
+            .detail-icon.green svg {
+                stroke: var(--green);
+            }
+
+            .detail-icon.lime {
+                background: rgba(131, 194, 64, 0.1);
+            }
+
+            .detail-icon.lime svg {
+                stroke: #4d7a14;
+            }
+
+            .detail-icon.ink {
+                background: rgba(13, 26, 18, 0.07);
+            }
+
+            .detail-icon.ink svg {
+                stroke: var(--ink);
+            }
+
+            .detail-icon svg {
+                width: 16px;
+                height: 16px;
+                stroke-width: 1.75;
+                fill: none;
+            }
+
+            .detail-label {
+                font-size: 10px;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: .07em;
+                margin-bottom: .25rem;
+            }
+
+            .detail-value {
+                font-size: .88rem;
+                font-weight: 500;
+                color: var(--ink);
+                line-height: 1.3;
+            }
+
+            .detail-sub {
+                font-size: .72rem;
+                color: var(--muted);
+                margin-top: 2px;
+            }
+
+            /* ── NEXT STEPS CARD ── */
+            .next-card {
+                background: white;
+                border-radius: 10px;
+                border: 1px solid var(--border);
+                overflow: hidden;
+                margin-bottom: 1.25rem;
+            }
+
+            .next-card-header {
+                padding: 1rem 1.5rem;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                gap: .75rem;
+            }
+
+            .next-card-header svg {
+                width: 16px;
+                height: 16px;
+                stroke: var(--teal);
+                stroke-width: 1.75;
+                fill: none;
+            }
+
+            .next-card-title {
+                font-size: .85rem;
+                font-weight: 500;
+                color: var(--ink);
+            }
+
+            .next-steps {
+                padding: 1.25rem 1.5rem;
+                display: flex;
+                flex-direction: column;
+                gap: .75rem;
+            }
+
+            .next-step {
+                display: flex;
+                align-items: flex-start;
+                gap: .85rem;
+            }
+
+            .next-step-num {
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                flex-shrink: 0;
+                background: rgba(14, 134, 171, 0.1);
+                border: 1px solid rgba(14, 134, 171, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 10px;
+                font-weight: 500;
+                color: var(--teal);
+                margin-top: 1px;
+            }
+
+            .next-step-text {
+                font-size: .82rem;
+                color: var(--muted);
+                line-height: 1.6;
+            }
+
+            .next-step-text strong {
+                color: var(--ink);
+                font-weight: 500;
+            }
+
+            /* ── ACTIONS ── */
+            .actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: .75rem;
+                margin-bottom: 2rem;
+            }
+
+            .btn-primary {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 7px;
+                padding: .85rem 1.5rem;
+                border-radius: 7px;
+                background: var(--teal);
+                color: white;
+                border: none;
+                font-size: .86rem;
+                font-weight: 500;
+                font-family: 'DM Sans', sans-serif;
+                cursor: pointer;
+                text-decoration: none;
+                transition: background .2s, transform .15s;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .btn-primary:hover {
+                background: var(--teal-dark);
+                transform: translateY(-1px);
+            }
+
+            .btn-primary:active {
+                transform: scale(0.98);
+            }
+
+            .btn-primary svg {
+                width: 15px;
+                height: 15px;
+                stroke: white;
+                stroke-width: 2;
+                fill: none;
+            }
+
+            .btn-secondary {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 7px;
+                padding: .85rem 1.5rem;
+                border-radius: 7px;
+                background: white;
+                color: var(--ink);
+                border: 1px solid var(--border);
+                font-size: .86rem;
+                font-weight: 400;
+                font-family: 'DM Sans', sans-serif;
+                cursor: pointer;
+                text-decoration: none;
+                transition: border-color .2s, background .2s;
+            }
+
+            .btn-secondary:hover {
+                border-color: rgba(0, 0, 0, 0.2);
+                background: var(--off);
+            }
+
+            .btn-secondary svg {
+                width: 15px;
+                height: 15px;
+                stroke: var(--muted);
+                stroke-width: 2;
+                fill: none;
+            }
+
+            /* ── FOOTER ── */
+            footer {
+                text-align: center;
+                padding: 1.5rem 2rem 2rem;
+                border-top: 1px solid var(--border);
+                flex-shrink: 0;
+            }
+
+            footer p {
+                font-size: .75rem;
+                color: var(--muted);
+                line-height: 1.7;
+            }
+
+            footer a {
+                color: var(--teal);
+                text-decoration: none;
+            }
+
+            footer a:hover {
+                text-decoration: underline;
+            }
+
+            /* ── CONFETTI CANVAS ── */
+            #confetti {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 999;
+            }
+
+            /* ── RESPONSIVE ── */
+            @@media (max-width: 600px) {
+                .main {
+                    padding: 2rem 1rem;
+                    align-items: flex-start;
+                }
+
+                .ref-card {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .ref-right {
+                    align-items: flex-start;
+                    flex-direction: row;
+                }
+
+                .detail-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .actions {
+                    grid-template-columns: 1fr;
+                }
+
+                .hero-title {
+                    font-size: 2rem;
+                }
+
+                .top-bar {
+                    padding: .9rem 1.25rem;
+                }
+            }
     </style>
 </head>
+
 <body>
 
-<canvas id="confetti"></canvas>
+    <canvas id="confetti"></canvas>
 
-<!-- TOP BAR -->
-<div class="top-bar">
-    <div class="brand">
-        <div class="brand-icon">
-            <svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg>
-        </div>
-        <div class="brand-text">
-            <strong>NSIA</strong>
-            <span>Prize for Innovation</span>
-        </div>
-    </div>
-    <div class="bar-right">
-        <span class="status-pill">
-            <span class="status-pill-dot"></span>
-            Application submitted
-        </span>
-    </div>
-</div>
-
-<!-- MAIN -->
-<main class="main">
-    <div class="container">
-
-        <!-- Success icon -->
-        <div class="icon-wrap">
-            <svg viewBox="0 0 24 24">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-        </div>
-
-        <!-- Hero -->
-        <div class="hero">
-            <div class="eyebrow">
-                <span class="eyebrow-dot"></span>
-                NPI 4.0 Application
+    <!-- TOP BAR -->
+    @* <div class="top-bar">
+        <div class="brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="2 7 12 2 22 7" />
+                    <polyline points="2 12 12 17 22 12" />
+                    <polyline points="2 17 12 22 22 17" />
+                </svg>
             </div>
-            <h1 class="hero-title">
-                Well done, <em>@firstName!</em><br />
-                You're in the running
-            </h1>
-            <p class="hero-sub">
-                Your application has been successfully submitted to the NSIA Prize
-                for Innovation panel. We'll be in touch with next steps.
-            </p>
-        </div>
-
-        <!-- Reference card -->
-        <div class="ref-card">
-            <div class="ref-left">
-                <div class="ref-label">Application reference</div>
-                <div class="ref-number" id="refNumber">@referenceNumber</div>
-                <div class="ref-date">Submitted @submittedAt</div>
-            </div>
-            <div class="ref-right">
-                <span class="ref-badge">
-                    <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
-                    Received
-                </span>
-                <button class="btn-copy" id="copyBtn" onclick="copyRef()">
-                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    Copy reference
-                </button>
+            <div class="brand-text">
+                <strong>NSIA</strong>
+                <span>Prize for Innovation</span>
             </div>
         </div>
-
-        <!-- Detail cards -->
-        <div class="detail-grid">
-            <div class="detail-card">
-                <div class="detail-icon teal">
-                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </div>
-                <div>
-                    <div class="detail-label">Applicant</div>
-                    <div class="detail-value">@applicantName</div>
-                    <div class="detail-sub">NPI 4.0 Applicant</div>
-                </div>
-            </div>
-            <div class="detail-card">
-                <div class="detail-icon green">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                </div>
-                <div>
-                    <div class="detail-label">Review deadline</div>
-                    <div class="detail-value">31 July 2026</div>
-                    <div class="detail-sub">Shortlist notification date</div>
-                </div>
-            </div>
-            <div class="detail-card">
-                <div class="detail-icon lime">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </div>
-                <div>
-                    <div class="detail-label">Status</div>
-                    <div class="detail-value" style="color:var(--green)">Under Review</div>
-                    <div class="detail-sub">Panel assessment in progress</div>
-                </div>
-            </div>
-            <div class="detail-card">
-                <div class="detail-icon ink">
-                    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                </div>
-                <div>
-                    <div class="detail-label">Contact</div>
-                    <div class="detail-value">npi&#64;nsia-ip.com</div>
-                    <div class="detail-sub">For application queries</div>
-                </div>
-            </div>
+        <div class="bar-right">
+            <span class="status-pill">
+                <span class="status-pill-dot"></span>
+                Application submitted
+            </span>
         </div>
+    </div> *@
 
-        <!-- Next steps -->
-        <div class="next-card">
-            <div class="next-card-header">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span class="next-card-title">What happens next?</span>
+    <!-- MAIN -->
+    <main class="main">
+        <div class="container">
+
+            <!-- Success icon -->
+            <div class="icon-wrap">
+                <svg viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
             </div>
-            <div class="next-steps">
-                <div class="next-step">
-                    <div class="next-step-num">1</div>
-                    <div class="next-step-text">
-                        <strong>Initial screening:</strong> Our panel reviews all submitted applications
-                        against the NPI 4.0 eligibility and scoring criteria.
+
+            <!-- Hero -->
+            <div class="hero">
+                <div class="eyebrow">
+                    <span class="eyebrow-dot"></span>
+                    NPI 4.0 Application
+                </div>
+                <h1 class="hero-title">
+                    Well done, <em>@firstName!</em><br />
+                    You're in the running
+                </h1>
+                <p class="hero-sub">
+                    Your application has been successfully submitted to the NSIA Prize
+                    for Innovation panel. We'll be in touch with next steps.
+                </p>
+            </div>
+
+            <!-- Reference card -->
+            <div class="ref-card">
+                <div class="ref-left">
+                    <div class="ref-label">Application reference</div>
+                    <div class="ref-number" id="refNumber">@referenceNumber</div>
+                    <div class="ref-date">Submitted @submittedAt</div>
+                </div>
+                <div class="ref-right">
+                    <span class="ref-badge">
+                        <svg viewBox="0 0 12 12">
+                            <polyline points="2,6 5,9 10,3" />
+                        </svg>
+                        Received
+                    </span>
+                    <button class="btn-copy" id="copyBtn" onclick="copyRef()">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                        Copy reference
+                    </button>
+                </div>
+            </div>
+
+            <!-- Detail cards -->
+            <div class="detail-grid">
+                <div class="detail-card">
+                    <div class="detail-icon teal">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="detail-label">Applicant</div>
+                        <div class="detail-value">@applicantName</div>
+                        <div class="detail-sub">NPI 4.0 Applicant</div>
                     </div>
                 </div>
-                <div class="next-step">
-                    <div class="next-step-num">2</div>
-                    <div class="next-step-text">
-                        <strong>Shortlist notification:</strong> Top 100 applicants will be contacted
-                        by email on or before <strong>31 July 2026</strong>.
+                <div class="detail-card">
+                    <div class="detail-icon green">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="detail-label">Review deadline</div>
+                        <div class="detail-value">31 July 2026</div>
+                        <div class="detail-sub">Shortlist notification date</div>
                     </div>
                 </div>
-                <div class="next-step">
-                    <div class="next-step-num">3</div>
-                    <div class="next-step-text">
-                        <strong>Accelerator bootcamp:</strong> Shortlisted teams attend an intensive
-                        in-person bootcamp in Abuja with mentors and industry experts.
+                <div class="detail-card">
+                    <div class="detail-icon lime">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value" style="color:var(--green)">Under Review</div>
+                        <div class="detail-sub">Panel assessment in progress</div>
                     </div>
                 </div>
-                <div class="next-step">
-                    <div class="next-step-num">4</div>
-                    <div class="next-step-text">
-                        <strong>Demo Day &amp; Awards:</strong> Top 10 finalists pitch live to judges.
-                        Winners receive cash prizes and equity investment from NSIA.
+                <div class="detail-card">
+                    <div class="detail-icon ink">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="detail-label">Contact</div>
+                        <div class="detail-value">corporatecommunications@loftyincltd.biz</div>
+                        <div class="detail-sub">For application queries</div>
                     </div>
                 </div>
             </div>
+
+            <!-- Next steps -->
+            <div class="next-card">
+                <div class="next-card-header">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <span class="next-card-title">What happens next?</span>
+                </div>
+                <div class="next-steps">
+                    <div class="next-step">
+                        <div class="next-step-num">1</div>
+                        <div class="next-step-text">
+                            <strong>Initial screening:</strong> Our panel reviews all submitted applications
+                            against the NPI 4.0 eligibility and scoring criteria.
+                        </div>
+                    </div>
+                    <div class="next-step">
+                        <div class="next-step-num">2</div>
+                        <div class="next-step-text">
+                            <strong>Shortlist notification:</strong> Top 100 applicants will be contacted
+                            by email on or before <strong>31 July 2026</strong>.
+                        </div>
+                    </div>
+                    <div class="next-step">
+                        <div class="next-step-num">3</div>
+                        <div class="next-step-text">
+                            <strong>Accelerator bootcamp:</strong> Shortlisted teams attend an intensive
+                            in-person bootcamp in Lagos with mentors and industry experts.
+                        </div>
+                    </div>
+                    <div class="next-step">
+                        <div class="next-step-num">4</div>
+                        <div class="next-step-text">
+                            <strong>Demo Day &amp; Awards:</strong> Top 10 finalists pitch live to judges.
+                            Winners receive cash prizes and equity investment from NSIA.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <a asp-action="Dashboard" asp-controller="Application" class="btn-primary">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                    </svg>
+                    View my dashboard
+                </a>
+                <a href="mailto:corporatecommunications@loftyincltd.biz" class="btn-secondary">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    Contact support
+                </a>
+            </div>
+
         </div>
+    </main>
 
-        <!-- Actions -->
-        <div class="actions">
-            <a asp-action="Dashboard" asp-controller="Application" class="btn-primary">
-                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                View my dashboard
-            </a>
-            <a href="mailto:corporatecommunications@loftyincltd.biz" class="btn-secondary">
-                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                Contact support
-            </a>
-        </div>
+    <!-- FOOTER -->
+    <footer>
+        <p>
+            A confirmation email has been sent to your registered address.
+            Keep your reference number <strong>@referenceNumber</strong> safe for all correspondence.<br />
+            Questions? Email <a
+            href="mailto:corporatecommunications@loftyincltd.biz">corporatecommunications@loftyincltd.biz</a>
+            &nbsp;·&nbsp;
+            <a href="~/NPI_4_0_Privacy_Policy.pdf">Privacy Policy</a> &nbsp;·&nbsp;
+            &copy; @DateTime.UtcNow.Year Nigeria Sovereign Investment Authority
+        </p>
+    </footer>
 
-    </div>
-</main>
+    <script>
+            // ── Copy reference number
+            function copyRef() {
+                const ref = document.getElementById('refNumber').textContent.trim();
+                const btn = document.getElementById('copyBtn');
+                navigator.clipboard.writeText(ref).then(() => {
+                    btn.classList.add('copied');
+                    btn.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Copied!`;
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        btn.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy reference`;
+                    }, 2500);
+                }).catch(() => {
+                    // Fallback for older browsers
+                    const ta = document.createElement('textarea');
+                    ta.value = ref;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.classList.add('copied');
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        btn.textContent = 'Copy reference';
+                    }, 2500);
+                });
+            }
 
-<!-- FOOTER -->
-<footer>
-    <p>
-        A confirmation email has been sent to your registered address.
-        Keep your reference number <strong>@referenceNumber</strong> safe for all correspondence.<br />
-        Questions? Email <a href="mailto:corporatecommunications@loftyincltd.biz">corporatecommunications@loftyincltd.biz</a> &nbsp;·&nbsp;
-        <a href="~/NPI_4_0_Privacy_Policy.pdf">Privacy Policy</a> &nbsp;·&nbsp;
-        &copy; @DateTime.UtcNow.Year Nigeria Sovereign Investment Authority
-    </p>
-</footer>
+            // ── Confetti burst on load
+            const canvas = document.getElementById('confetti');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
 
-<script>
-    // ── Copy reference number
-    function copyRef() {
-        const ref = document.getElementById('refNumber').textContent.trim();
-        const btn = document.getElementById('copyBtn');
-        navigator.clipboard.writeText(ref).then(() => {
-            btn.classList.add('copied');
-            btn.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Copied!`;
-            setTimeout(() => {
-                btn.classList.remove('copied');
-                btn.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy reference`;
-            }, 2500);
-        }).catch(() => {
-            // Fallback for older browsers
-            const ta = document.createElement('textarea');
-            ta.value = ref;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-            btn.classList.add('copied');
-            btn.textContent = 'Copied!';
-            setTimeout(() => {
-                btn.classList.remove('copied');
-                btn.textContent = 'Copy reference';
-            }, 2500);
-        });
-    }
+            const COLORS = ['#0e86ab', '#08703a', '#83c240', '#ffffff', '#faf8f3'];
+            const pieces = Array.from({ length: 120 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                w: Math.random() * 8 + 4,
+                h: Math.random() * 4 + 2,
+                color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                rot: Math.random() * Math.PI * 2,
+                rSpeed: (Math.random() - 0.5) * 0.15,
+                vx: (Math.random() - 0.5) * 2,
+                vy: Math.random() * 3 + 2,
+                alpha: 1,
+            }));
 
-    // ── Confetti burst on load
-    const canvas  = document.getElementById('confetti');
-    const ctx     = canvas.getContext('2d');
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+            let frame = 0;
+            function drawConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.rot += p.rSpeed;
+                    if (frame > 80) p.alpha = Math.max(0, p.alpha - 0.012);
 
-    const COLORS = ['#0e86ab','#08703a','#83c240','#ffffff','#faf8f3'];
-    const pieces = Array.from({ length: 120 }, () => ({
-        x:     Math.random() * canvas.width,
-        y:     Math.random() * canvas.height - canvas.height,
-        w:     Math.random() * 8 + 4,
-        h:     Math.random() * 4 + 2,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        rot:   Math.random() * Math.PI * 2,
-        rSpeed: (Math.random() - 0.5) * 0.15,
-        vx:   (Math.random() - 0.5) * 2,
-        vy:   Math.random() * 3 + 2,
-        alpha: 1,
-    }));
+                    ctx.save();
+                    ctx.globalAlpha = p.alpha;
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                });
+                frame++;
+                if (pieces.some(p => p.alpha > 0)) requestAnimationFrame(drawConfetti);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            drawConfetti();
 
-    let frame = 0;
-    function drawConfetti() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        pieces.forEach(p => {
-            p.x   += p.vx;
-            p.y   += p.vy;
-            p.rot += p.rSpeed;
-            if (frame > 80) p.alpha = Math.max(0, p.alpha - 0.012);
-
-            ctx.save();
-            ctx.globalAlpha = p.alpha;
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.rot);
-            ctx.fillStyle = p.color;
-            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-            ctx.restore();
-        });
-        frame++;
-        if (pieces.some(p => p.alpha > 0)) requestAnimationFrame(drawConfetti);
-        else ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    drawConfetti();
-
-    window.addEventListener('resize', () => {
-        canvas.width  = window.innerWidth;
-        canvas.height = window.innerHeight;
-    });
-</script>
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+    </script>
 </body>
+
 </html>
