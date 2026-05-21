@@ -1,858 +1,1662 @@
 @{
     ViewData["Title"] = "Commercial I — Revenue & Funding — NSIA Prize for Innovation";
     Layout = null;
+
     var applicantName = ViewBag.ApplicantName as string ?? "";
     var completedStep = (int)(ViewBag.CompletedStep ?? 5);
-    var initials      = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
+    var initials = string.Join("", applicantName
+        .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+        .Take(2)
+        .Select(w => w[0]));
+
+    var hasStartedGeneratingSales = ViewData["HasStartedGeneratingSales"]?.ToString() ?? "";
+    var yearOfFirstSale = ViewData["YearOfFirstSale"]?.ToString() ?? "";
+    var yearlySalesRevenue = ViewData["YearlySalesRevenue"]?.ToString() ?? "";
+    var yearlyProfit = ViewData["YearlyProfit"]?.ToString() ?? "";
+    var proprietaryFunding = ViewData["ProprietaryFunding"]?.ToString() ?? "";
+    var externalFunding = ViewData["ExternalFunding"]?.ToString() ?? "";
+    var typesOfFunding = ViewData["TypesOfFunding"]?.ToString() ?? "";
+    var isCurrentlyFundraising = ViewData["IsCurrentlyFundraising"]?.ToString() ?? "";
+    var projectedRevenue = ViewData["ProjectedRevenue"]?.ToString() ?? "";
+    var companyValuation = ViewData["CompanyValuation"]?.ToString() ?? "";
+
+    var savedFundingTypes = typesOfFunding
+        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+        .Select(s => s.Trim())
+        .ToList();
 
     var steps = new[] {
-        new { Num = 1,  Name = "Pre-Checklist",    Action = "PreChecklist"   },
-        new { Num = 2,  Name = "Personal Info",    Action = "PersonalInfo"   },
-        new { Num = 3,  Name = "Company Info",     Action = "CompanyInfo"    },
-        new { Num = 4,  Name = "Team Info",        Action = "TeamInfo"       },
-        new { Num = 5,  Name = "Product & Growth", Action = "ProductInfo"    },
-        new { Num = 6,  Name = "Commercial I",     Action = "Commercial1"    },
-        new { Num = 7,  Name = "Commercial II",    Action = "Commercial2"    },
-        new { Num = 8,  Name = "Sustainability",   Action = "Sustainability" },
-        new { Num = 9,  Name = "Impact",           Action = "Impact"         },
-        new { Num = 10, Name = "Additional Info",       Action = "Additional"       },
+        new { Num = 1, Name = "Pre-Checklist", Action = "PreChecklist" },
+        new { Num = 2, Name = "Personal Info", Action = "PersonalInfo" },
+        new { Num = 3, Name = "Company Info", Action = "CompanyInfo" },
+        new { Num = 4, Name = "Team Info", Action = "TeamInfo" },
+        new { Num = 5, Name = "Product & Growth", Action = "ProductInfo" },
+        new { Num = 6, Name = "Commercial I", Action = "Commercial1" },
+        new { Num = 7, Name = "Commercial II", Action = "Commercial2" },
+        new { Num = 8, Name = "Sustainability", Action = "Sustainability" },
+        new { Num = 9, Name = "Impact", Action = "Impact" },
+        new { Num = 10, Name = "Additional Info", Action = "Additional" },
     };
 
-    string StepStatus(int num) {
+    string StepStatus(int num)
+    {
         if (num <= completedStep) return "completed";
         if (num == completedStep + 1) return "active";
         return "locked";
     }
 
-    var savedFundingTypes = (ViewBag.TypesOfFunding as string ?? "")
-        .Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
-
-    bool IsC(string field, string val) {
-        var saved = ViewBag.GetType().GetProperty(field)?.GetValue(ViewBag) as string ?? "";
-        return saved == val;
-    }
+    bool IsSelected(string saved, string val) => saved == val;
 }
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --teal: #2DB8B0; --teal-d: #1a9990; --teal-deep: #0d7a73;
-            --teal-light: #E8F7F6; --teal-pale: #F0FAF9;
-            --green: #7BC144; --green-dark: #5a9130;
-            --ink: #1C2B2A; --cream: #F5F9F8; --off: #EEF4F3;
-            --muted: #4A6260; --border: rgba(45,184,176,0.2);
-            --nav-h: 62px; --step-h: 56px;
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
-        .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: white; display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
-        .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 60%); }
-        .nav-brand { display: flex; align-items: center; position: relative; z-index: 1; }
-        .nav-brand img { height: 32px; width: auto; }
-        .nav-right { display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 1; }
-        
-        .nav-deadline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink); }
-        .nav-deadline svg { width: 13px; height: 13px; stroke: var(--ink); stroke-width: 1.75; fill: none; }
-        .deadline-val { color: var(--ink); font-weight: 600; }
-        .nav-user { display: flex; align-items: center; gap: 8px; }
-        
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--ink); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: white; flex-shrink: 0; }
-        .user-name { font-size: 12px; color: var(--ink); }
-        .nav-logout { font-size: 11px; color: var(--ink); text-decoration: none; padding: .3rem .7rem; border: 1px solid var(--green-dark); border-radius: 100px; transition: all .2s; white-space: nowrap; }
-        .nav-logout:hover { color: white; border-color: var(--teal-dark); background: var(--ink); }
 
-        .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 1; }
-        .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: transform .3s, opacity .3s; }
-        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-        .hamburger.open span:nth-child(2) { opacity: 0; }
-        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-        
-        /* ── STEP BAR ── */
-        .step-bar { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190; height: var(--step-h); background: white; border-bottom: 1px solid var(--green); display: flex; align-items: stretch; overflow: hidden; }
-        .step-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 .35rem; text-decoration: none; color: var(--green); border-right: 1px solid var(--green); position: relative; transition: background .2s; min-width: 0; }
-        .step-item:last-child { border-right: none; }
-        .step-item::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background .2s; }
-        .step-item:hover { background: var(--teal-pale); }
-        .step-item.completed .step-num { background: var(--green); border-color: var(--green); color: white; }
-        .step-item.completed .step-num svg { display: block; }
-        .step-item.completed .step-num span { display: none; }
-        .step-item.completed .step-name { color: var(--green); }
-        .step-item.completed::after { background: var(--green); }
-        .step-item.active { background: var(--teal-pale); }
-        .step-item.active .step-num { background: var(--green); border-color: var(--green); color: white; }
-        .step-item.active .step-name { color: var(--green); font-weight: 500; }
-        .step-item.active::after { background: var(--green); }
-        .step-num { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 500; color: var(--muted); }
-        .step-num svg { width: 9px; height: 9px; stroke: white; stroke-width: 3; fill: none; display: none; }
-        .step-name { font-size: 10.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .drawer-overlay { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity .3s; }
-        .drawer-overlay.open { opacity: 1; }
-        .side-drawer { position: fixed; top: 0; left: -280px; bottom: 0; z-index: 160; width: 280px; background: var(--ink); display: flex; flex-direction: column; transition: left .3s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
-        .side-drawer.open { left: 0; }
-        .drawer-header { padding: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .drawer-header img { height: 30px; width: auto; filter: brightness(0) invert(1); }
-        .drawer-user { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
-        .drawer-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: white; flex-shrink: 0; }
-        .drawer-uname { font-size: 13px; font-weight: 500; color: white; }
-        .drawer-uemail { font-size: 11px; color: rgba(255,255,255,0.35); }
-        .drawer-steps { padding: .75rem 0; flex: 1; }
-        .drawer-step-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.3); letter-spacing: .1em; text-transform: uppercase; padding: .5rem 1.25rem .25rem; display: block; }
-        .drawer-item { display: flex; align-items: center; gap: .9rem; padding: .75rem 1.25rem; text-decoration: none; color: rgba(255,255,255,0.55); transition: background .2s, color .2s; position: relative; }
-        .drawer-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.85); }
-        .drawer-item.active { background: rgba(45,184,176,0.15); color: white; }
-        .drawer-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal); border-radius: 0 2px 2px 0; }
-        .drawer-item-num { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; }
-        .drawer-item.completed .drawer-item-num { background: var(--teal); border-color: var(--teal); }
-        .drawer-item.active .drawer-item-num { background: var(--teal); border-color: var(--teal); }
-        .drawer-item-num svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; display: none; }
-        .drawer-item.completed .drawer-item-num svg { display: block; }
-        .drawer-item.completed .drawer-item-num span { display: none; }
-        .drawer-item-name { font-size: 13px; }
-        .drawer-item-status { font-size: 10px; color: rgba(255,255,255,0.25); }
-        .drawer-item.completed .drawer-item-status { color: var(--teal); }
-        .drawer-item.active .drawer-item-status { color: rgba(45,184,176,0.8); }
-        .drawer-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
-        .drawer-logout { display: flex; align-items: center; gap: .6rem; font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color .2s; }
-        .drawer-logout svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; }
-        .drawer-logout:hover { color: rgba(255,255,255,0.65); }
-        .main { padding-top: calc(var(--nav-h) + var(--step-h)); min-height: 100vh; }
-        .content { max-width: 760px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
-        .page-header { margin-bottom: 2rem; }
-        .breadcrumb { display: flex; align-items: center; gap: .4rem; font-size: 11px; color: var(--muted); margin-bottom: .75rem; flex-wrap: wrap; }
-        .breadcrumb a { color: var(--teal); text-decoration: none; }
-        .breadcrumb a:hover { text-decoration: underline; }
-        .breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); stroke-width: 2; fill: none; }
-        .page-title { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
-        .page-sub { font-size: .84rem; color: var(--muted); line-height: 1.65; }
-        .step-mini { display: flex; align-items: center; gap: .75rem; background: white; border-radius: 8px; border: 1px solid var(--border); padding: .85rem 1.25rem; margin-bottom: 2rem; }
-        .step-mini-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
-        .step-mini-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
-        .step-mini-name { font-size: .85rem; font-weight: 500; color: var(--ink); }
-        .step-mini-spacer { flex: 1; }
-        .step-mini-progress { font-size: 11px; color: var(--muted); white-space: nowrap; }
-        .step-mini-bar { width: 120px; height: 4px; background: var(--off); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
-        .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--green)); border-radius: 10px; width: 60%; }
-        .form-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
-        .form-card-header { padding: 1.1rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
-        .form-card-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--teal-light); }
-        .form-card-icon svg { width: 17px; height: 17px; stroke: var(--teal); stroke-width: 1.75; fill: none; }
-        .form-card-title { font-size: .92rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
-        .form-card-desc { font-size: .74rem; color: var(--muted); line-height: 1.4; }
-        .form-card-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.35rem; }
-        .form-group { display: flex; flex-direction: column; gap: .38rem; }
-        label.field-label { font-size: .75rem; font-weight: 500; color: var(--ink); letter-spacing: .02em; }
-        .label-req { color: #e53e3e; margin-left: 2px; }
-        .label-opt { font-size: .68rem; color: var(--muted); font-weight: 400; margin-left: 4px; }
+        :root {
+            --teal: #2DB8B0;
+            --teal-d: #1a9990;
+            --teal-deep: #0d7a73;
+            --teal-light: #E8F7F6;
+            --teal-pale: #F0FAF9;
+            --green: #7BC144;
+            --green-dark: #5a9130;
+            --ink: #1C2B2A;
+            --cream: #F5F9F8;
+            --off: #EEF4F3;
+            --muted: #4A6260;
+            --border: rgba(45, 184, 176, 0.2);
+            --nav-h: 62px;
+            --step-h: 56px;
+        }
 
-        /* Radio options */
-        .radio-options { display: flex; flex-direction: column; gap: .6rem; }
-        .radio-options.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
-        .radio-options.cols-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: .65rem; }
-        .r-option { position: relative; }
-        .r-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
-        .r-label { display: flex; align-items: flex-start; gap: .75rem; padding: .8rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
-        .r-label:hover { border-color: var(--teal); background: var(--teal-pale); }
-        .r-option input:checked + .r-label { border-color: var(--teal); background: var(--teal-light); }
-        .r-radio { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .2s; margin-top: 1px; }
-        .r-option input:checked + .r-label .r-radio { border-color: var(--teal); background: var(--teal); }
-        .r-dot { width: 6px; height: 6px; border-radius: 50%; background: white; opacity: 0; transform: scale(0); transition: all .15s; }
-        .r-option input:checked + .r-label .r-dot { opacity: 1; transform: scale(1); }
-        .r-text { font-size: .82rem; color: var(--ink); flex: 1; line-height: 1.45; }
-        .r-option input:checked + .r-label .r-text { color: var(--teal-deep); font-weight: 500; }
+        html {
+            scroll-behavior: smooth;
+        }
 
-        /* Check grid */
-        .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
-        .c-option { position: relative; }
-        .c-option input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
-        .c-label { display: flex; align-items: center; gap: .75rem; padding: .8rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; transition: border-color .2s, background .2s; user-select: none; }
-        .c-label:hover { border-color: var(--teal); background: var(--teal-pale); }
-        .c-option input:checked + .c-label { border-color: var(--teal); background: var(--teal-light); }
-        .c-box { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; border: 1.5px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all .15s; }
-        .c-option input:checked + .c-label .c-box { background: var(--teal); border-color: var(--teal); }
-        .c-box svg { width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; opacity: 0; }
-        .c-option input:checked + .c-label .c-box svg { opacity: 1; }
-        .c-text { font-size: .82rem; color: var(--ink); flex: 1; line-height: 1.4; }
-        .c-option input:checked + .c-label .c-text { color: var(--teal-deep); font-weight: 500; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--off);
+            color: var(--ink);
+            min-height: 100vh;
+        }
 
-        /* Conditional */
-        .conditional { display: none; }
-        .conditional.show { display: block; }
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            height: var(--nav-h);
+            background: white;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            justify-content: space-between;
+        }
 
-        /* Validation */
-        .field-error { font-size: .71rem; color: #b91c1c; display: none; margin-top: .2rem; }
-        .form-group.invalid .field-error { display: block; }
-        .form-group.invalid .r-label { border-color: #f87171; }
-        .form-group.invalid .c-label { border-color: #f87171; }
+        .nav-brand img {
+            height: 32px;
+            width: auto;
+        }
 
-        .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
-        .actions-left { display: flex; align-items: center; gap: .75rem; }
-        .btn-back { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.3rem; border-radius: 100px; border: 1px solid var(--border); background: white; font-size: .84rem; color: var(--muted); text-decoration: none; font-family: 'DM Sans', sans-serif; transition: all .2s; }
-        .btn-back:hover { border-color: var(--teal); color: var(--teal); }
-        .btn-back svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
-        .btn-save { display: inline-flex; align-items: center; gap: 7px; padding: .72rem 1.5rem; border-radius: 100px; background: white; border: 1px solid var(--teal); font-size: .84rem; font-weight: 500; color: var(--teal); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s; }
-        .btn-save:hover { background: var(--teal-pale); }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .nav-deadline {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--ink);
+        }
+
+        .nav-deadline svg {
+            width: 13px;
+            height: 13px;
+            stroke: var(--ink);
+            stroke-width: 1.75;
+            fill: none;
+        }
+
+        .deadline-val {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 12px;
+            color: var(--ink);
+        }
+
+        .nav-logout {
+            font-size: 11px;
+            color: var(--ink);
+            text-decoration: none;
+            padding: .3rem .7rem;
+            border: 1px solid var(--green-dark);
+            border-radius: 100px;
+            transition: all .2s;
+            white-space: nowrap;
+        }
+
+        .nav-logout:hover {
+            color: white;
+            background: var(--ink);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: transform .3s, opacity .3s;
+        }
+
+        .hamburger.open span:nth-child(1) {
+            transform: translateY(6px) rotate(45deg);
+        }
+
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open span:nth-child(3) {
+            transform: translateY(-6px) rotate(-45deg);
+        }
+
+        .step-bar {
+            position: fixed;
+            top: var(--nav-h);
+            left: 0;
+            right: 0;
+            z-index: 190;
+            height: var(--step-h);
+            background: white;
+            border-bottom: 1px solid var(--green);
+            display: flex;
+            align-items: stretch;
+            overflow: hidden;
+        }
+
+        .step-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0 .35rem;
+            text-decoration: none;
+            color: var(--green);
+            border-right: 1px solid var(--green);
+            position: relative;
+            min-width: 0;
+        }
+
+        .step-item:last-child {
+            border-right: none;
+        }
+
+        .step-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: transparent;
+        }
+
+        .step-item:hover {
+            background: var(--teal-pale);
+        }
+
+        .step-item.completed .step-num,
+        .step-item.active .step-num {
+            background: var(--green);
+            border-color: var(--green);
+            color: white;
+        }
+
+        .step-item.completed .step-num svg {
+            display: block;
+        }
+
+        .step-item.completed .step-num span {
+            display: none;
+        }
+
+        .step-item.completed .step-name,
+        .step-item.active .step-name {
+            color: var(--green);
+        }
+
+        .step-item.completed::after,
+        .step-item.active::after {
+            background: var(--green);
+        }
+
+        .step-item.active {
+            background: var(--teal-pale);
+        }
+
+        .step-num {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1.5px solid rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 500;
+            color: var(--muted);
+        }
+
+        .step-num svg {
+            width: 9px;
+            height: 9px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            display: none;
+        }
+
+        .step-name {
+            font-size: 10.5px;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 150;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .drawer-overlay.open {
+            opacity: 1;
+        }
+
+        .side-drawer {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            bottom: 0;
+            z-index: 160;
+            width: 280px;
+            background: var(--ink);
+            display: flex;
+            flex-direction: column;
+            transition: left .3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .side-drawer.open {
+            left: 0;
+        }
+
+        .drawer-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .drawer-header img {
+            height: 30px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        .drawer-user {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .drawer-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .drawer-uname {
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .drawer-uemail {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .drawer-steps {
+            padding: .75rem 0;
+            flex: 1;
+        }
+
+        .drawer-step-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: .5rem 1.25rem .25rem;
+            display: block;
+        }
+
+        .drawer-item {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            padding: .75rem 1.25rem;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.55);
+            transition: background .2s, color .2s;
+            position: relative;
+        }
+
+        .drawer-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .drawer-item.active {
+            background: rgba(45, 184, 176, 0.15);
+            color: white;
+        }
+
+        .drawer-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--teal);
+        }
+
+        .drawer-item-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .drawer-item.completed .drawer-item-num,
+        .drawer-item.active .drawer-item-num {
+            background: var(--teal);
+            border-color: var(--teal);
+        }
+
+        .drawer-item-num svg {
+            width: 10px;
+            height: 10px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            display: none;
+        }
+
+        .drawer-item.completed .drawer-item-num svg {
+            display: block;
+        }
+
+        .drawer-item.completed .drawer-item-num span {
+            display: none;
+        }
+
+        .drawer-item-name {
+            font-size: 13px;
+        }
+
+        .drawer-item-status {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .drawer-item.completed .drawer-item-status {
+            color: var(--teal);
+        }
+
+        .drawer-item.active .drawer-item-status {
+            color: rgba(45, 184, 176, 0.8);
+        }
+
+        .drawer-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .drawer-logout {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.35);
+            text-decoration: none;
+        }
+
+        .drawer-logout svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            stroke-width: 1.75;
+            fill: none;
+        }
+
+        .main {
+            padding-top: calc(var(--nav-h) + var(--step-h));
+            min-height: 100vh;
+        }
+
+        .content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 4rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: .75rem;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb a {
+            color: var(--teal);
+            text-decoration: none;
+        }
+
+        .breadcrumb svg {
+            width: 10px;
+            height: 10px;
+            stroke: var(--muted);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .page-title {
+            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.1;
+            margin-bottom: .35rem;
+        }
+
+        .page-sub {
+            font-size: .84rem;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .step-mini {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: .85rem 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .step-mini-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--teal);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .step-mini-label {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .07em;
+        }
+
+        .step-mini-name {
+            font-size: .85rem;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .step-mini-spacer {
+            flex: 1;
+        }
+
+        .step-mini-progress {
+            font-size: 11px;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .step-mini-bar {
+            width: 120px;
+            height: 4px;
+            background: var(--off);
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .step-mini-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--teal), var(--green));
+            border-radius: 10px;
+            width: 60%;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-card-header {
+            padding: 1.1rem 1.75rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .form-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--teal-light);
+        }
+
+        .form-card-icon svg {
+            width: 17px;
+            height: 17px;
+            stroke: var(--teal);
+            stroke-width: 1.75;
+            fill: none;
+        }
+
+        .form-card-title {
+            font-size: .92rem;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+
+        .form-card-desc {
+            font-size: .74rem;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .form-card-body {
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.35rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: .38rem;
+        }
+
+        label.field-label {
+            font-size: .75rem;
+            font-weight: 500;
+            color: var(--ink);
+            letter-spacing: .02em;
+        }
+
+        .label-req {
+            color: #e53e3e;
+            margin-left: 2px;
+        }
+
+        .label-opt {
+            font-size: .68rem;
+            color: var(--muted);
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        .radio-options {
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+        }
+
+        .radio-options.cols-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .65rem;
+        }
+
+        .r-option {
+            position: relative;
+        }
+
+        .r-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .r-label {
+            display: flex;
+            align-items: flex-start;
+            gap: .75rem;
+            padding: .8rem 1.1rem;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: white;
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+            user-select: none;
+        }
+
+        .r-label:hover {
+            border-color: var(--teal);
+            background: var(--teal-pale);
+        }
+
+        .r-option input:checked+.r-label {
+            border-color: var(--teal);
+            background: var(--teal-light);
+        }
+
+        .r-radio {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1.5px solid rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s;
+            margin-top: 1px;
+        }
+
+        .r-option input:checked+.r-label .r-radio {
+            border-color: var(--teal);
+            background: var(--teal);
+        }
+
+        .r-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
+            opacity: 0;
+            transform: scale(0);
+            transition: all .15s;
+        }
+
+        .r-option input:checked+.r-label .r-dot {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .r-text {
+            font-size: .82rem;
+            color: var(--ink);
+            flex: 1;
+            line-height: 1.45;
+        }
+
+        .r-option input:checked+.r-label .r-text {
+            color: var(--teal-deep);
+            font-weight: 500;
+        }
+
+        .check-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .65rem;
+        }
+
+        .c-option {
+            position: relative;
+        }
+
+        .c-option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .c-label {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: .8rem 1.1rem;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: white;
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+            user-select: none;
+        }
+
+        .c-label:hover {
+            border-color: var(--teal);
+            background: var(--teal-pale);
+        }
+
+        .c-option input:checked+.c-label {
+            border-color: var(--teal);
+            background: var(--teal-light);
+        }
+
+        .c-box {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            border: 1.5px solid rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .15s;
+        }
+
+        .c-option input:checked+.c-label .c-box {
+            background: var(--teal);
+            border-color: var(--teal);
+        }
+
+        .c-box svg {
+            width: 10px;
+            height: 10px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            opacity: 0;
+        }
+
+        .c-option input:checked+.c-label .c-box svg {
+            opacity: 1;
+        }
+
+        .c-text {
+            font-size: .82rem;
+            color: var(--ink);
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .c-option input:checked+.c-label .c-text {
+            color: var(--teal-deep);
+            font-weight: 500;
+        }
+
+        .conditional {
+            display: none;
+        }
+
+        .conditional.show {
+            display: block;
+        }
+
+        .field-error {
+            font-size: .71rem;
+            color: #b91c1c;
+            display: none;
+            margin-top: .2rem;
+        }
+
+        .form-group.invalid .field-error {
+            display: block;
+        }
+
+        .form-group.invalid .r-label,
+        .form-group.invalid .c-label {
+            border-color: #f87171;
+        }
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.25rem;
+        }
+
+        .actions-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: .72rem 1.3rem;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            background: white;
+            font-size: .84rem;
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        .btn-back svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .btn-save {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: .72rem 1.5rem;
+            border-radius: 100px;
+            background: white;
+            border: 1px solid var(--teal);
+            font-size: .84rem;
+            font-weight: 500;
+            color: var(--teal);
+            cursor: pointer;
+        }
+
         .btn-save svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
-        .btn-next { display: inline-flex; align-items: center; gap: 7px; padding: .76rem 1.75rem; border-radius: 100px; background: var(--teal); color: white; border: none; font-size: .88rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, transform .15s; }
-        .btn-next:hover { background: var(--teal-d); transform: translateY(-1px); }
-        .btn-next:active { transform: scale(0.98); }
-        .btn-next svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
-        .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--ink); color: white; padding: .75rem 1.25rem; border-radius: 100px; font-size: .8rem; display: flex; align-items: center; gap: .6rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transform: translateY(20px); opacity: 0; transition: transform .3s, opacity .3s; pointer-events: none; }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast svg { width: 14px; height: 14px; stroke: var(--green); stroke-width: 2; fill: none; flex-shrink: 0; }
+        
+        .btn-next {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: .76rem 1.75rem;
+            border-radius: 100px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            font-size: .88rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-next svg {
+            width: 15px;
+            height: 15px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 300;
+            background: var(--ink);
+            color: white;
+            padding: .75rem 1.25rem;
+            border-radius: 100px;
+            font-size: .8rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform .3s, opacity .3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--green);
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+        }
 
         @@media (max-width: 900px) {
-            .step-bar { display: none; }
-            .top-nav { padding: 0 1.25rem; }
-            .hamburger { display: flex; }
-            .nav-deadline, .user-name, .nav-logout { display: none; }
-            .main { padding-top: var(--nav-h); }
-            .content { padding: 1.5rem 1rem 3rem; }
-            .step-mini-bar, .step-mini-progress { display: none; }
-            .radio-options.cols-2 { grid-template-columns: 1fr; }
-            .radio-options.cols-3 { grid-template-columns: 1fr 1fr; }
-            .check-grid { grid-template-columns: 1fr; }
+            .step-bar {
+                display: none;
+            }
+
+            .top-nav {
+                padding: 0 1.25rem;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-deadline,
+            .user-name,
+            .nav-logout {
+                display: none;
+            }
+
+            .main {
+                padding-top: var(--nav-h);
+            }
+
+            .content {
+                padding: 1.5rem 1rem 3rem;
+            }
+
+            .step-mini-bar,
+            .step-mini-progress {
+                display: none;
+            }
+
+            .radio-options.cols-2,
+            .check-grid {
+                grid-template-columns: 1fr;
+            }
         }
+
         @@media (max-width: 560px) {
-            .page-title { font-size: 1.65rem; }
-            .form-card-body { padding: 1.25rem; }
-            .radio-options.cols-3 { grid-template-columns: 1fr; }
-            .form-actions { flex-direction: column; align-items: stretch; }
-            .actions-left { justify-content: space-between; }
-            .btn-next { justify-content: center; padding: 1rem; }
-            .toast { left: 1rem; right: 1rem; bottom: 1rem; justify-content: center; }
+            .page-title {
+                font-size: 1.65rem;
+            }
+
+            .form-card-body {
+                padding: 1.25rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .actions-left {
+                justify-content: space-between;
+            }
+
+            .btn-next {
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            .toast {
+                left: 1rem;
+                right: 1rem;
+                bottom: 1rem;
+                justify-content: center;
+            }
         }
     </style>
 </head>
+
 <body>
-
-<!-- TOP NAV -->
-<nav class="top-nav">
-    <div class="nav-brand"> <a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
-    <div class="nav-right">
-        <div class="nav-deadline">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Deadline: <span class="deadline-val">30 Jun 2026</span>
-        </div>
-        <div class="nav-user">
-            <div class="user-avatar">@initials</div>
-            <span class="user-name">@applicantName</span>
-        </div>
-        <a asp-action="Logout" asp-controller="Account" class="nav-logout">Sign out</a>
-        <button class="hamburger" id="hamburger" aria-label="Open menu">
-            <span></span><span></span><span></span>
-        </button>
-    </div>
-</nav>
-
-<!-- STEP BAR -->
-<div class="step-bar">
-    @foreach (var s in steps) {
-        var st = StepStatus(s.Num);
-        <a asp-action="@s.Action" asp-controller="Application" class="step-item @st" title="@s.Name">
-            <div class="step-num">
-                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
-                <span>@s.Num</span>
+    <nav class="top-nav">
+        <div class="nav-brand"><a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
+        <div class="nav-right">
+            <div class="nav-deadline">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
+                Deadline: <span class="deadline-val">30 June 2026</span>
             </div>
-            <span class="step-name">@s.Name</span>
-        </a>
-    }
-</div>
+            <div class="nav-user">
+                <div class="user-avatar">@initials</div>
+                <span class="user-name">@applicantName</span>
+            </div>
+            <a asp-action="Logout" asp-controller="Account" class="nav-logout">Sign out</a>
+            <button class="hamburger" id="hamburger"
+                    aria-label="Open menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
 
-<!-- MOBILE DRAWER -->
-<div class="drawer-overlay" id="drawerOverlay"></div>
-<aside class="side-drawer" id="sideDrawer">
-    <div class="drawer-header"> <a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
-    <div class="drawer-user">
-        <div class="drawer-avatar">@initials</div>
-        <div><div class="drawer-uname">@applicantName</div><div class="drawer-uemail">NPI 4.0 Applicant</div></div>
-    </div>
-    <div class="drawer-steps">
-        <span class="drawer-step-label">Application Steps</span>
-        @foreach (var s in steps) {
-            var st    = StepStatus(s.Num);
-            var label = st == "completed" ? "Completed" : st == "active" ? "In progress" : "Locked";
-            <a asp-action="@s.Action" asp-controller="Application"
-               class="drawer-item @st"
-               style="@(st == "locked" ? "pointer-events:none;opacity:.4" : null)">
-                <div class="drawer-item-num">
-                    <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+    <div class="step-bar">
+        @foreach (var s in steps)
+        {
+            var st = StepStatus(s.Num);
+            <a asp-action="@s.Action" asp-controller="Application" class="step-item @st" title="@s.Name">
+                <div class="step-num">
+                    <svg viewBox="0 0 12 12">
+                        <polyline points="2,6 5,9 10,3" />
+                    </svg>
                     <span>@s.Num</span>
                 </div>
-                <div>
-                    <div class="drawer-item-name">@s.Name</div>
-                    <div class="drawer-item-status">@label</div>
-                </div>
+                <span class="step-name">@s.Name</span>
             </a>
         }
     </div>
-    <div class="drawer-footer">
-        <a asp-action="Logout" asp-controller="Account" class="drawer-logout">
-            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Sign out
-        </a>
-    </div>
-</aside>
 
-<!-- MAIN -->
-<main class="main">
-    <div class="content">
-
-        <div class="page-header">
-            <div class="breadcrumb">
-                <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
-                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-                <span>Commercial I. Revenue &amp; Funding</span>
-            </div>
-            <h1 class="page-title">Commercial I</h1>
-            <p class="page-sub">Tell us about your revenue history, funding received to date, and your financial projections.</p>
-        </div>
-
-        <div class="step-mini">
-            <div class="step-mini-dot">6</div>
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <aside class="side-drawer" id="sideDrawer">
+        <div class="drawer-header"><a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
+        <div class="drawer-user">
+            <div class="drawer-avatar">@initials</div>
             <div>
-                <div class="step-mini-label">Step 6 of 10</div>
-                <div class="step-mini-name">Commercial I. Revenue &amp; Funding</div>
+                <div class="drawer-uname">@applicantName</div>
+                <div class="drawer-uemail">NPI 4.0 Applicant</div>
             </div>
-            <div class="step-mini-spacer"></div>
-            <span class="step-mini-progress">Step 6 of 10</span>
-            <div class="step-mini-bar"><div class="step-mini-fill"></div></div>
         </div>
-
-        <form asp-action="SaveCommercial1" asp-controller="Application"
-              method="post" id="comm1Form" novalidate>
-            @Html.AntiForgeryToken()
-
-            <!-- ── CARD 1: Sales & Revenue ── -->
-            <div class="form-card">
-                <div class="form-card-header">
-                    <div class="form-card-icon">
-                        <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <div class="drawer-steps">
+            <span class="drawer-step-label">Application Steps</span>
+            @foreach (var s in steps)
+            {
+                var st = StepStatus(s.Num);
+                var label = st == "completed" ? "Completed" : st == "active" ? "In progress" : "Locked";
+                <a asp-action="@s.Action" asp-controller="Application" class="drawer-item @st"
+                   style="@(st == "locked" ? "pointer-events:none;opacity:.4" : null)">
+                    <div class="drawer-item-num">
+                        <svg viewBox="0 0 12 12">
+                            <polyline points="2,6 5,9 10,3" />
+                        </svg>
+                        <span>@s.Num</span>
                     </div>
                     <div>
-                        <div class="form-card-title">Sales &amp; Revenue</div>
-                        <div class="form-card-desc">Your current sales status and financial performance.</div>
+                        <div class="drawer-item-name">@s.Name</div>
+                        <div class="drawer-item-status">@label</div>
+                    </div>
+                </a>
+            }
+        </div>
+        <div class="drawer-footer">
+            <a asp-action="Logout" asp-controller="Account" class="drawer-logout">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                Sign out
+            </a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="content">
+            <div class="page-header">
+                <div class="breadcrumb">
+                    <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                    <span>Commercial I. Revenue &amp; Funding</span>
+                </div>
+                <h1 class="page-title">Commercial I</h1>
+                <p class="page-sub">Tell us about your revenue history, funding received to date, and your financial
+                    projections.</p>
+                </div>
+
+                <div class="step-mini">
+                    <div class="step-mini-dot">6</div>
+                    <div>
+                        <div class="step-mini-label">Step 6 of 10</div>
+                        <div class="step-mini-name">Commercial I. Revenue &amp; Funding</div>
+                    </div>
+                    <div class="step-mini-spacer"></div>
+                    <span class="step-mini-progress">Step 6 of 10</span>
+                    <div class="step-mini-bar">
+                        <div class="step-mini-fill"></div>
                     </div>
                 </div>
-                <div class="form-card-body">
 
-                    <!-- Has started generating sales -->
-                    <div class="form-group" id="grp-hassales">
-                        <label class="field-label">
-                            Have you started generating sales? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            <div class="r-option">
-                                <input type="radio" id="sales-yes" name="HasStartedGeneratingSales"
-                                       value="Yes, we are generating revenue"
-                                       @(IsC("HasStartedGeneratingSales","Yes, we are generating revenue") ? "checked" : "") />
-                                <label class="r-label" for="sales-yes">
-                                    <div class="r-radio"><div class="r-dot"></div></div>
-                                    <span class="r-text">Yes, we are generating revenue</span>
-                                </label>
-                            </div>
-                            <div class="r-option">
-                                <input type="radio" id="sales-no" name="HasStartedGeneratingSales"
-                                       value="No, we have not yet made any sales"
-                                       @(IsC("HasStartedGeneratingSales","No, we have not yet made any sales") ? "checked" : "") />
-                                <label class="r-label" for="sales-no">
-                                    <div class="r-radio"><div class="r-dot"></div></div>
-                                    <span class="r-text">No, we have not yet made any sales</span>
-                                </label>
+                <form asp-action="SaveCommercial1" asp-controller="Application" method="post" id="comm1Form" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-card">
+                        <div class="form-card-header">
+                            <div class="form-card-icon">₦</div>
+                            <div>
+                                <div class="form-card-title">Sales &amp; Revenue</div>
+                                <div class="form-card-desc">Your current sales status and financial performance.</div>
                             </div>
                         </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
-
-                    <!-- Year of first sale — conditional -->
-                    <div class="conditional" id="cond-firstsale">
-                        <div class="form-group" id="grp-firstsale">
-                            <label class="field-label">
-                                What year did you make your first sale? <span class="label-req">*</span>
-                            </label>
-                            <div class="radio-options cols-2">
-                                @{
-                                    var saleYears = new[]
-                                    {
-                                        "Before 2020",
-                                        "2021 - 2022",
-                                        "2023 - 2024",
-                                        "No sales history",
-                                    };
-                                }
-                                @foreach (var val in saleYears) {
-                                    <div class="r-option">
-                                        <input type="radio" id="sy-@val.Replace(" ","-").ToLower()"
-                                               name="YearOfFirstSale" value="@val"
-                                               @(IsC("YearOfFirstSale", val) ? "checked" : "") />
-                                        <label class="r-label" for="sy-@val.Replace(" ","-").ToLower()">
-                                            <div class="r-radio"><div class="r-dot"></div></div>
-                                            <span class="r-text">@val</span>
-                                        </label>
+                        <div class="form-card-body">
+                            <div class="form-group" id="grp-hassales">
+                                <label class="field-label">Have you started generating sales? <span
+                                    class="label-req">*</span></label>
+                                    <div class="radio-options cols-2">
+                                        <div class="r-option">
+                                            <input type="radio" id="sales-yes" name="HasStartedGeneratingSales"
+                                                   value="Yes, we are generating revenue"
+                                                   checked="@(IsSelected(hasStartedGeneratingSales, "Yes, we are generating revenue"))" />
+                                            <label class="r-label" for="sales-yes">
+                                                <div class="r-radio">
+                                                    <div class="r-dot"></div>
+                                                </div><span class="r-text">Yes, we are generating revenue</span>
+                                            </label>
+                                        </div>
+                                        <div class="r-option">
+                                            <input type="radio" id="sales-no" name="HasStartedGeneratingSales"
+                                                   value="No, we have not yet made any sales"
+                                                   checked="@(IsSelected(hasStartedGeneratingSales, "No, we have not yet made any sales"))" />
+                                            <label class="r-label" for="sales-no">
+                                                <div class="r-radio">
+                                                    <div class="r-dot"></div>
+                                                </div><span class="r-text">No, we have not yet made any sales</span>
+                                            </label>
+                                        </div>
                                     </div>
-                                }
-                            </div>
-                            <div class="field-error">Please select an option.</div>
-                        </div>
-                    </div>
-
-                    <!-- Yearly Sales Revenue -->
-                    <div class="form-group" id="grp-revenue">
-                        <label class="field-label">
-                            Yearly sales revenue (in Naira) <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @{
-                                var revenueRanges = new[]
-                                {
-                                    "Above ₦500M",
-                                    "₦100M – ₦499M",
-                                    "₦10M – ₦99M",
-                                    "Less than ₦10M",
-                                    "Zero sales",
-                                };
-                            }
-                            @foreach (var val in revenueRanges) {
-                                var revenueIdBase = val.Replace(" ", "-")
-                                    .Replace("₦", "")
-                                    .Replace("–", "")
-                                    .ToLower();
-
-                                var revenueId = revenueIdBase.Substring(0, Math.Min(revenueIdBase.Length, 14));
-
-                                <div class="r-option">
-                                    <input type="radio" id="rev-@revenueId"
-                                        name="YearlySalesRevenue" value="@val"
-                                        @(IsC("YearlySalesRevenue", val) ? "checked" : "") />
-                                    <label class="r-label" for="rev-@revenueId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
+                                    <div class="field-error">Please select an option.</div>
                                 </div>
-                            }
 
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
+                                <div class="conditional" id="cond-firstsale">
+                                    <div class="form-group" id="grp-firstsale">
+                                        <label class="field-label">What year did you make your first sale? <span
+                                            class="label-req">*</span></label>
+                                            <div class="radio-options cols-2">
+                                                @{
+                                                    var saleYears = new[] { "Before 2020", "2021 - 2022", "2023 - 2024", "No sales history" };
+                                                }
+                                                @foreach (var val in saleYears)
+                                                {
+                                                    var id = "sy-" + val.Replace(" ", "-").ToLower();
+                                                    <div class="r-option">
+                                                        <input type="radio" id="@id" name="YearOfFirstSale" value="@val"
+                                                               checked="@(IsSelected(yearOfFirstSale, val))" />
+                                                        <label class="r-label" for="@id">
+                                                            <div class="r-radio">
+                                                                <div class="r-dot"></div>
+                                                            </div><span class="r-text">@val</span>
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="field-error">Please select an option.</div>
+                                        </div>
+                                    </div>
 
-                    <!-- Yearly Profit -->
-                    <div class="form-group" id="grp-profit">
-                        <label class="field-label">
-                            Yearly profit (in Naira) <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @{
-                                var profitRanges = new[]
-                                {
-                                    "Above ₦200M",
-                                    "₦50M – ₦199M",
-                                    "₦10M – ₦49M",
-                                    "Less than ₦10M",
-                                    "Zero profit",
-                                };
-                            }
-                            @foreach (var val in profitRanges) {
-                                var profitIdBase = val.Replace(" ", "-")
-                                    .Replace("₦", "")
-                                    .Replace("–", "")
-                                    .ToLower();
+                                    <div class="form-group" id="grp-revenue">
+                                        <label class="field-label">Yearly sales revenue (in Naira) <span
+                                            class="label-req">*</span></label>
+                                            <div class="radio-options cols-2">
+                                                @{
+                                                    var revenueRanges = new[] { "Above ₦500M", "₦100M – ₦499M", "₦10M – ₦99M", "Less than ₦10M", "Zero sales" };
+                                                }
+                                                @foreach (var val in revenueRanges)
+                                                {
+                                                    var idBase = val.Replace(" ", "-").Replace("₦", "").Replace("–", "").ToLower();
+                                                    var id = "rev-" + idBase.Substring(0, Math.Min(idBase.Length, 14));
+                                                    <div class="r-option">
+                                                        <input type="radio" id="@id" name="YearlySalesRevenue" value="@val"
+                                                               checked="@(IsSelected(yearlySalesRevenue, val))" />
+                                                        <label class="r-label" for="@id">
+                                                            <div class="r-radio">
+                                                                <div class="r-dot"></div>
+                                                            </div><span class="r-text">@val</span>
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="field-error">Please select an option.</div>
+                                        </div>
 
-                                var profitId = profitIdBase.Substring(0, Math.Min(profitIdBase.Length, 14));
-
-                                <div class="r-option">
-                                    <input type="radio" id="prf-@profitId"
-                                        name="YearlyProfit" value="@val"
-                                        @(IsC("YearlyProfit", val) ? "checked" : "") />
-                                    <label class="r-label" for="prf-@profitId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
+                                        <div class="form-group" id="grp-profit">
+                                            <label class="field-label">Yearly profit (in Naira) <span class="label-req">*</span></label>
+                                            <div class="radio-options cols-2">
+                                                @{
+                                                    var profitRanges = new[] { "Above ₦200M", "₦50M – ₦199M", "₦10M – ₦49M", "Less than ₦10M", "Zero profit" };
+                                                }
+                                                @foreach (var val in profitRanges)
+                                                {
+                                                    var idBase = val.Replace(" ", "-").Replace("₦", "").Replace("–", "").ToLower();
+                                                    var id = "prf-" + idBase.Substring(0, Math.Min(idBase.Length, 14));
+                                                    <div class="r-option">
+                                                        <input type="radio" id="@id" name="YearlyProfit" value="@val"
+                                                               checked="@(IsSelected(yearlyProfit, val))" />
+                                                        <label class="r-label" for="@id">
+                                                            <div class="r-radio">
+                                                                <div class="r-dot"></div>
+                                                            </div><span class="r-text">@val</span>
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="field-error">Please select an option.</div>
+                                        </div>
+                                    </div>
                                 </div>
-                            }
 
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
+                                <div class="form-card">
+                                    <div class="form-card-header">
+                                        <div class="form-card-icon"><svg viewBox="0 0 24 24">
+                                            <path
+                                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                        </svg></div>
+                                        <div>
+                                            <div class="form-card-title">Funding</div>
+                                            <div class="form-card-desc">Proprietary investment, external funding received and
+                                                fundraising status.</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-card-body">
+                                            <div class="form-group" id="grp-propfunding">
+                                                <label class="field-label">How much proprietary/founder's funding has been invested (in
+                                                    Naira)? <span class="label-req">*</span></label>
+                                                    <div class="radio-options cols-2">
+                                                        @{
+                                                            var propFunding = new[] { "Above ₦50M", "₦10M – ₦49M", "₦1M – ₦9M", "Less than ₦1M" };
+                                                        }
+                                                        @foreach (var val in propFunding)
+                                                        {
+                                                            var idBase = val.Replace(" ", "-").Replace("₦", "").Replace("–", "").ToLower();
+                                                            var id = "pf-" + idBase.Substring(0, Math.Min(idBase.Length, 12));
+                                                            <div class="r-option">
+                                                                <input type="radio" id="@id" name="ProprietaryFunding" value="@val"
+                                                                       checked="@(IsSelected(proprietaryFunding, val))" />
+                                                                <label class="r-label" for="@id">
+                                                                    <div class="r-radio">
+                                                                        <div class="r-dot"></div>
+                                                                    </div><span class="r-text">@val</span>
+                                                                </label>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <div class="field-error">Please select an option.</div>
+                                                </div>
 
-                </div>
-            </div>
+                                                <div class="form-group" id="grp-extfunding">
+                                                    <label class="field-label">How much external funding has been invested (in Naira)? <span
+                                                        class="label-req">*</span></label>
+                                                        <div class="radio-options cols-2">
+                                                            @{
+                                                                var extFunding = new[] { "Above ₦500M", "₦100M – ₦499M", "₦10M – ₦99M", "Less than ₦10M", "Zero external funding" };
+                                                            }
+                                                            @foreach (var val in extFunding)
+                                                            {
+                                                                var idBase = val.Replace(" ", "-").Replace("₦", "").Replace("–", "").ToLower();
+                                                                var id = "ef-" + idBase.Substring(0, Math.Min(idBase.Length, 14));
+                                                                <div class="r-option">
+                                                                    <input type="radio" id="@id" name="ExternalFunding" value="@val"
+                                                                           checked="@(IsSelected(externalFunding, val))" />
+                                                                    <label class="r-label" for="@id">
+                                                                        <div class="r-radio">
+                                                                            <div class="r-dot"></div>
+                                                                        </div><span class="r-text">@val</span>
+                                                                    </label>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        <div class="field-error">Please select an option.</div>
+                                                    </div>
 
-            <!-- ── CARD 2: Funding ── -->
-            <div class="form-card">
-                <div class="form-card-header">
-                    <div class="form-card-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    </div>
-                    <div>
-                        <div class="form-card-title">Funding</div>
-                        <div class="form-card-desc">Proprietary investment, external funding received and fundraising status.</div>
-                    </div>
-                </div>
-                <div class="form-card-body">
+                                                    <div class="form-group" id="grp-fundingtypes">
+                                                        <label class="field-label">What type(s) of investments or external funding have you
+                                                            received? <span class="label-req">*</span> <span class="label-opt">(select all that
+                                                            apply)</span></label>
+                                                            <div class="check-grid">
+                                                                @{
+                                                                    var fundOpts = new[] { "Grants", "Equity Investment", "Donations", "Debt financing",
+              "Not applicable" };
+                                                                }
+                                                                @foreach (var val in fundOpts)
+                                                                {
+                                                                    var id = "ft-" + val.Replace(" ", "-").ToLower();
+                                                                    <div class="c-option">
+                                                                        <input type="checkbox" name="TypesOfFunding" id="@id" value="@val"
+                                                                               checked="@(savedFundingTypes.Contains(val))" />
+                                                                        <label class="c-label" for="@id">
+                                                                            <div class="c-box"><svg viewBox="0 0 12 12">
+                                                                                <polyline points="2,6 5,9 10,3" />
+                                                                            </svg></div><span class="c-text">@val</span>
+                                                                        </label>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                            <div class="field-error">Please select at least one option.</div>
+                                                        </div>
 
-                    <!-- Proprietary Funding -->
-                    <div class="form-group" id="grp-propfunding">
-                        <label class="field-label">
-                            How much proprietary/founder's funding has been invested (in Naira)? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @{
-                                var propFunding = new[]
-                                {
-                                    "Above ₦50M",
-                                    "₦10M – ₦49M",
-                                    "₦1M – ₦9M",
-                                    "Less than ₦1M",
-                                };
-                            }
-                           @foreach (var val in propFunding) {
-                                var propFundingIdBase = val.Replace(" ", "-")
-                                    .Replace("₦", "")
-                                    .Replace("–", "")
-                                    .ToLower();
+                                                        <div class="form-group" id="grp-fundraising">
+                                                            <label class="field-label">Are you currently fundraising? <span
+                                                                class="label-req">*</span></label>
+                                                                <div class="radio-options">
+                                                                    @{
+                                                                        var fundraisingOpts = new[] { "Yes, actively raising funds", "No, not fundraising currently", "Planning to raise funds in the next 6-12 months" };
+                                                                    }
+                                                                    @foreach (var val in fundraisingOpts)
+                                                                    {
+                                                                        var idBase = val.Replace(" ", "-").ToLower();
+                                                                        var id = "fr-" + idBase.Substring(0, Math.Min(idBase.Length, 10));
+                                                                        <div class="r-option">
+                                                                            <input type="radio" id="@id" name="IsCurrentlyFundraising" value="@val"
+                                                                                   checked="@(IsSelected(isCurrentlyFundraising, val))" />
+                                                                            <label class="r-label" for="@id">
+                                                                                <div class="r-radio">
+                                                                                    <div class="r-dot"></div>
+                                                                                </div><span class="r-text">@val</span>
+                                                                            </label>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                                <div class="field-error">Please select an option.</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                var propFundingId = propFundingIdBase.Substring(0, Math.Min(propFundingIdBase.Length, 12));
+                                                    <div class="form-card">
+                                                        <div class="form-card-header">
+                                                            <div class="form-card-icon"><svg viewBox="0 0 24 24">
+                                                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                                                                <polyline points="17 6 23 6 23 12" />
+                                                            </svg></div>
+                                                            <div>
+                                                                <div class="form-card-title">Financial Projections</div>
+                                                                <div class="form-card-desc">Projected revenue for next year and current company valuation.
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-card-body">
+                                                            <div class="form-group" id="grp-projected">
+                                                                <label class="field-label">What is your projected revenue for the next year (2027)? <span
+                                                                    class="label-req">*</span></label>
+                                                                    <div class="radio-options cols-2">
+                                                                        @{
+                                                                            var projRevenue = new[] { "Revenue of ₦300M+", "Revenue between ₦200M & ₦300M", "Revenue between ₦100M & ₦200M", "Revenue < ₦100M" };
+                                                                        }
+                                                                        @foreach (var val in projRevenue)
+                                                                        {
+                                                                            var idBase = val.Replace(" ", "-").Replace("₦", "").Replace("&", "").Replace("<",
+                                                      "").ToLower();
+                                                                            var id = "pr-" + idBase.Substring(0, Math.Min(idBase.Length, 14));
+                                                                            <div class="r-option">
+                                                                                <input type="radio" id="@id" name="ProjectedRevenue" value="@val"
+                                                                                       checked="@(IsSelected(projectedRevenue, val))" />
+                                                                                <label class="r-label" for="@id">
+                                                                                    <div class="r-radio">
+                                                                                        <div class="r-dot"></div>
+                                                                                    </div><span class="r-text">@val</span>
+                                                                                </label>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                    <div class="field-error">Please select an option.</div>
+                                                                </div>
 
-                                <div class="r-option">
-                                    <input type="radio" id="pf-@propFundingId"
-                                        name="ProprietaryFunding" value="@val"
-                                        @(IsC("ProprietaryFunding", val) ? "checked" : "") />
-                                    <label class="r-label" for="pf-@propFundingId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
+                                                                <div class="form-group" id="grp-valuation">
+                                                                    <label class="field-label">What is your current company valuation? <span
+                                                                        class="label-req">*</span></label>
+                                                                        <div class="radio-options cols-2">
+                                                                            @{
+                                                                                var valuations = new[] { "Less than ₦100M", "₦100M - ₦500M", "₦500M - ₦1B", "Over ₦1B" };
+                                                                            }
+                                                                            @foreach (var val in valuations)
+                                                                            {
+                                                                                var idBase = val.Replace(" ", "-").Replace("₦", "").Replace("-", "").ToLower();
+                                                                                var id = "val-" + idBase.Substring(0, Math.Min(idBase.Length, 12));
+                                                                                <div class="r-option">
+                                                                                    <input type="radio" id="@id" name="CompanyValuation" value="@val"
+                                                                                           checked="@(IsSelected(companyValuation, val))" />
+                                                                                    <label class="r-label" for="@id">
+                                                                                        <div class="r-radio">
+                                                                                            <div class="r-dot"></div>
+                                                                                        </div><span class="r-text">@val</span>
+                                                                                    </label>
+                                                                                </div>
+                                                                            }
+                                                                        </div>
+                                                                        <div class="field-error">Please select an option.</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
+                                                            <div class="form-actions">
+                                                                <div class="actions-left">
+                                                                    <a asp-action="ProductInfo" asp-controller="Application" class="btn-back">
+                                                                        <svg viewBox="0 0 24 24">
+                                                                            <path d="M19 12H5M12 5l-7 7 7 7" />
+                                                                        </svg>
+                                                                        Back
+                                                                    </a>
+                                                                    <button type="button" class="btn-save" id="saveBtn">
+                                                                        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                                                        Save draft
+                                                                    </button>
+                                                                </div>
+                                                                <button type="submit" class="btn-next" id="nextBtn">
+                                                                    Save &amp; Continue
+                                                                    <svg viewBox="0 0 24 24">
+                                                                        <path d="M5 12h14M12 5l7 7-7 7" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </main>
 
-                    <!-- External Funding -->
-                    <div class="form-group" id="grp-extfunding">
-                        <label class="field-label">
-                            How much external funding has been invested (in Naira)? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @{
-                                var extFunding = new[]
-                                {
-                                    "Above ₦500M",
-                                    "₦100M – ₦499M",
-                                    "₦10M – ₦99M",
-                                    "Less than ₦10M",
-                                    "Zero external funding",
-                                };
-                            }
-                            @foreach (var val in extFunding) {
-                                var extFundingIdBase = val.Replace(" ", "-")
-                                    .Replace("₦", "")
-                                    .Replace("–", "")
-                                    .ToLower();
+                                                <div class="toast" id="toast">
+                                                    <svg viewBox="0 0 24 24">
+                                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                                        <polyline points="22 4 12 14.01 9 11.01" />
+                                                    </svg>
+                                                    <span id="toastMsg">Draft saved</span>
+                                                </div>
 
-                                var extFundingId = extFundingIdBase.Substring(0, Math.Min(extFundingIdBase.Length, 14));
+                                                <script>
+                                                        function toggleFirstSale() {
+                                                            const hasSales = document.querySelector('input[name="HasStartedGeneratingSales"]:checked')?.value;
+                                                            const cond = document.getElementById('cond-firstsale');
+                                                            if (hasSales === 'Yes, we are generating revenue') cond.classList.add('show');
+                                                            else cond.classList.remove('show');
+                                                        }
 
-                                <div class="r-option">
-                                    <input type="radio" id="ef-@extFundingId"
-                                        name="ExternalFunding" value="@val"
-                                        @(IsC("ExternalFunding", val) ? "checked" : "") />
-                                    <label class="r-label" for="ef-@extFundingId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
+                                                        document.querySelectorAll('input[name="HasStartedGeneratingSales"]').forEach(r => {
+                                                            r.addEventListener('change', toggleFirstSale);
+                                                        });
+                                                        toggleFirstSale();
 
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
+                                                        const hamburger = document.getElementById('hamburger');
+                                                        const sideDrawer = document.getElementById('sideDrawer');
+                                                        const drawerOverlay = document.getElementById('drawerOverlay');
 
-                    <!-- Types of Funding -->
-                    <div class="form-group" id="grp-fundingtypes">
-                        <label class="field-label">
-                            What type(s) of investments or external funding have you received?
-                            <span class="label-req">*</span>
-                            <span class="label-opt">(select all that apply)</span>
-                        </label>
-                        <div class="check-grid">
-                            @{
-                                var fundOpts = new[]{"Grants","Equity Investment","Donations","Debt financing","Not applicable"};
-                            }
-                            @foreach (var val in fundOpts) {
-                                var fundingTypeId = val.Replace(" ", "-").ToLower();
+                                                        const openDrawer = () => {
+                                                            sideDrawer.classList.add('open');
+                                                            drawerOverlay.style.display = 'block';
+                                                            setTimeout(() => drawerOverlay.classList.add('open'), 10);
+                                                            hamburger.classList.add('open');
+                                                            document.body.style.overflow = 'hidden';
+                                                        };
 
-                                <div class="c-option">
-                                    <input type="checkbox" name="TypesOfFunding" id="ft-@fundingTypeId"
-                                        value="@val"
-                                        @(savedFundingTypes.Contains(val) ? "checked" : "") />
-                                    <label class="c-label" for="ft-@fundingTypeId">
-                                        <div class="c-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                                        <span class="c-text">@val</span>
-                                    </label>
-                                </div>
-                            }
+                                                        const closeDrawer = () => {
+                                                            sideDrawer.classList.remove('open');
+                                                            drawerOverlay.classList.remove('open');
+                                                            setTimeout(() => drawerOverlay.style.display = '', 300);
+                                                            hamburger.classList.remove('open');
+                                                            document.body.style.overflow = '';
+                                                        };
 
-                        </div>
-                        <div class="field-error">Please select at least one option.</div>
-                    </div>
+                                                        hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
+                                                        drawerOverlay.addEventListener('click', closeDrawer);
 
-                    <!-- Currently Fundraising -->
-                    <div class="form-group" id="grp-fundraising">
-                        <label class="field-label">
-                            Are you currently fundraising? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options">
-                            @{
-                                var fundraisingOpts = new[]
-                                {
-                                    "Yes, actively raising funds",
-                                    "No, not fundraising currently",
-                                    "Planning to raise funds in the next 6-12 months",
-                                };
-                            }
-                            @foreach (var val in fundraisingOpts) {
-                                var fundraisingIdBase = val.Replace(" ", "-").ToLower();
-                                var fundraisingId = fundraisingIdBase.Substring(0, Math.Min(fundraisingIdBase.Length, 10));
+                                                        function setInvalid(id) { document.getElementById(id)?.classList.add('invalid'); }
+                                                        function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
 
-                                <div class="r-option">
-                                    <input type="radio" id="fr-@fundraisingId"
-                                        name="IsCurrentlyFundraising" value="@val"
-                                        @(IsC("IsCurrentlyFundraising", val) ? "checked" : "") />
-                                    <label class="r-label" for="fr-@fundraisingId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
+                                                        const radioGroups = {
+                                                            HasStartedGeneratingSales: 'grp-hassales',
+                                                            YearlySalesRevenue: 'grp-revenue',
+                                                            YearlyProfit: 'grp-profit',
+                                                            ProprietaryFunding: 'grp-propfunding',
+                                                            ExternalFunding: 'grp-extfunding',
+                                                            IsCurrentlyFundraising: 'grp-fundraising',
+                                                            ProjectedRevenue: 'grp-projected',
+                                                            CompanyValuation: 'grp-valuation'
+                                                        };
 
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
+                                                        Object.keys(radioGroups).forEach(name => {
+                                                            document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                                                                r.addEventListener('change', () => clearInvalid(radioGroups[name]));
+                                                            });
+                                                        });
 
-                </div>
-            </div>
+                                                        document.querySelectorAll('input[name="YearOfFirstSale"]').forEach(r => {
+                                                            r.addEventListener('change', () => clearInvalid('grp-firstsale'));
+                                                        });
 
-            <!-- ── CARD 3: Projections ── -->
-            <div class="form-card">
-                <div class="form-card-header">
-                    <div class="form-card-icon">
-                        <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                    </div>
-                    <div>
-                        <div class="form-card-title">Financial Projections</div>
-                        <div class="form-card-desc">Projected revenue for next year and current company valuation.</div>
-                    </div>
-                </div>
-                <div class="form-card-body">
+                                                        document.querySelectorAll('input[name="TypesOfFunding"]').forEach(c => {
+                                                            c.addEventListener('change', () => clearInvalid('grp-fundingtypes'));
+                                                        });
 
-                    <!-- Projected Revenue -->
-                    <div class="form-group" id="grp-projected">
-                        <label class="field-label">
-                            What is your projected revenue for the next year (2027)? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @{
-                                var projRevenue = new[]
-                                {
-                                    "Revenue of ₦300M+",
-                                    "Revenue between ₦200M & ₦300M",
-                                    "Revenue between ₦100M & ₦200M",
-                                    "Revenue < ₦100M",
-                                };
-                            }
-                           @foreach (var val in projRevenue) {
-                            var projRevenueIdBase = val.Replace(" ", "-")
-                                .Replace("₦", "")
-                                .Replace("&", "")
-                                .Replace("<", "")
-                                .ToLower();
+                                                        function validate() {
+                                                            let ok = true;
 
-                            var projRevenueId = projRevenueIdBase.Substring(0, Math.Min(projRevenueIdBase.Length, 14));
+                                                            Object.entries(radioGroups).forEach(([name, grp]) => {
+                                                                if (!document.querySelector(`input[name="${name}"]:checked`)) {
+                                                                    setInvalid(grp);
+                                                                    ok = false;
+                                                                }
+                                                            });
 
-                            <div class="r-option">
-                                <input type="radio" id="pr-@projRevenueId"
-                                    name="ProjectedRevenue" value="@val"
-                                    @(IsC("ProjectedRevenue", val) ? "checked" : "") />
-                                <label class="r-label" for="pr-@projRevenueId">
-                                    <div class="r-radio"><div class="r-dot"></div></div>
-                                    <span class="r-text">@val</span>
-                                </label>
-                            </div>
-                        }
+                                                            const hasSales = document.querySelector('input[name="HasStartedGeneratingSales"]:checked')?.value;
+                                                            if (hasSales === 'Yes, we are generating revenue' && !document.querySelector('input[name="YearOfFirstSale"]:checked')) {
+                                                                setInvalid('grp-firstsale');
+                                                                ok = false;
+                                                            }
 
+                                                            if (!document.querySelector('input[name="TypesOfFunding"]:checked')) {
+                                                                setInvalid('grp-fundingtypes');
+                                                                ok = false;
+                                                            }
 
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
+                                                            if (!ok) {
+                                                                document.querySelector('.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                            }
 
-                    <!-- Company Valuation -->
-                    <div class="form-group" id="grp-valuation">
-                        <label class="field-label">
-                            What is your current company valuation? <span class="label-req">*</span>
-                        </label>
-                        <div class="radio-options cols-2">
-                            @{
-                                var valuations = new[]
-                                {
-                                    "Less than ₦100M",
-                                    "₦100M - ₦500M",
-                                    "₦500M - ₦1B",
-                                    "Over ₦1B",
-                                };
-                            }
-                           @foreach (var val in valuations) {
-                                var valuationIdBase = val.Replace(" ", "-")
-                                    .Replace("₦", "")
-                                    .Replace("-", "")
-                                    .ToLower();
+                                                            return ok;
+                                                        }
 
-                                var valuationId = valuationIdBase.Substring(0, Math.Min(valuationIdBase.Length, 12));
+                                                        function showToast(msg, isError) {
+                                                            const t = document.getElementById('toast');
+                                                            t.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--green)';
+                                                            document.getElementById('toastMsg').textContent = msg;
+                                                            t.classList.add('show');
+                                                            setTimeout(() => t.classList.remove('show'), 3000);
+                                                        }
 
-                                <div class="r-option">
-                                    <input type="radio" id="val-@valuationId"
-                                        name="CompanyValuation" value="@val"
-                                        @(IsC("CompanyValuation", val) ? "checked" : "") />
-                                    <label class="r-label" for="val-@valuationId">
-                                        <div class="r-radio"><div class="r-dot"></div></div>
-                                        <span class="r-text">@val</span>
-                                    </label>
-                                </div>
-                            }
+                                                        document.getElementById('saveBtn').addEventListener('click', async () => {
+                                                            const btn = document.getElementById('saveBtn');
+                                                            btn.textContent = 'Saving...';
+                                                            btn.disabled = true;
 
-                        </div>
-                        <div class="field-error">Please select an option.</div>
-                    </div>
+                                                            try {
+                                                                const fd = new FormData(document.getElementById('comm1Form'));
+                                                                const res = await fetch('/Application/SaveCommercial1Draft', { method: 'POST', body: fd });
+                                                                showToast(res.ok ? 'Draft saved' : 'Could not save', !res.ok);
+                                                            } catch {
+                                                                showToast('Could not save', true);
+                                                            } finally {
+                                                                btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save draft';
+                                                                btn.disabled = false;
+                                                            }
+                                                        });
 
-                </div>
-            </div>
+                                                        document.getElementById('comm1Form').addEventListener('submit', function (e) {
+                                                            if (!validate()) {
+                                                                e.preventDefault();
+                                                                return;
+                                                            }
 
-            <!-- Actions -->
-            <div class="form-actions">
-                <div class="actions-left">
-                    <a asp-action="ProductInfo" asp-controller="Application" class="btn-back">
-                        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-                        Back
-                    </a>
-                    <button type="button" class="btn-save" id="saveBtn">
-                        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        Save draft
-                    </button>
-                </div>
-                <button type="submit" class="btn-next" id="nextBtn">
-                    Save &amp; Continue
-                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-            </div>
+                                                            const btn = document.getElementById('nextBtn');
+                                                            btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Saving...';
+                                                            btn.disabled = true;
+                                                        });
+                                                </script>
+                                            </body>
 
-        </form>
-    </div>
-</main>
-
-<div class="toast" id="toast">
-    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    <span id="toastMsg">Draft saved</span>
-</div>
-
-<script>
-    // ── Conditional: show year of first sale when generating revenue
-    function toggleFirstSale() {
-        const hasSales = document.querySelector('input[name="HasStartedGeneratingSales"]:checked')?.value;
-        const cond = document.getElementById('cond-firstsale');
-        if (hasSales === 'Yes, we are generating revenue') cond.classList.add('show');
-        else cond.classList.remove('show');
-    }
-    document.querySelectorAll('input[name="HasStartedGeneratingSales"]')
-        .forEach(r => r.addEventListener('change', toggleFirstSale));
-    toggleFirstSale();
-
-    // ── Drawer
-    const hamburger     = document.getElementById('hamburger');
-    const sideDrawer    = document.getElementById('sideDrawer');
-    const drawerOverlay = document.getElementById('drawerOverlay');
-    const openDrawer  = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display='block'; setTimeout(()=>drawerOverlay.classList.add('open'),10); hamburger.classList.add('open'); document.body.style.overflow='hidden'; };
-    const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(()=>drawerOverlay.style.display='',300); hamburger.classList.remove('open'); document.body.style.overflow=''; };
-    hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
-    drawerOverlay.addEventListener('click', closeDrawer);
-
-    // ── Validation
-    function setInvalid(id)   { document.getElementById(id)?.classList.add('invalid'); }
-    function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
-
-    const radioGroups = {
-        HasStartedGeneratingSales: 'grp-hassales',
-        YearlySalesRevenue:        'grp-revenue',
-        YearlyProfit:              'grp-profit',
-        ProprietaryFunding:        'grp-propfunding',
-        ExternalFunding:           'grp-extfunding',
-        IsCurrentlyFundraising:    'grp-fundraising',
-        ProjectedRevenue:          'grp-projected',
-        CompanyValuation:          'grp-valuation',
-    };
-    Object.keys(radioGroups).forEach(name => {
-        document.querySelectorAll(`input[name="${name}"]`).forEach(r =>
-            r.addEventListener('change', () => clearInvalid(radioGroups[name]))
-        );
-    });
-    document.querySelectorAll('input[name="YearOfFirstSale"]')
-        .forEach(r => r.addEventListener('change', () => clearInvalid('grp-firstsale')));
-    document.querySelectorAll('input[name="TypesOfFunding"]')
-        .forEach(c => c.addEventListener('change', () => clearInvalid('grp-fundingtypes')));
-
-    function validate() {
-        let ok = true;
-        Object.entries(radioGroups).forEach(([name, grp]) => {
-            if (!document.querySelector(`input[name="${name}"]:checked`))
-                { setInvalid(grp); ok = false; }
-        });
-        const hasSales = document.querySelector('input[name="HasStartedGeneratingSales"]:checked')?.value;
-        if (hasSales === 'Yes, we are generating revenue' &&
-            !document.querySelector('input[name="YearOfFirstSale"]:checked'))
-            { setInvalid('grp-firstsale'); ok = false; }
-        if (!document.querySelector('input[name="TypesOfFunding"]:checked'))
-            { setInvalid('grp-fundingtypes'); ok = false; }
-        if (!ok) document.querySelector('.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return ok;
-    }
-
-    // ── Toast
-    function showToast(msg, isError) {
-        const t = document.getElementById('toast');
-        t.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--green)';
-        document.getElementById('toastMsg').textContent = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
-    }
-
-    // ── Save draft
-    document.getElementById('saveBtn').addEventListener('click', async () => {
-        const btn = document.getElementById('saveBtn');
-        btn.textContent = 'Saving...'; btn.disabled = true;
-        try {
-            const fd  = new FormData(document.getElementById('comm1Form'));
-            const res = await fetch('/Application/SaveCommercial1Draft', { method: 'POST', body: fd });
-            showToast(res.ok ? 'Draft saved' : 'Could not save', !res.ok);
-        } catch { showToast('Could not save', true); }
-        finally {
-            btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save draft';
-            btn.disabled = false;
-        }
-    });
-
-    // ── Submit
-    document.getElementById('comm1Form').addEventListener('submit', function(e) {
-        if (!validate()) { e.preventDefault(); return; }
-        const btn = document.getElementById('nextBtn');
-        btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Saving...';
-        btn.disabled = true;
-    });
-</script>
-</body>
-</html>
+                                        </html>

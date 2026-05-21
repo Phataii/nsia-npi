@@ -8,6 +8,7 @@
     var totalSteps    = 10;
     var progressPct   = (int)Math.Round((completedStep / (double)totalSteps) * 100);
     var ringOffset    = (int)(220 - (220 * completedStep / totalSteps));
+    var allCompleted = completedStep == totalSteps;
 
     var steps = new[] {
         new { Num = 1,  Name = "Pre-Checklist",    Desc = "Confirm your eligibility and business sector before proceeding.",            Action = "PreChecklist",   Icon = "check"    },
@@ -15,7 +16,7 @@
         new { Num = 3,  Name = "Company Info",     Desc = "Company details, location, registration, and compliance status.",           Action = "CompanyInfo",    Icon = "building" },
         new { Num = 4,  Name = "Team Info",        Desc = "Founders, team composition, experience, and employee count.",               Action = "TeamInfo",       Icon = "users"    },
         new { Num = 5,  Name = "Product & Growth", Desc = "Growth stage, milestones, users, business model, and key features.",        Action = "ProductInfo",    Icon = "box"      },
-        new { Num = 6,  Name = "Commercial I",     Desc = "Revenue history, funding received, and financial projections.",             Action = "Commercial1",    Icon = "dollar"   },
+        new { Num = 6,  Name = "Commercial I",     Desc = "Revenue history, funding received, and financial projections.",             Action = "Commercial1",    Icon = "naira"   },
         new { Num = 7,  Name = "Commercial II",    Desc = "Market strategy, competitive position, and customer growth metrics.",       Action = "Commercial2",    Icon = "trending" },
         new { Num = 8,  Name = "Sustainability",   Desc = "SDG alignment, sustainability practices, climate approach, and access.",    Action = "Sustainability", Icon = "leaf"     },
         new { Num = 9,  Name = "Impact",           Desc = "Social equity, jobs created, data protection, and ethical operations.",    Action = "Impact",         Icon = "heart"    },
@@ -292,7 +293,7 @@
     <div class="nav-right">
         <div class="nav-deadline">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Deadline: <span class="deadline-val">30 Jun 2026</span>
+            Deadline: <span class="deadline-val">30 June 2026</span>
         </div>
         <div class="nav-user">
             <div class="user-avatar">@initials</div>
@@ -308,8 +309,13 @@
 <!-- STEP BAR -->
 <div class="step-bar">
     @foreach (var s in steps) {
-        var st = StepStatus(s.Num);
-        <a asp-action="@s.Action" asp-controller="Application" class="step-item @st" title="@s.Name">
+        var st           = StepStatus(s.Num);
+        var barClickable = !allCompleted && st != "locked";
+        var barHref      = barClickable ? $"/Application/{s.Action}" : "javascript:void(0)";
+        <a href="@barHref"
+           class="step-item @st"
+           style="@(!barClickable && allCompleted ? "cursor:default" : null)"
+           title="@s.Name">
             <div class="step-num">
                 <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
                 <span>@s.Num</span>
@@ -332,12 +338,15 @@
     </div>
     <div class="drawer-steps">
         <span class="drawer-step-label">Application Steps</span>
+        @* Drawer Items *@
         @foreach (var s in steps) {
-            var st    = StepStatus(s.Num);
-            var label = st == "completed" ? "Completed" : st == "active" ? "In progress" : "Locked";
-            <a asp-action="@s.Action" asp-controller="Application"
-               class="drawer-item @st"
-               style="@(st == "locked" ? "pointer-events:none;opacity:.4" : null)">
+            var st              = StepStatus(s.Num);
+            var label           = allCompleted ? "Submitted" : st == "completed" ? "Completed" : st == "active" ? "In progress" : "Locked";
+            var drawerClickable = !allCompleted && st != "locked";
+            var drawerHref      = drawerClickable ? $"/Application/{s.Action}" : "javascript:void(0)";
+            <a href="@drawerHref"
+            class="drawer-item @st"
+            style="@(!drawerClickable ? "pointer-events:none;opacity:.4" : null)">
                 <div class="drawer-item-num">
                     <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
                     <span>@s.Num</span>
@@ -373,7 +382,7 @@
                 </h1>
                 <p class="wb-sub">
                     @if (completedStep == 0) {
-                        <text>You haven't started yet. Let's go! Complete all 10 steps to submit your application.</text>
+                        <text>You haven't started yet. Complete all 10 steps to submit your application.</text>
                     } else if (completedStep < totalSteps) {
                         <text>You're @completedStep of @totalSteps steps done. Keep going! You're making great progress!</text>
                     } else {
@@ -405,13 +414,16 @@
         <!-- Step Cards -->
         <div class="section-label">Application steps</div>
         <div class="steps-grid">
+           @* Step Cards *@
             @foreach (var s in steps) {
                 var st        = StepStatus(s.Num);
                 var badgeCls  = st == "completed" ? "badge-done" : st == "active" ? "badge-active" : st == "locked" ? "badge-locked" : "badge-pending";
-                var badgeTxt  = st == "completed" ? "Completed"  : st == "active" ? "In Progress"  : st == "locked" ? "Locked"       : "Not Started";
-                var actionTxt = st == "completed" ? "Edit"        : st == "active" ? "Continue"     : "Start";
-                <a asp-action="@s.Action" asp-controller="Application"
-                   class="step-card @st">
+                var badgeTxt  = allCompleted && s.Num != 10 ? "Submitted" : st == "completed" ? "Completed" : st == "active" ? "In Progress" : st == "locked" ? "Locked" : "Not Started";
+                var actionTxt = st == "completed" ? "View" : st == "active" ? "Continue" : "Start";
+                var isClickable = !allCompleted && st != "locked";
+                var cardHref  = isClickable ? $"/Application/{s.Action}" : "javascript:void(0)";
+
+                <a href="@cardHref" class="step-card @st @(!isClickable ? "locked" : "")">
                     <div class="card-top">
                         <div class="card-icon">
                             @if (s.Icon == "check") {
@@ -424,8 +436,8 @@
                                 <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                             } else if (s.Icon == "box") {
                                 <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                            } else if (s.Icon == "dollar") {
-                                <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            } else if (s.Icon == "naira") {
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20V4l12 16V4"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="13" x2="20" y2="13"/></svg>
                             } else if (s.Icon == "trending") {
                                 <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
                             } else if (s.Icon == "leaf") {
@@ -445,7 +457,10 @@
                     <div class="card-desc">@s.Desc</div>
                     <div class="card-footer">
                         <span class="card-action">
-                            @if (st == "locked") {
+                            @if (!isClickable) {
+                                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <span>Submitted</span>
+                            } else if (st == "locked") {
                                 <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                                 <span>Complete previous step</span>
                             } else {
@@ -489,7 +504,7 @@
                     <div class="info-value">
                         @if (completedStep == 0)          { <text>Not started</text>     }
                         else if (completedStep < totalSteps) { <text>In progress</text>  }
-                        else                              { <text>Ready to submit</text> }
+                        else                              { <text>Submitted</text> }
                     </div>
                     <div class="info-sub">
                         @if (!string.IsNullOrEmpty(referenceNumber)) {

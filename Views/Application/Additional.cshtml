@@ -1,24 +1,26 @@
 @{
     ViewData["Title"] = "Additional Information — NSIA Prize for Innovation";
     Layout = null;
+
     var applicantName = ViewBag.ApplicantName as string ?? "";
     var completedStep = (int)(ViewBag.CompletedStep ?? 9);
-    var initials      = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
+    var initials = string.Join("", applicantName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0]));
 
     var steps = new[] {
-        new { Num = 1,  Name = "Pre-Checklist",    Action = "PreChecklist"   },
-        new { Num = 2,  Name = "Personal Info",    Action = "PersonalInfo"   },
-        new { Num = 3,  Name = "Company Info",     Action = "CompanyInfo"    },
-        new { Num = 4,  Name = "Team Info",        Action = "TeamInfo"       },
-        new { Num = 5,  Name = "Product & Growth", Action = "ProductInfo"    },
-        new { Num = 6,  Name = "Commercial I",     Action = "Commercial1"    },
-        new { Num = 7,  Name = "Commercial II",    Action = "Commercial2"    },
+        new { Num = 1,  Name = "Pre-Checklist",    Action = "PreChecklist" },
+        new { Num = 2,  Name = "Personal Info",    Action = "PersonalInfo" },
+        new { Num = 3,  Name = "Company Info",     Action = "CompanyInfo" },
+        new { Num = 4,  Name = "Team Info",        Action = "TeamInfo" },
+        new { Num = 5,  Name = "Product & Growth", Action = "ProductInfo" },
+        new { Num = 6,  Name = "Commercial I",     Action = "Commercial1" },
+        new { Num = 7,  Name = "Commercial II",    Action = "Commercial2" },
         new { Num = 8,  Name = "Sustainability",   Action = "Sustainability" },
-        new { Num = 9,  Name = "Impact",           Action = "Impact"         },
-        new { Num = 10, Name = "Additional",       Action = "Additional"     },
+        new { Num = 9,  Name = "Impact",           Action = "Impact" },
+        new { Num = 10, Name = "Additional",       Action = "Additional" },
     };
 
-    string StepStatus(int num) {
+    string StepStatus(int num)
+    {
         if (num <= completedStep) return "completed";
         if (num == completedStep + 1) return "active";
         return "locked";
@@ -35,37 +37,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-       :root {
-                --teal: #2DB8B0;
-                --teal-d: #1a9990;
-                --teal-deep: #0d7a73;
-                --teal-light: #E8F7F6;
-                --teal-pale: #F0FAF9;
-                --green: #7BC144;
-                --green-dark: #5a9130;
-                --ink: #1C2B2A;
-                --cream: #F5F9F8;
-                --off: #EEF4F3;
-                --muted: #4A6260;
-                --border: rgba(45, 184, 176, 0.2);
-                --nav-h: 62px;
-                --step-h: 56px;
-            }
+
+        :root {
+            --teal: #2DB8B0;
+            --teal-d: #1a9990;
+            --teal-deep: #0d7a73;
+            --teal-light: #E8F7F6;
+            --teal-pale: #F0FAF9;
+            --green: #7BC144;
+            --green-dark: #5a9130;
+            --ink: #1C2B2A;
+            --cream: #F5F9F8;
+            --off: #EEF4F3;
+            --muted: #4A6260;
+            --border: rgba(45, 184, 176, 0.2);
+            --nav-h: 62px;
+            --step-h: 56px;
+        }
 
         html { scroll-behavior: smooth; }
         body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--ink); min-height: 100vh; }
-        /* ── NAV ── */
+
         .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--nav-h); background: white; display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; }
         .top-nav::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 60%); }
         .nav-brand { display: flex; align-items: center; position: relative; z-index: 1; }
         .nav-brand img { height: 32px; width: auto; }
         .nav-right { display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 1; }
-        
         .nav-deadline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink); }
         .nav-deadline svg { width: 13px; height: 13px; stroke: var(--ink); stroke-width: 1.75; fill: none; }
         .deadline-val { color: var(--ink); font-weight: 600; }
         .nav-user { display: flex; align-items: center; gap: 8px; }
-        
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--ink); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: white; flex-shrink: 0; }
         .user-name { font-size: 12px; color: var(--ink); }
         .nav-logout { font-size: 11px; color: var(--ink); text-decoration: none; padding: .3rem .7rem; border: 1px solid var(--green-dark); border-radius: 100px; transition: all .2s; white-space: nowrap; }
@@ -76,7 +77,7 @@
         .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
         .hamburger.open span:nth-child(2) { opacity: 0; }
         .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-         /* ── STEP BAR ── */
+
         .step-bar { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 190; height: var(--step-h); background: white; border-bottom: 1px solid var(--green); display: flex; align-items: stretch; overflow: hidden; }
         .step-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 .35rem; text-decoration: none; color: var(--green); border-right: 1px solid var(--green); position: relative; transition: background .2s; min-width: 0; }
         .step-item:last-child { border-right: none; }
@@ -125,6 +126,7 @@
         .drawer-logout { display: flex; align-items: center; gap: .6rem; font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color .2s; }
         .drawer-logout svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.75; fill: none; }
         .drawer-logout:hover { color: rgba(255,255,255,0.65); }
+
         .main { padding-top: calc(var(--nav-h) + var(--step-h)); min-height: 100vh; }
         .content { max-width: 760px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
         .page-header { margin-bottom: 2rem; }
@@ -142,23 +144,19 @@
         .step-mini-progress { font-size: 11px; color: var(--muted); white-space: nowrap; }
         .step-mini-bar { width: 120px; height: 4px; background: var(--off); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
         .step-mini-fill { height: 100%; background: linear-gradient(to right, var(--teal), var(--green)); border-radius: 10px; width: 100%; }
+
         .form-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
         .form-card-header { padding: 1.1rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
         .form-card-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--teal-light); }
         .form-card-icon svg { width: 17px; height: 17px; stroke: var(--teal); stroke-width: 1.75; fill: none; }
         .form-card-title { font-size: .92rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
-        .form-card-title .req {
-                color: #e53e3e;
-                margin-left: 2px;
-            }
-        
+        .form-card-title .req { color: #e53e3e; margin-left: 2px; }
         .form-card-desc { font-size: .74rem; color: var(--muted); line-height: 1.4; }
         .form-card-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.35rem; }
         .form-group { display: flex; flex-direction: column; gap: .38rem; }
         label.field-label { font-size: .75rem; font-weight: 500; color: var(--ink); letter-spacing: .02em; }
         .label-opt { font-size: .68rem; color: var(--muted); font-weight: 400; margin-left: 4px; }
 
-        /* Textarea */
         textarea {
             width: 100%; padding: .85rem 1rem;
             border: 1px solid var(--border); border-radius: 7px;
@@ -171,7 +169,6 @@
         textarea::placeholder { color: #aab5af; }
         .char-count { font-size: .68rem; color: var(--muted); text-align: right; margin-top: .25rem; }
 
-        /* File upload zone */
         .upload-zone {
             border: 2px dashed rgba(45,184,176,0.35); border-radius: 10px;
             padding: 2rem; text-align: center;
@@ -181,7 +178,6 @@
         }
         .upload-zone:hover, .upload-zone.drag { border-color: var(--teal); background: var(--teal-light); }
         .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-        
         .upload-zone.error { border-color: #f87171; background: #fff5f5; }
         .upload-error { font-size: .71rem; color: #b91c1c; display: none; margin-top: .4rem; }
         .upload-error.show { display: block; }
@@ -190,12 +186,8 @@
         .upload-icon svg { width: 20px; height: 20px; stroke: var(--teal); stroke-width: 1.75; fill: none; }
         .upload-title { font-size: .88rem; font-weight: 500; color: var(--ink); margin-bottom: .25rem; }
         .upload-sub { font-size: .75rem; color: var(--muted); }
-        .upload-sub span { color: var(--teal); font-weight: 500; }
 
-        /* Document type select */
-        .doc-type-bar {
-            display: flex; gap: .75rem; flex-wrap: wrap; margin-top: .75rem;
-        }
+        .doc-type-bar { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: .75rem; }
         .doc-type-btn {
             padding: .35rem .85rem; border-radius: 100px; font-size: .76rem; font-weight: 500;
             border: 1.5px solid var(--border); background: white; cursor: pointer;
@@ -203,7 +195,6 @@
         }
         .doc-type-btn.active, .doc-type-btn:hover { background: var(--teal); border-color: var(--teal); color: white; }
 
-        /* File list */
         .file-list { display: flex; flex-direction: column; gap: .75rem; margin-top: .5rem; }
         .file-item {
             display: flex; align-items: center; gap: .9rem;
@@ -219,7 +210,6 @@
         .file-remove:hover { opacity: 1; }
         .file-remove svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.75; fill: none; }
 
-        /* Submit warning */
         .submit-warning {
             background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3);
             border-radius: 10px; padding: 1.25rem 1.5rem;
@@ -229,23 +219,122 @@
         .submit-warning-text { font-size: .82rem; color: #92400e; line-height: 1.65; }
         .submit-warning-text strong { color: #78350f; font-weight: 600; }
 
-        /* Checklist */
         .checklist { display: flex; flex-direction: column; gap: .65rem; margin-top: 1.25rem; }
         .check-item { display: flex; align-items: center; gap: .75rem; font-size: .83rem; color: var(--ink); }
         .check-item svg { width: 16px; height: 16px; stroke: var(--teal); stroke-width: 2.5; fill: none; flex-shrink: 0; }
 
-        /* Terms checkboxes */
         .terms-row { display: flex; align-items: flex-start; gap: .75rem; padding: .85rem 1.1rem; border-radius: 8px; border: 1.5px solid var(--border); background: white; transition: border-color .2s; }
         .terms-row:has(input:checked) { border-color: var(--teal); background: var(--teal-pale); }
         .terms-row input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--teal); flex-shrink: 0; margin-top: 1px; cursor: pointer; }
+        .terms-row input[type="checkbox"]:disabled { cursor: not-allowed; opacity: .55; }
         .terms-row label { font-size: .82rem; color: var(--ink); line-height: 1.55; cursor: pointer; }
-        .terms-row a { color: var(--teal); text-decoration: none; font-weight: 500; }
-        .terms-row a:hover { text-decoration: underline; }
         .form-group.invalid .terms-row { border-color: #f87171; }
         .field-error { font-size: .71rem; color: #b91c1c; display: none; margin-top: .2rem; }
         .form-group.invalid .field-error { display: block; }
 
-        /* Submit button — special */
+        .policy-link-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0 0 0 4px;
+            color: var(--teal);
+            font: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .policy-status {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: .72rem;
+            color: var(--muted);
+        }
+
+        .policy-status.done {
+            color: var(--teal-deep);
+            font-weight: 500;
+        }
+
+        .policy-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            display: none;
+        }
+
+        .policy-modal.open {
+            display: block;
+        }
+
+        .policy-modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,.55);
+        }
+
+        .policy-modal-dialog {
+            position: relative;
+            width: min(900px, calc(100vw - 2rem));
+            height: min(85vh, 760px);
+            margin: 4vh auto 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 12px 40px rgba(0,0,0,.22);
+        }
+
+        .policy-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .policy-modal-header h3 {
+            font-size: .95rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .policy-close {
+            border: none;
+            background: none;
+            font-size: 1.4rem;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--muted);
+        }
+
+        .policy-modal-body {
+            flex: 1;
+            background: #f7f7f7;
+        }
+
+        .policy-frame {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: white;
+        }
+
+        .policy-modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .policy-countdown {
+            font-size: .82rem;
+            color: var(--muted);
+        }
+
         .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
         .actions-left { display: flex; align-items: center; gap: .75rem; }
         .btn-back { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.3rem; border-radius: 100px; border: 1px solid var(--border); background: white; font-size: .84rem; color: var(--muted); text-decoration: none; font-family: 'DM Sans', sans-serif; transition: all .2s; }
@@ -280,6 +369,7 @@
             .content { padding: 1.5rem 1rem 3rem; }
             .step-mini-bar, .step-mini-progress { display: none; }
         }
+
         @@media (max-width: 560px) {
             .page-title { font-size: 1.65rem; }
             .form-card-body { padding: 1.25rem; }
@@ -287,18 +377,17 @@
             .actions-left { justify-content: space-between; }
             .btn-submit { justify-content: center; padding: 1rem; }
             .toast { left: 1rem; right: 1rem; bottom: 1rem; justify-content: center; }
+            .policy-modal-footer { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
 <body>
-
-<!-- TOP NAV -->
 <nav class="top-nav">
     <div class="nav-brand"> <a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
     <div class="nav-right">
         <div class="nav-deadline">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Deadline: <span class="deadline-val">30 Jun 2026</span>
+            Deadline: <span class="deadline-val">30 June 2026</span>
         </div>
         <div class="nav-user">
             <div class="user-avatar">@initials</div>
@@ -311,7 +400,6 @@
     </div>
 </nav>
 
-<!-- STEP BAR -->
 <div class="step-bar">
     @foreach (var s in steps) {
         var st = StepStatus(s.Num);
@@ -325,7 +413,6 @@
     }
 </div>
 
-<!-- MOBILE DRAWER -->
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <aside class="side-drawer" id="sideDrawer">
     <div class="drawer-header"> <a href="/"><img src="~/logo.png" alt="NSIA" /></a></div>
@@ -336,7 +423,7 @@
     <div class="drawer-steps">
         <span class="drawer-step-label">Application Steps</span>
         @foreach (var s in steps) {
-            var st    = StepStatus(s.Num);
+            var st = StepStatus(s.Num);
             var label = st == "completed" ? "Completed" : st == "active" ? "In progress" : "Locked";
             <a asp-action="@s.Action" asp-controller="Application"
                class="drawer-item @st"
@@ -360,10 +447,8 @@
     </div>
 </aside>
 
-<!-- MAIN -->
 <main class="main">
     <div class="content">
-
         <div class="page-header">
             <div class="breadcrumb">
                 <a asp-action="Dashboard" asp-controller="Application">Dashboard</a>
@@ -390,7 +475,6 @@
               enctype="multipart/form-data" novalidate>
             @Html.AntiForgeryToken()
 
-            <!-- ── CARD 1: Additional Notes ── -->
             <div class="form-card">
                 <div class="form-card-header">
                     <div class="form-card-icon">
@@ -416,7 +500,6 @@
                 </div>
             </div>
 
-            <!-- ── CARD 2: Document Uploads ── -->
             <div class="form-card">
                 <div class="form-card-header">
                     <div class="form-card-icon">
@@ -429,8 +512,6 @@
                     </div>
                 </div>
                 <div class="form-card-body">
-
-                    <!-- Document type selector -->
                     <div>
                         <label class="field-label" style="margin-bottom:.6rem;display:block">
                             Select document type before uploading
@@ -443,7 +524,6 @@
                         </div>
                     </div>
 
-                    <!-- Drop zone -->
                     <div class="upload-zone" id="uploadZone">
                         <input type="file" id="fileInput" name="Documents" multiple
                                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.gif" />
@@ -451,10 +531,9 @@
                             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                         </div>
                         <div class="upload-title">Drop files here or <span style="color:var(--teal);font-weight:500">browse</span></div>
-                        <div class="upload-sub">PDF, Word, Excel, PowerPoint, Images &nbsp;·&nbsp; Max 10MB each</div>
+                        <div class="upload-sub">PDF, Word, Excel, PowerPoint, Images · Max 10MB each</div>
                     </div>
 
-                    <!-- File list -->
                     <div class="file-list" id="fileList">
                         @{
                             var savedDocs = ViewBag.Documents as IEnumerable<dynamic> ?? new List<dynamic>();
@@ -466,7 +545,7 @@
                                 </div>
                                 <div class="file-info">
                                     <div class="file-name">@doc.name</div>
-                                    <div class="file-meta">@doc.type &nbsp;·&nbsp; @(Math.Round((double)doc.size / 1024, 1)) KB</div>
+                                    <div class="file-meta">@doc.type · @(Math.Round((double)doc.size / 1024, 1)) KB</div>
                                 </div>
                                 <button type="button" class="file-remove" onclick="removeExistingDoc('@doc.id', this)">
                                     <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -475,13 +554,10 @@
                         }
                     </div>
 
-                    <!-- Hidden document types -->
                     <div id="docTypeInputs"></div>
-
                 </div>
             </div>
 
-            <!-- ── SUBMIT WARNING ── -->
             <div class="submit-warning">
                 <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 <div class="submit-warning-text">
@@ -490,7 +566,6 @@
                 </div>
             </div>
 
-            <!-- ── CARD 3: Final Agreement ── -->
             <div class="form-card">
                 <div class="form-card-header">
                     <div class="form-card-icon">
@@ -502,7 +577,6 @@
                     </div>
                 </div>
                 <div class="form-card-body">
-
                     <div class="checklist">
                         <div class="check-item">
                             <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -519,13 +593,13 @@
                     </div>
 
                     <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:.75rem;">
-
                         <div class="form-group" id="grp-terms">
                             <div class="terms-row">
-                                <input type="checkbox" id="agreeTerms" name="AgreeTerms" value="true" />
+                                <input type="checkbox" id="agreeTerms" name="AgreeTerms" value="true" disabled />
                                 <label for="agreeTerms">
                                     I have read and agree to the NSIA Prize for Innovation
-                                    <a href="/NPI_4_0_Terms_of_Service.pdf" target="_blank">Terms of Service</a>
+                                    <button type="button" class="policy-link-btn" onclick="openPolicyModal('terms')">Terms of Service</button>
+                                    <span id="termsStatus" class="policy-status">Read required</span>
                                 </label>
                             </div>
                             <div class="field-error">You must agree to the Terms of Service to submit.</div>
@@ -533,10 +607,11 @@
 
                         <div class="form-group" id="grp-privacy">
                             <div class="terms-row">
-                                <input type="checkbox" id="agreePrivacy" name="AgreePrivacy" value="true" />
+                                <input type="checkbox" id="agreePrivacy" name="AgreePrivacy" value="true" disabled />
                                 <label for="agreePrivacy">
                                     I have read and agree to the NSIA
-                                    <a href="/NPI_4_0_Privacy_Policy.pdf" target="_blank">Privacy Policy</a>
+                                    <button type="button" class="policy-link-btn" onclick="openPolicyModal('privacy')">Privacy Policy</button>
+                                    <span id="privacyStatus" class="policy-status">Read required</span>
                                 </label>
                             </div>
                             <div class="field-error">You must agree to the Privacy Policy to submit.</div>
@@ -552,12 +627,10 @@
                             </div>
                             <div class="field-error">You must confirm the accuracy of your information.</div>
                         </div>
-
                     </div>
                 </div>
             </div>
 
-            <!-- Actions -->
             <div class="form-actions">
                 <div class="actions-left">
                     <a asp-action="Impact" asp-controller="Application" class="btn-back">
@@ -574,10 +647,25 @@
                     Submit Application
                 </button>
             </div>
-
         </form>
     </div>
 </main>
+
+<div class="policy-modal" id="policyModal" aria-hidden="true">
+    <div class= "policy-modal-backdrop" ></div >
+    <div class="policy-modal-dialog">
+        <div class="policy-modal-header">
+            <h3 id="policyModalTitle">Document Preview</h3>
+        </div>
+        <div class="policy-modal-body">
+            <iframe id="policyFrame" class="policy-frame" title="Policy document preview"></iframe>
+        </div>
+        <div class="policy-modal-footer">
+            <div id="policyCountdown" class="policy-countdown">Please read for 10 seconds</div>
+            <button type="button" id="policyConfirmBtn" class="doc-type-btn" disabled>I have read this</button>
+        </div>
+    </div>
+</div>
 
 <div class="toast" id="toast">
     <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -585,23 +673,20 @@
 </div>
 
 <script>
-    // ── Drawer
-    const hamburger     = document.getElementById('hamburger');
-    const sideDrawer    = document.getElementById('sideDrawer');
+    const hamburger = document.getElementById('hamburger');
+    const sideDrawer = document.getElementById('sideDrawer');
     const drawerOverlay = document.getElementById('drawerOverlay');
-    const openDrawer  = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display='block'; setTimeout(()=>drawerOverlay.classList.add('open'),10); hamburger.classList.add('open'); document.body.style.overflow='hidden'; };
-    const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(()=>drawerOverlay.style.display='',300); hamburger.classList.remove('open'); document.body.style.overflow=''; };
+    const openDrawer = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display = 'block'; setTimeout(() => drawerOverlay.classList.add('open'), 10); hamburger.classList.add('open'); document.body.style.overflow = 'hidden'; };
+    const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(() => drawerOverlay.style.display = '', 300); hamburger.classList.remove('open'); document.body.style.overflow = ''; };
     hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
     drawerOverlay.addEventListener('click', closeDrawer);
 
-    // ── Char count
-    const textarea  = document.getElementById('additionalInfo');
+    const textarea = document.getElementById('additionalInfo');
     const charCount = document.getElementById('charCount');
     function updateCount() { charCount.textContent = textarea.value.length; }
     textarea.addEventListener('input', updateCount);
     updateCount();
 
-    // ── Document type selection
     let selectedDocType = 'Pitch Deck';
     function selectDocType(btn) {
         document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('active'));
@@ -609,19 +694,19 @@
         selectedDocType = btn.dataset.type;
     }
 
-    // ── File handling
-    const fileInput   = document.getElementById('fileInput');
-    const fileList    = document.getElementById('fileList');
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('fileList');
     const docTypeInputs = document.getElementById('docTypeInputs');
-    const uploadZone  = document.getElementById('uploadZone');
-    let   pendingFiles = [];
+    const uploadZone = document.getElementById('uploadZone');
+    let pendingFiles = [];
 
     fileInput.addEventListener('change', handleFiles);
 
     uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
     uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
     uploadZone.addEventListener('drop', e => {
-        e.preventDefault(); uploadZone.classList.remove('drag');
+        e.preventDefault();
+        uploadZone.classList.remove('drag');
         handleFilesFromList(e.dataTransfer.files);
     });
 
@@ -630,12 +715,15 @@
     function handleFilesFromList(files) {
         Array.from(files).forEach(file => {
             if (file.size > 10 * 1024 * 1024) {
-                showToast(`${file.name} exceeds 10MB`, true); return;
+                showToast(`${file.name} exceeds 10MB`, true);
+                return;
             }
             pendingFiles.push({ file, type: selectedDocType });
             renderPendingFile(file, selectedDocType, pendingFiles.length - 1);
         });
         rebuildFileInputs();
+        uploadZone.classList.remove('error');
+        document.getElementById('uploadError').classList.remove('show');
     }
 
     function renderPendingFile(file, type, idx) {
@@ -648,7 +736,7 @@
             </div>
             <div class="file-info">
                 <div class="file-name">${escHtml(file.name)}</div>
-                <div class="file-meta">${escHtml(type)} &nbsp;·&nbsp; ${(file.size/1024).toFixed(1)} KB</div>
+                <div class="file-meta">${escHtml(type)} · ${(file.size / 1024).toFixed(1)} KB</div>
             </div>
             <button type="button" class="file-remove" onclick="removePendingFile(${idx}, this)">
                 <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -664,7 +752,7 @@
 
     function rebuildFileInputs() {
         docTypeInputs.innerHTML = '';
-        pendingFiles.forEach((pf, i) => {
+        pendingFiles.forEach(pf => {
             if (!pf) return;
             const inp = document.createElement('input');
             inp.type = 'hidden';
@@ -689,20 +777,25 @@
             const res = await fetch('/Application/DeleteDocument', { method: 'POST', body: fd });
             if (res.ok) item.remove();
             else showToast('Could not delete document', true);
-        } catch { showToast('Could not delete document', true); }
+        } catch {
+            showToast('Could not delete document', true);
+        }
     }
 
     function escHtml(s) {
-        return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
     }
 
-    // ── Validation
-    function setInvalid(id)   { document.getElementById(id)?.classList.add('invalid'); }
+    function setInvalid(id) { document.getElementById(id)?.classList.add('invalid'); }
     function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
 
-    ['agreeTerms','agreePrivacy','agreeAccuracy'].forEach(id => {
+    ['agreeTerms', 'agreePrivacy', 'agreeAccuracy'].forEach(id => {
         document.getElementById(id)?.addEventListener('change', () => {
-            const map = { agreeTerms:'grp-terms', agreePrivacy:'grp-privacy', agreeAccuracy:'grp-accuracy' };
+            const map = { agreeTerms: 'grp-terms', agreePrivacy: 'grp-privacy', agreeAccuracy: 'grp-accuracy' };
             clearInvalid(map[id]);
         });
     });
@@ -710,26 +803,37 @@
     function validate() {
         let ok = true;
 
-        // Checkboxes
-        if (!document.getElementById('agreeTerms').checked)    { setInvalid('grp-terms');    ok = false; }
-        if (!document.getElementById('agreePrivacy').checked)  { setInvalid('grp-privacy');  ok = false; }
-        if (!document.getElementById('agreeAccuracy').checked) { setInvalid('grp-accuracy'); ok = false; }
+        if (!policyReadState.terms || !document.getElementById('agreeTerms').checked) {
+            setInvalid('grp-terms');
+            ok = false;
+        }
 
-        // File upload — at least one pending or existing doc required
-        const hasPending  = pendingFiles.some(pf => pf !== null);
+        if (!policyReadState.privacy || !document.getElementById('agreePrivacy').checked) {
+            setInvalid('grp-privacy');
+            ok = false;
+        }
+
+        if (!document.getElementById('agreeAccuracy').checked) {
+            setInvalid('grp-accuracy');
+            ok = false;
+        }
+
+        const hasPending = pendingFiles.some(pf => pf !== null);
         const hasExisting = document.querySelectorAll('#fileList .file-item[data-docid]').length > 0;
+
         if (!hasPending && !hasExisting) {
             document.getElementById('uploadZone').classList.add('error');
             document.getElementById('uploadError').classList.add('show');
             ok = false;
         }
 
-        if (!ok) document.querySelector('.invalid, .upload-zone.error')
-                        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!ok) {
+            document.querySelector('.invalid, .upload-zone.error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
         return ok;
     }
 
-    // ── Toast
     function showToast(msg, isError) {
         const t = document.getElementById('toast');
         t.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--green)';
@@ -738,10 +842,10 @@
         setTimeout(() => t.classList.remove('show'), 3000);
     }
 
-    // ── Save draft
     document.getElementById('saveBtn').addEventListener('click', async () => {
         const btn = document.getElementById('saveBtn');
-        btn.textContent = 'Saving...'; btn.disabled = true;
+        btn.textContent = 'Saving...';
+        btn.disabled = true;
         try {
             const fd = new FormData();
             const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
@@ -749,20 +853,129 @@
             fd.append('AdditionalInformation', textarea.value);
             const res = await fetch('/Application/SaveAdditionalDraft', { method: 'POST', body: fd });
             showToast(res.ok ? 'Draft saved' : 'Could not save', !res.ok);
-        } catch { showToast('Could not save', true); }
-        finally {
+        } catch {
+            showToast('Could not save', true);
+        } finally {
             btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save draft';
             btn.disabled = false;
         }
     });
 
-    // ── Submit
     document.getElementById('additionalForm').addEventListener('submit', function(e) {
-        if (!validate()) { e.preventDefault(); return; }
+        if (!validate()) {
+            e.preventDefault();
+            return;
+        }
         const btn = document.getElementById('submitBtn');
         btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Submitting...';
         btn.disabled = true;
     });
 </script>
+<script>
+    const policyDocs = {
+        terms: {
+            title: 'Terms of Service',
+            url: '/NPI_4_0_Terms_of_Service.pdf',
+            checkboxId: 'agreeTerms',
+            statusId: 'termsStatus'
+        },
+        privacy: {
+            title: 'Privacy Policy',
+            url: '/NPI_4_0_Privacy_Policy.pdf',
+            checkboxId: 'agreePrivacy',
+            statusId: 'privacyStatus'
+        }
+    };
+
+    const policyOrder = ['terms', 'privacy'];
+
+    const policyReadState = {
+        terms: false,
+        privacy: false
+    };
+
+    let activePolicyKey = null;
+    let policyTimer = null;
+    let secondsLeft = 0;
+
+    const policyModal = document.getElementById('policyModal');
+    const policyFrame = document.getElementById('policyFrame');
+    const policyModalTitle = document.getElementById('policyModalTitle');
+    const policyCountdown = document.getElementById('policyCountdown');
+    const policyConfirmBtn = document.getElementById('policyConfirmBtn');
+
+    function openPolicyModal(key) {
+        const doc = policyDocs[key];
+        activePolicyKey = key;
+        secondsLeft = 10;
+
+        policyModalTitle.textContent = doc.title;
+        policyFrame.src = doc.url;
+        policyConfirmBtn.disabled = true;
+        policyCountdown.textContent = `Please read for ${secondsLeft} seconds`;
+
+        policyModal.classList.add('open');
+        policyModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+
+        clearInterval(policyTimer);
+        policyTimer = setInterval(() => {
+            secondsLeft -= 1;
+
+            if (secondsLeft > 0) {
+                policyCountdown.textContent = `Please read for ${secondsLeft} seconds`;
+                return;
+            }
+
+            clearInterval(policyTimer);
+            policyCountdown.textContent = 'You can now confirm that you have read this';
+            policyConfirmBtn.disabled = false;
+        }, 1000);
+    }
+
+    function closePolicyModal() {
+        clearInterval(policyTimer);
+        policyTimer = null;
+        policyModal.classList.remove('open');
+        policyModal.setAttribute('aria-hidden', 'true');
+        policyFrame.src = '';
+        document.body.style.overflow = '';
+        activePolicyKey = null;
+    }
+
+    function openNextUnreadPolicy() {
+        const nextKey = policyOrder.find(key => !policyReadState[key]);
+        if (nextKey) {
+            openPolicyModal(nextKey);
+        }
+    }
+
+    policyConfirmBtn.addEventListener('click', () => {
+        if (!activePolicyKey) return;
+
+        const doc = policyDocs[activePolicyKey];
+        const checkbox = document.getElementById(doc.checkboxId);
+        const status = document.getElementById(doc.statusId);
+        const completedKey = activePolicyKey;
+
+        policyReadState[completedKey] = true;
+        checkbox.disabled = false;
+        checkbox.checked = true;
+
+        status.textContent = 'Read confirmed';
+        status.classList.add('done');
+
+        closePolicyModal();
+
+        setTimeout(() => {
+            openNextUnreadPolicy();
+        }, 200);
+    });
+
+    window.addEventListener('load', () => {
+        openNextUnreadPolicy();
+    });
+</script>
+
 </body>
 </html>

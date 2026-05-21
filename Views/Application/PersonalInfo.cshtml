@@ -23,6 +23,8 @@
         if (num == completedStep + 1) return "active";
         return "locked";
     }
+
+    var savedGender = ViewBag.Gender;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -279,7 +281,7 @@
     <div class="nav-right">
         <div class="nav-deadline">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Deadline: <span class="deadline-val">30 Jun 2026</span>
+            Deadline: <span class="deadline-val">30 June 2026</span>
         </div>
         <div class="nav-user">
             <div class="user-avatar">@initials</div>
@@ -396,7 +398,7 @@
                             <div class="input-wrap">
                                 <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
                                 <input type="text" id="fullname" name="FullName"
-                                       placeholder="e.g. Adaeze Okonkwo"
+                                       placeholder="e.g. John Doe"
                                        value="@ViewBag.FullName"
                                        autocomplete="name" />
                             </div>
@@ -429,20 +431,42 @@
                             </div>
                             <div class="field-error">Please enter a valid phone number.</div>
                         </div>
+                        <div class="form-group" id="grp-phone">
+                            <label class="field-label" for="phone">
+                                Gender <span class="label-req">*</span>
+                            </label>
+                            <div class="input-wrap">
+                                <span class= "input-icon">
+                                        <svg viewBox = "0 0 24 24" >
+                                            <circle cx = "12" cy = "8" r = "4" />
+                                            <path d = "M12 12v8M9 18h6" />
+                                        </svg >
+                                    </span >
 
+                                   <select id ="gender" name="Gender" >
+                                        <option value="" disabled selected="@(string.IsNullOrEmpty(savedGender))">Select Gender</option>
+                                        <option value="Male" selected="@(savedGender == "Male")">Male</option>
+                                        <option value="Female" selected="@(savedGender == "Female")">Female</option>
+                                        <option value="PreferNotToSay" selected="@(savedGender == "PreferNotToSay")">Prefer not to say</option>
+                                    </select>
+
+                            </div>
+                            <div class="field-error">Please enter a valid phone number.</div>
+                        </div>
                         <!-- Gender -->
-                        <div class="form-group" id="grp-gender">
+                        @* <div class="form-group" id="grp-gender">
                             <label class="field-label">
                                 Gender <span class="label-req">*</span>
                             </label>
                             <div class="radio-options grid-2">
                                 <div class="r-option">
-                                    <input type="radio" id="gender-f" name="Gender" value="Female"
+                                    <!-- Gender -->
+                                    @* <input type="radio" id="gender-f" name="Gender" value="Female"
                                            @(ViewBag.Gender == "Female" ? "checked" : "") />
                                     <label class="r-label" for="gender-f">
                                         <div class="r-radio"><div class="r-dot"></div></div>
                                         <span class="r-text">Female</span>
-                                    </label>
+                                    </label> 
                                 </div>
                                 <div class="r-option">
                                     <input type="radio" id="gender-m" name="Gender" value="Male"
@@ -454,7 +478,7 @@
                                 </div>
                             </div>
                             <div class="field-error">Please select your gender.</div>
-                        </div>
+                        </div> *@
 
                     </div>
 
@@ -469,7 +493,8 @@
                                    placeholder="Enter your 11-digit NIN"
                                    maxlength="11"
                                    inputmode="numeric"
-                                   autocomplete="off" />
+                                   autocomplete="off"
+                                   value="@ViewBag.DecryptedNin" />
                             <button type="button" class="nin-toggle" id="ninToggle" aria-label="Toggle NIN visibility">
                                 <svg id="ninEye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
@@ -605,8 +630,8 @@
             { setInvalid('grp-fullname'); ok = false; }
         if (!isValidPhone(document.getElementById('phone').value))
             { setInvalid('grp-phone'); ok = false; }
-        if (!document.querySelector('input[name="Gender"]:checked'))
-            { setInvalid('grp-gender'); ok = false; }
+        @* if (!document.querySelector('input[name="Gender"]:checked'))
+            { setInvalid('grp-gender'); ok = false; } *@
         if (document.getElementById('nin').value.replace(/\D/g,'').length !== 11)
             { setInvalid('grp-nin'); ok = false; }
         if (!document.querySelector('input[name="RelationshipToBusiness"]:checked'))

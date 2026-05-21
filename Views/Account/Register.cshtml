@@ -5,528 +5,1093 @@
 }
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --teal:       #21a1b8;
-            --teal-dark:  #1a9990;
-            --teal-deep:  #0d7a73;
-            --teal-light: #f2f8fa;
-            --teal-pale:  #F0FAF9;
-            --green:      #7BC144;
-            --green-dark: #5a9130;
-            --ink:        #1C2B2A;
-            --muted:      #4A6260;
-            --border:     rgba(45,184,176,0.2);
-            --white:      #FFFFFF;
-        }
-        body {
-            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
-            background: var(--cream); color: var(--ink);
-            min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
-        }
-
-        /* ── LEFT PANEL ── */
-        .panel-left {
-            background: var(--teal-light); padding: 3rem;
-            display: flex; flex-direction: column; justify-content: space-between;
-            position: relative; overflow: hidden; min-height: 100vh;
-        }
-        .panel-left::before {
-            content: ''; position: absolute; inset: 0;
-           
-        }
-        .panel-left > * { position: relative; z-index: 1; }
-        .brand { display: flex; align-items: center; gap: 10px; }
-        .brand-icon img { width: 150px; height: 40px; }
-        .panel-center { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 2.5rem 0; }
-        .step-indicator { display: flex; align-items: center; gap: .5rem; margin-bottom: 2rem; flex-wrap: wrap; }
-        .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
-        .step-dot.active { background: var(--teal-deep); color: var(--teal-light); }
-        .step-dot.inactive { background: var(--teal-light); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); }
-        .step-line { width: 28px; height: 1px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
-        .step-label { font-size: 10px; color: var(--ink); letter-spacing: .06em; text-transform: uppercase; margin-left: .25rem; }
-        .left-title { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: clamp(1.8rem, 2.5vw, 3rem); font-weight: 700; color: var(--ink); line-height: 1.05; margin-bottom: 1rem; }
-        .left-title em { color: var(--ink); font-style: italic; }
-        .left-desc { font-size: .84rem; line-height: 1.8; color: var(--ink); max-width: 340px; font-weight: 300; margin-bottom: 2rem; }
-        .checklist { display: flex; flex-direction: column; gap: .75rem; }
-        .check-item { display: flex; align-items: flex-start; gap: .75rem; }
-        .check-icon { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; background: rgba(131,194,64,0.15); border: 1px solid rgba(131,194,64,0.3); display: flex; align-items: center; justify-content: center; margin-top: 1px; }
-        .check-icon svg { width: 10px; height: 10px; stroke: var(--lime); stroke-width: 2.5; fill: none; }
-        .check-text { font-size: .79rem; color: var(--ink); line-height: 1.55; font-weight: 300; }
-        .left-footer { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-        .left-footer span { font-size: .72rem; color: var(--teal); }
-        .left-footer a { font-size: .72rem; color: var(--teal); text-decoration: none; }
-        .left-footer a:hover { text-decoration: underline; }
-
-        /* ── MOBILE HEADER ── */
-        .mobile-header { display: none; background: var(--ink); padding: 1rem 1.25rem; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
-        .mobile-brand { display: flex; align-items: center; gap: 8px; }
-        .mobile-brand-icon { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, var(--teal), var(--green)); display: flex; align-items: center; justify-content: center; }
-        .mobile-brand-icon svg { width: 15px; height: 15px; stroke: white; stroke-width: 2; fill: none; }
-        .mobile-brand-text { font-size: 11px; font-weight: 500; color: white; letter-spacing: .06em; text-transform: uppercase; }
-        .mobile-step-badge { font-size: 10px; font-weight: 500; color: var(--lime); background: rgba(131,194,64,0.12); border: 1px solid rgba(131,194,64,0.25); padding: .25rem .65rem; border-radius: 100px; }
-
-        /* ── RIGHT PANEL ── */
-        .panel-right { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 3.5rem; background: var(--cream); }
-        .form-wrap { width: 100%; max-width: 420px; }
-        .form-header { margin-bottom: 1.75rem; }
-        .form-title { font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .35rem; }
-        .form-subtitle { font-size: .82rem; color: var(--muted); }
-        .form-subtitle a { color: var(--teal); text-decoration: none; font-weight: 500; }
-        .form-subtitle a:hover { text-decoration: underline; }
-
-        .progress-bar { height: 3px; background: rgba(0,0,0,0.07); border-radius: 10px; margin-bottom: 1.75rem; overflow: hidden; }
-        .progress-fill { height: 100%; width: 0%; background: linear-gradient(to right, var(--teal), var(--lime)); border-radius: 10px; transition: width .4s ease; }
-
-        .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .form-group { margin-bottom: 1.1rem; }
-        label { display: block; font-size: .75rem; font-weight: 500; color: var(--ink); margin-bottom: .38rem; letter-spacing: .02em; }
-        .input-wrap { position: relative; }
-        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); }
-        .input-icon svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.75; fill: none; display: block; }
-        input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select {
-            width: 100%; padding: .72rem .9rem .72rem 2.5rem;
-            border: 1px solid var(--border); border-radius: 6px;
-            font-size: .84rem; font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
-            background: white; color: var(--ink);
-            transition: border-color .2s, box-shadow .2s;
-            outline: none; -webkit-appearance: none; appearance: none;
-        }
-        select {
-            cursor: pointer;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6b60' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 12px center; padding-right: 2rem;
-        }
-        input::placeholder { color: #aab5af; }
-        input:focus, select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(14,134,171,0.1); }
-        .toggle-pw { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px; color: var(--muted); display: flex; align-items: center; }
-        .toggle-pw svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.75; fill: none; }
-        .toggle-pw:hover { color: var(--teal); }
-        .password-strength { margin-top: .5rem; }
-        .strength-bar { display: flex; gap: 3px; margin-bottom: .3rem; }
-        .strength-seg { flex: 1; height: 3px; border-radius: 10px; background: rgba(0,0,0,0.08); transition: background .3s; }
-        .strength-seg.weak { background: #f87171; }
-        .strength-seg.fair { background: #fbbf24; }
-        .strength-seg.good { background: var(--teal); }
-        .strength-seg.strong { background: var(--lime); }
-        .strength-label { font-size: .7rem; color: var(--muted); }
-        .field-error { font-size: .71rem; color: #b91c1c; margin-top: .3rem; display: none; }
-        .form-group.invalid .input-wrap input,
-        .form-group.invalid .input-wrap select { border-color: #f87171; }
-        .form-group.invalid .input-wrap input:focus,
-        .form-group.invalid .input-wrap select:focus { box-shadow: 0 0 0 3px rgba(248,113,113,0.12); }
-        .form-group.invalid .field-error { display: block; }
-        .terms-row { display: flex; align-items: flex-start; gap: .6rem; margin: 1.25rem 0; }
-        .terms-row input[type="checkbox"] { width: 16px; height: 16px; padding: 0; flex-shrink: 0; accent-color: var(--teal); cursor: pointer; margin-top: 2px; }
-        .terms-row span { font-size: .78rem; color: var(--muted); line-height: 1.6; }
-        .terms-row a { color: var(--teal); text-decoration: none; font-weight: 500; }
-        .terms-row a:hover { text-decoration: underline; }
-        .btn-submit { width: 100%; padding: .88rem; background: var(--teal); color: white; border: none; border-radius: 6px; font-size: .88rem; font-weight: 500; font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif; cursor: pointer; letter-spacing: .03em; transition: background .2s, transform .15s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 1rem; touch-action: manipulation; }
-        .btn-submit:hover { background: var(--teal-dark); transform: translateY(-1px); }
-        .btn-submit:active { transform: scale(0.98); }
-        .btn-submit:disabled { opacity: .65; cursor: not-allowed; transform: none; }
-        .btn-submit svg { width: 16px; height: 16px; stroke: white; stroke-width: 2; fill: none; flex-shrink: 0; }
-        .signin-row { text-align: center; font-size: .8rem; color: var(--muted); padding-bottom: 1rem; }
-        .signin-row a { color: var(--teal); text-decoration: none; font-weight: 500; }
-        .signin-row a:hover { text-decoration: underline; }
-        .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: .9rem 1.1rem; margin-bottom: 1.25rem; }
-        .error-box p { font-size: .8rem; color: #b91c1c; font-weight: 500; margin-bottom: 6px; }
-        .error-box ul { margin: 0; padding-left: 1.25rem; }
-        .error-box li { font-size: .78rem; color: #b91c1c; }
-
-        @@media (max-width: 900px) {
-            body { grid-template-columns: 1fr; }
-            .panel-left { display: none; }
-            .mobile-header { display: flex; }
-            .panel-right { padding: 1.75rem 1.25rem 2.5rem; justify-content: flex-start; min-height: calc(100vh - 56px); }
-            .form-wrap { max-width: 100%; }
-            .form-title { font-size: 1.7rem; }
-        }
-        @@media (max-width: 480px) {
-            .mobile-header { padding: .9rem 1rem; }
-            .panel-right { padding: 1.5rem 1rem 2rem; }
-            .form-row-2 { grid-template-columns: 1fr; gap: 0; }
-            input[type="text"], input[type="email"], input[type="tel"],
-            input[type="password"], select { font-size: 16px; padding: .78rem .9rem .78rem 2.5rem; }
-            .btn-submit { padding: 1rem; font-size: .92rem; }
-            .form-title { font-size: 1.55rem; }
-        }
-    </style>
-</head>
-<body>
-
-<!-- MOBILE HEADER -->
-<header class="mobile-header">
-    <div class="mobile-brand">
-        <div class="mobile-brand-icon">
-            <svg viewBox="0 0 24 24"><polyline points="2 7 12 2 22 7"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg>
-        </div>
-        <span class="mobile-brand-text">NSIA Prize for Innovation</span>
-    </div>
-    <span class="mobile-step-badge">Step 1 of 3</span>
-</header>
-
-<!-- LEFT PANEL -->
-<div class="panel-left">
-    <div class="brand">
-       <a href="/"><div class="brand-icon"><img src="~/web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" alt="NSIA" /></div></a>
-    </div>
-    <div class="panel-center">
-        <div class="step-indicator">
-            <div class="step-dot active">1</div>
-            <div class="step-line"></div>
-            <div class="step-dot inactive">2</div>
-            <div class="step-line"></div>
-            <div class="step-dot inactive">3</div>
-            <span class="step-label">Step 1 of 3 Personal Info</span>
-        </div>
-        <h1 class="left-title">Join the<br /> NSIA Prize for <br />Innovation.</h1>
-        <p class="left-desc">Create your account in minutes. You'll complete your innovation profile and submit your application after registration.</p>
-        <div class="checklist">
-            <div class="check-item">
-                <div class="check-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                <span class="check-text">Free to apply</span>
-            </div>
-            <div class="check-item">
-                <div class="check-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                <span class="check-text">Save your progress and return anytime</span>
-            </div>
-            <div class="check-item">
-                <div class="check-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                <span class="check-text">Your data is protected under NDPR guidelines</span>
-            </div>
-            <div class="check-item">
-                <div class="check-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-                <span class="check-text">Receive updates on shortlisting and next steps</span>
-            </div>
-        </div>
-    </div>
-    <div class="left-footer">
-        <span>© 2026 NSIA. All rights reserved.</span>
-        <a href="~/NPI_4_0_Privacy_Policy.pdf" target="_blank">Privacy Policy</a>
-    </div>
-</div>
-
-<!-- RIGHT PANEL -->
-<div class="panel-right">
-    <div class="form-wrap">
-        <div class="form-header">
-            <h2 class="form-title">Create your account</h2>
-            @* <p class="form-subtitle">Already registered? <a href="/account/login">Sign in here</a></p> *@
-        </div>
-
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
-
-        <form action="/account/register" method="post" id="registerForm" novalidate>
-            @Html.AntiForgeryToken()
-
-            @if (!ViewData.ModelState.IsValid) {
-                <div class="error-box">
-                    <p>Please fix the following errors:</p>
-                    <ul>
-                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors)) {
-                            <li>@error.ErrorMessage</li>
-                        }
-                    </ul>
-                </div>
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
 
-            <!-- Full Name -->
-            <div class="form-group" id="grp-fullname">
-                <label for="fullname">Full Name</label>
-                <div class="input-wrap">
-                    <span class="input-icon">
-                        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    </span>
-                    <input type="text" id="fullname" name="FullName"
-                           placeholder="e.g. Adaeze Okonkwo"
-                           value="@Model?.FullName"
-                           autocomplete="name" />
-                </div>
-                <div class="field-error">Please enter your full name.</div>
-            </div>
+            :root {
+                --teal: #21a1b8;
+                --teal-dark: #1a9990;
+                --teal-deep: #0d7a73;
+                --teal-light: #f2f8fa;
+                --teal-pale: #F0FAF9;
+                --green: #7BC144;
+                --green-dark: #5a9130;
+                --ink: #1C2B2A;
+                --muted: #4A6260;
+                --border: rgba(45, 184, 176, 0.2);
+                --white: #FFFFFF;
+            }
 
-            <!-- Email -->
-            <div class="form-group" id="grp-email">
-                <label for="email">Email Address</label>
-                <div class="input-wrap">
-                    <span class="input-icon">
-                        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    </span>
-                    <input type="email" id="email" name="Email"
-                           placeholder="you@example.com"
-                           value="@Model?.Email"
-                           autocomplete="email" inputmode="email" />
-                </div>
-                <div class="field-error">Please enter a valid email address.</div>
-            </div>
+            body {
+                font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+                background: var(--cream);
+                color: var(--ink);
+                min-height: 100vh;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
 
-            <!-- Phone + Gender -->
-            <div class="form-row-2">
-                <div class="form-group" id="grp-phone">
-                    <label for="phone">Phone Number</label>
-                    <div class="input-wrap">
-                        <span class="input-icon">
-                            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                        </span>
-                        <input type="tel" id="phone" name="PhoneNumber"
-                               placeholder="+234 800 000 0000"
-                               value="@Model?.PhoneNumber"
-                               autocomplete="tel" inputmode="tel" />
+            /* ── LEFT PANEL ── */
+            .panel-left {
+                background: var(--teal-light);
+                padding: 3rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                position: relative;
+                overflow: hidden;
+                min-height: 100vh;
+            }
+
+            .panel-left::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+
+            }
+
+            .panel-left>* {
+                position: relative;
+                z-index: 1;
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .brand-icon img {
+                width: 150px;
+                height: 40px;
+            }
+
+            .panel-center {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 2.5rem 0;
+            }
+
+            .step-indicator {
+                display: flex;
+                align-items: center;
+                gap: .5rem;
+                margin-bottom: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .step-dot {
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                font-weight: 500;
+                flex-shrink: 0;
+            }
+
+            .step-dot.active {
+                background: var(--teal-deep);
+                color: var(--teal-light);
+            }
+
+            .step-dot.inactive {
+                background: var(--teal-light);
+                color: var(--ink);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .step-line {
+                width: 28px;
+                height: 1px;
+                background: rgba(255, 255, 255, 0.1);
+                flex-shrink: 0;
+            }
+
+            .step-label {
+                font-size: 10px;
+                color: var(--ink);
+                letter-spacing: .06em;
+                text-transform: uppercase;
+                margin-left: .25rem;
+            }
+
+            .left-title {
+                font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+                font-size: clamp(1.8rem, 2.5vw, 3rem);
+                font-weight: 700;
+                color: var(--ink);
+                line-height: 1.05;
+                margin-bottom: 1rem;
+            }
+
+            .left-title em {
+                color: var(--ink);
+                font-style: italic;
+            }
+
+            .left-desc {
+                font-size: .84rem;
+                line-height: 1.8;
+                color: var(--ink);
+                max-width: 340px;
+                font-weight: 300;
+                margin-bottom: 2rem;
+            }
+
+            .checklist {
+                display: flex;
+                flex-direction: column;
+                gap: .75rem;
+            }
+
+            .check-item {
+                display: flex;
+                align-items: flex-start;
+                gap: .75rem;
+            }
+
+            .check-icon {
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                flex-shrink: 0;
+                background: rgba(131, 194, 64, 0.15);
+                border: 1px solid rgba(131, 194, 64, 0.3);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 1px;
+            }
+
+            .check-icon svg {
+                width: 10px;
+                height: 10px;
+                stroke: var(--lime);
+                stroke-width: 2.5;
+                fill: none;
+            }
+
+            .check-text {
+                font-size: .79rem;
+                color: var(--ink);
+                line-height: 1.55;
+                font-weight: 300;
+            }
+
+            .left-footer {
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                padding-top: 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+
+            .left-footer span {
+                font-size: .72rem;
+                color: var(--teal);
+            }
+
+            .left-footer a {
+                font-size: .72rem;
+                color: var(--teal);
+                text-decoration: none;
+            }
+
+            .left-footer a:hover {
+                text-decoration: underline;
+            }
+
+            /* ── MOBILE HEADER ── */
+            .mobile-header {
+                display: none;
+                background: var(--ink);
+                padding: 1rem 1.25rem;
+                align-items: center;
+                justify-content: space-between;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+            .mobile-brand {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .mobile-brand-icon {
+                width: 32px;
+                height: 32px;
+                border-radius: 6px;
+                background: linear-gradient(135deg, var(--teal), var(--green));
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mobile-brand-icon svg {
+                width: 15px;
+                height: 15px;
+                stroke: white;
+                stroke-width: 2;
+                fill: none;
+            }
+
+            .mobile-brand-text {
+                font-size: 11px;
+                font-weight: 500;
+                color: white;
+                letter-spacing: .06em;
+                text-transform: uppercase;
+            }
+
+            .mobile-step-badge {
+                font-size: 10px;
+                font-weight: 500;
+                color: var(--lime);
+                background: rgba(131, 194, 64, 0.12);
+                border: 1px solid rgba(131, 194, 64, 0.25);
+                padding: .25rem .65rem;
+                border-radius: 100px;
+            }
+
+            /* ── RIGHT PANEL ── */
+            .panel-right {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 3rem 3.5rem;
+                background: var(--cream);
+            }
+
+            .form-wrap {
+                width: 100%;
+                max-width: 420px;
+            }
+
+            .form-header {
+                margin-bottom: 1.75rem;
+            }
+
+            .form-title {
+                font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--ink);
+                line-height: 1.1;
+                margin-bottom: .35rem;
+            }
+
+            .form-subtitle {
+                font-size: .82rem;
+                color: var(--muted);
+            }
+
+            .form-subtitle a {
+                color: var(--teal);
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .form-subtitle a:hover {
+                text-decoration: underline;
+            }
+
+            .progress-bar {
+                height: 3px;
+                background: rgba(0, 0, 0, 0.07);
+                border-radius: 10px;
+                margin-bottom: 1.75rem;
+                overflow: hidden;
+            }
+
+            .progress-fill {
+                height: 100%;
+                width: 0%;
+                background: linear-gradient(to right, var(--teal), var(--lime));
+                border-radius: 10px;
+                transition: width .4s ease;
+            }
+
+            .form-row-2 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.1rem;
+            }
+
+            label {
+                display: block;
+                font-size: .75rem;
+                font-weight: 500;
+                color: var(--ink);
+                margin-bottom: .38rem;
+                letter-spacing: .02em;
+            }
+
+            .input-wrap {
+                position: relative;
+            }
+
+            .input-icon {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+                color: var(--muted);
+            }
+
+            .input-icon svg {
+                width: 15px;
+                height: 15px;
+                stroke: currentColor;
+                stroke-width: 1.75;
+                fill: none;
+                display: block;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="password"],
+            select {
+                width: 100%;
+                padding: .72rem .9rem .72rem 2.5rem;
+                border: 1px solid var(--border);
+                border-radius: 6px;
+                font-size: .84rem;
+                font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+                background: white;
+                color: var(--ink);
+                transition: border-color .2s, box-shadow .2s;
+                outline: none;
+                -webkit-appearance: none;
+                appearance: none;
+            }
+
+            select {
+                cursor: pointer;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6b60' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+                padding-right: 2rem;
+            }
+
+            input::placeholder {
+                color: #aab5af;
+            }
+
+            input:focus,
+            select:focus {
+                border-color: var(--teal);
+                box-shadow: 0 0 0 3px rgba(14, 134, 171, 0.1);
+            }
+
+            .toggle-pw {
+                position: absolute;
+                right: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 4px;
+                color: var(--muted);
+                display: flex;
+                align-items: center;
+            }
+
+            .toggle-pw svg {
+                width: 15px;
+                height: 15px;
+                stroke: currentColor;
+                stroke-width: 1.75;
+                fill: none;
+            }
+
+            .toggle-pw:hover {
+                color: var(--teal);
+            }
+
+            .password-strength {
+                margin-top: .5rem;
+            }
+
+            .strength-bar {
+                display: flex;
+                gap: 3px;
+                margin-bottom: .3rem;
+            }
+
+            .strength-seg {
+                flex: 1;
+                height: 3px;
+                border-radius: 10px;
+                background: rgba(0, 0, 0, 0.08);
+                transition: background .3s;
+            }
+
+            .strength-seg.weak {
+                background: #f87171;
+            }
+
+            .strength-seg.fair {
+                background: #fbbf24;
+            }
+
+            .strength-seg.good {
+                background: var(--teal);
+            }
+
+            .strength-seg.strong {
+                background: var(--lime);
+            }
+
+            .strength-label {
+                font-size: .7rem;
+                color: var(--muted);
+            }
+
+            .field-error {
+                font-size: .71rem;
+                color: #b91c1c;
+                margin-top: .3rem;
+                display: none;
+            }
+
+            .form-group.invalid .input-wrap input,
+            .form-group.invalid .input-wrap select {
+                border-color: #f87171;
+            }
+
+            .form-group.invalid .input-wrap input:focus,
+            .form-group.invalid .input-wrap select:focus {
+                box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.12);
+            }
+
+            .form-group.invalid .field-error {
+                display: block;
+            }
+
+            .terms-row {
+                display: flex;
+                align-items: flex-start;
+                gap: .6rem;
+                margin: 1.25rem 0;
+            }
+
+            .terms-row input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                padding: 0;
+                flex-shrink: 0;
+                accent-color: var(--teal);
+                cursor: pointer;
+                margin-top: 2px;
+            }
+
+            .terms-row span {
+                font-size: .78rem;
+                color: var(--muted);
+                line-height: 1.6;
+            }
+
+            .terms-row a {
+                color: var(--teal);
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .terms-row a:hover {
+                text-decoration: underline;
+            }
+
+            .btn-submit {
+                width: 100%;
+                padding: .88rem;
+                background: var(--teal);
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-size: .88rem;
+                font-weight: 500;
+                font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+                cursor: pointer;
+                letter-spacing: .03em;
+                transition: background .2s, transform .15s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                margin-bottom: 1rem;
+                touch-action: manipulation;
+            }
+
+            .btn-submit:hover {
+                background: var(--teal-dark);
+                transform: translateY(-1px);
+            }
+
+            .btn-submit:active {
+                transform: scale(0.98);
+            }
+
+            .btn-submit:disabled {
+                opacity: .65;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+            .btn-submit svg {
+                width: 16px;
+                height: 16px;
+                stroke: white;
+                stroke-width: 2;
+                fill: none;
+                flex-shrink: 0;
+            }
+
+            .signin-row {
+                text-align: center;
+                font-size: .8rem;
+                color: var(--muted);
+                padding-bottom: 1rem;
+            }
+
+            .signin-row a {
+                color: var(--teal);
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .signin-row a:hover {
+                text-decoration: underline;
+            }
+
+            .error-box {
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                border-radius: 8px;
+                padding: .9rem 1.1rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .error-box p {
+                font-size: .8rem;
+                color: #b91c1c;
+                font-weight: 500;
+                margin-bottom: 6px;
+            }
+
+            .error-box ul {
+                margin: 0;
+                padding-left: 1.25rem;
+            }
+
+            .error-box li {
+                font-size: .78rem;
+                color: #b91c1c;
+            }
+
+            @@media (max-width: 900px) {
+                body {
+                    grid-template-columns: 1fr;
+                }
+
+                .panel-left {
+                    display: none;
+                }
+
+                .mobile-header {
+                    display: flex;
+                }
+
+                .panel-right {
+                    padding: 1.75rem 1.25rem 2.5rem;
+                    justify-content: flex-start;
+                    min-height: calc(100vh - 56px);
+                }
+
+                .form-wrap {
+                    max-width: 100%;
+                }
+
+                .form-title {
+                    font-size: 1.7rem;
+                }
+            }
+
+            @@media (max-width: 480px) {
+                .mobile-header {
+                    padding: .9rem 1rem;
+                }
+
+                .panel-right {
+                    padding: 1.5rem 1rem 2rem;
+                }
+
+                .form-row-2 {
+                    grid-template-columns: 1fr;
+                    gap: 0;
+                }
+
+                input[type="text"],
+                input[type="email"],
+                input[type="tel"],
+                input[type="password"],
+                select {
+                    font-size: 16px;
+                    padding: .78rem .9rem .78rem 2.5rem;
+                }
+
+                .btn-submit {
+                    padding: 1rem;
+                    font-size: .92rem;
+                }
+
+                .form-title {
+                    font-size: 1.55rem;
+                }
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- MOBILE HEADER -->
+    <header class="mobile-header">
+        <div class="mobile-brand">
+            <div class="mobile-brand-icon">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="2 7 12 2 22 7" />
+                    <polyline points="2 12 12 17 22 12" />
+                    <polyline points="2 17 12 22 22 17" />
+                </svg>
+            </div>
+            <span class="mobile-brand-text">NSIA Prize for Innovation</span>
+        </div>
+        <span class="mobile-step-badge">Step 1 of 3</span>
+    </header>
+
+    <!-- LEFT PANEL -->
+    <div class="panel-left">
+        <div class="brand">
+            <a href="/">
+                <div class="brand-icon"><img src="~/web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png"
+                                                 alt="NSIA" /></div>
+                </a>
+            </div>
+            <div class="panel-center">
+                <div class="step-indicator">
+                    <div class="step-dot active">1</div>
+                    <div class="step-line"></div>
+                    <div class="step-dot inactive">2</div>
+                    <div class="step-line"></div>
+                    <div class="step-dot inactive">3</div>
+                    <span class="step-label">Step 1 of 3 Personal Info</span>
+                </div>
+                <h1 class="left-title">Join the<br /> NSIA Prize for <br />Innovation.</h1>
+                <p class="left-desc">Create your account in minutes. You'll complete your innovation profile and submit your
+                    application after registration.</p>
+                    <div class="checklist">
+                        <div class="check-item">
+                            <div class="check-icon"><svg viewBox="0 0 12 12">
+                                <polyline points="2,6 5,9 10,3" />
+                            </svg></div>
+                            <span class="check-text">Free to apply</span>
+                        </div>
+                        <div class="check-item">
+                            <div class="check-icon"><svg viewBox="0 0 12 12">
+                                <polyline points="2,6 5,9 10,3" />
+                            </svg></div>
+                            <span class="check-text">Save your progress and return anytime</span>
+                        </div>
+                        <div class="check-item">
+                            <div class="check-icon"><svg viewBox="0 0 12 12">
+                                <polyline points="2,6 5,9 10,3" />
+                            </svg></div>
+                            <span class="check-text">Your data is protected under NDPR guidelines</span>
+                        </div>
+                        <div class="check-item">
+                            <div class="check-icon"><svg viewBox="0 0 12 12">
+                                <polyline points="2,6 5,9 10,3" />
+                            </svg></div>
+                            <span class="check-text">Receive updates on shortlisting and next steps</span>
+                        </div>
                     </div>
-                    <div class="field-error">Enter a valid phone number.</div>
                 </div>
-                <div class="form-group" id="grp-gender">
-                    <label for="gender">Gender</label>
-                    <div class="input-wrap">
-                        <span class="input-icon">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M12 12v8M9 18h6"/></svg>
-                        </span>
-                        <!-- Gender -->
-                        <select id="gender" name="Gender">
-                            <option value="" disabled selected>Select gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="PreferNotToSay">Prefer not to say</option>
-                        </select>
+                <div class="left-footer">
+                    <span>© 2026 NSIA. All rights reserved.</span>
+                    <a href="~/NPI_4_0_Privacy_Policy.pdf" target="_blank">Privacy Policy</a>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="panel-right">
+                <div class="form-wrap">
+                    <div class="form-header">
+                        <h2 class="form-title">Create your account</h2>
+                        @* <p class="form-subtitle">Already registered? <a href="/account/login">Sign in here</a></p> *@
                     </div>
-                    <div class="field-error">Please select your gender.</div>
-                </div>
-            </div>
 
-            <!-- Location + How did you hear -->
-            <div class="form-row-2">
-                <div class="form-group" id="grp-location">
-                    <label for="location">Location</label>
-                    <div class="input-wrap">
-                        <span class="input-icon">
-                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        </span>
-                        <input type="text" id="location" name="Location"
-                               placeholder="e.g. Lagos, Nigeria"
-                               value="@Model?.Location"
-                               autocomplete="address-level2" />
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
                     </div>
-                    <div class="field-error">Please enter your location.</div>
-                </div>
-                <div class="form-group" id="grp-howheard">
-                    <label for="howHeard">How did you hear about NPI?</label>
-                    <div class="input-wrap">
-                        <span class="input-icon">
-                            <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-                        </span>
-                        <!-- How did you hear -->
-                        <select id="howHeard" name="HowDidYouHear">
-                            <option value="" disabled selected>Select</option>
-                            <option value="Word of Mouth">Word of mouth (Friends/Family)</option>
-                            <option value="Employee Referral">Employee referral</option>
-                            <option value="Professional Network">Professional network (Alumni, etc.)</option>
-                            <option value="Social Media">Social media (Twitter, LinkedIn, Instagram)</option>
-                            <option value="Online Ad">Online ad</option>
-                            <option value="News Article">News article</option>
-                            <option value="Email Newsletter">Email newsletter</option>
-                        </select>
-                    </div>
-                    <div class="field-error">Please select an option.</div>
+
+                    <form action="/account/register" method="post" id="registerForm" novalidate>
+                        @Html.AntiForgeryToken()
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="error-box">
+                                <p>Please fix the following errors:</p>
+                                <ul>
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <!-- Full Name -->
+                        <div class="form-group" id="grp-fullname">
+                            <label for="fullname">Full Name</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                        <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                </span>
+                                <input type="text" id="fullname" name="FullName" placeholder="e.g. John Doe"
+                                       value="@Model?.FullName" autocomplete="name" />
+                            </div>
+                            <div class="field-error">Please enter your full name.</div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group" id="grp-email">
+                            <label for="email">Email Address</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg>
+                                </span>
+                                <input type="email" id="email" name="Email" placeholder="you@example.com" value="@Model?.Email"
+                                       autocomplete="email" inputmode="email" />
+                            </div>
+                            <div class="field-error">Please enter a valid email address.</div>
+                        </div>
+
+                        <!-- Phone + Gender -->
+                        <div class="form-row-2">
+                            <div class="form-group" id="grp-phone">
+                                <label for="phone">Phone Number</label>
+                                <div class="input-wrap">
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path
+                                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                                        </svg>
+                                    </span>
+                                    <input type="tel" id="phone" name="PhoneNumber" placeholder="+234 800 000 0000"
+                                           value="@Model?.PhoneNumber" autocomplete="tel" inputmode="tel" />
+                                </div>
+                                <div class="field-error">Enter a valid phone number.</div>
+                            </div>
+                            <div class="form-group" id="grp-gender">
+                                <label for="gender">Gender</label>
+                                <div class="input-wrap">
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <circle cx="12" cy="8" r="4" />
+                                            <path d="M12 12v8M9 18h6" />
+                                        </svg>
+                                    </span>
+                                    <!-- Gender -->
+                                    <select id="gender" name="Gender">
+                                        <option value="" disabled selected>Select gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="PreferNotToSay">Prefer not to say</option>
+                                    </select>
+                                </div>
+                                <div class="field-error">Please select your gender.</div>
+                            </div>
+                        </div>
+
+                        <!-- Location + How did you hear -->
+                        <div class="form-row-2">
+                            <div class="form-group" id="grp-location">
+                                <label for="location">Location</label>
+                                <div class="input-wrap">
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                            <circle cx="12" cy="10" r="3" />
+                                        </svg>
+                                    </span>
+                                    <input type="text" id="location" name="Location" placeholder="e.g. Lagos, Nigeria"
+                                           value="@Model?.Location" autocomplete="address-level2" />
+                                </div>
+                                <div class="field-error">Please enter your location.</div>
+                            </div>
+                            <div class="form-group" id="grp-howheard">
+                                <label for="howHeard">How did you hear about NPI?</label>
+                                <div class="input-wrap">
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+                                            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                                            <line x1="6" y1="1" x2="6" y2="4" />
+                                            <line x1="10" y1="1" x2="10" y2="4" />
+                                            <line x1="14" y1="1" x2="14" y2="4" />
+                                        </svg>
+                                    </span>
+                                    <!-- How did you hear -->
+                                    <select id="howHeard" name="HowDidYouHear">
+                                        <option value="" disabled selected>Select</option>
+                                        <option value="Word of Mouth">Word of mouth (Friends/Family)</option>
+                                        <option value="Employee Referral">Employee referral</option>
+                                        <option value="Professional Network">Professional network (Alumni, etc.)</option>
+                                        <option value="Social Media">Social media (Twitter, LinkedIn, Instagram)</option>
+                                        <option value="Online Ad">Online ad</option>
+                                        <option value="News Article">News article</option>
+                                        <option value="Email Newsletter">Email newsletter</option>
+                                    </select>
+                                </div>
+                                <div class="field-error">Please select an option.</div>
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group" id="grp-password">
+                            <label for="password">Password</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                    </svg>
+                                </span>
+                                <input type="password" id="password" name="Password" placeholder="Min. 8 characters"
+                                       autocomplete="new-password" />
+                                <button type="button" class="toggle-pw" id="togglePw" aria-label="Toggle password">
+                                    <svg id="eyeIcon" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="password-strength" id="strengthMeter" style="display:none">
+                                <div class="strength-bar">
+                                    <div class="strength-seg" id="seg1"></div>
+                                    <div class="strength-seg" id="seg2"></div>
+                                    <div class="strength-seg" id="seg3"></div>
+                                    <div class="strength-seg" id="seg4"></div>
+                                </div>
+                                <span class="strength-label" id="strengthLabel"></span>
+                            </div>
+                            <div class="field-error">Password must be at least 8 characters.</div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="form-group" id="grp-confirm">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                    </svg>
+                                </span>
+                                <input type="password" id="confirmPassword" name="ConfirmPassword"
+                                       placeholder="Re-enter your password" autocomplete="new-password" />
+                                <button type="button" class="toggle-pw" id="togglePwConfirm"
+                                        aria-label="Toggle confirm password">
+                                    <svg id="eyeIconConfirm" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="field-error">Passwords do not match.</div>
+                        </div>
+
+                        <!-- Terms -->
+                        <div class="terms-row">
+                            <input type="checkbox" id="terms" name="AgreeToTerms" value="true" />
+                            <input type="hidden" name="AgreeToTerms" value="false" />
+                            <span>
+                                I agree to the NSIA <a href="~/NPI_4_0_Terms_of_Service.pdf" target="_blank">Terms of Use</a>
+                                and
+                                <a href="~/NPI_4_0_Privacy_Policy.pdf" target="_blank">Privacy Policy</a>,
+                                and consent to the processing of my data under NDPR guidelines.
+                            </span>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <line x1="19" y1="8" x2="19" y2="14" />
+                                <line x1="22" y1="11" x2="16" y2="11" />
+                            </svg>
+                            Create my account
+                        </button>
+
+                        <p class="signin-row">Already have an account? <a href="/account/login">Sign in</a></p>
+                    </form>
                 </div>
             </div>
 
-            <!-- Password -->
-            <div class="form-group" id="grp-password">
-                <label for="password">Password</label>
-                <div class="input-wrap">
-                    <span class="input-icon">
-                        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    </span>
-                    <input type="password" id="password" name="Password"
-                           placeholder="Min. 8 characters"
-                           autocomplete="new-password" />
-                    <button type="button" class="toggle-pw" id="togglePw" aria-label="Toggle password">
-                        <svg id="eyeIcon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </button>
-                </div>
-                <div class="password-strength" id="strengthMeter" style="display:none">
-                    <div class="strength-bar">
-                        <div class="strength-seg" id="seg1"></div>
-                        <div class="strength-seg" id="seg2"></div>
-                        <div class="strength-seg" id="seg3"></div>
-                        <div class="strength-seg" id="seg4"></div>
-                    </div>
-                    <span class="strength-label" id="strengthLabel"></span>
-                </div>
-                <div class="field-error">Password must be at least 8 characters.</div>
-            </div>
+            <script>
+                    const eyeOn = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+                    const eyeOff = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
 
-            <!-- Confirm Password -->
-            <div class="form-group" id="grp-confirm">
-                <label for="confirmPassword">Confirm Password</label>
-                <div class="input-wrap">
-                    <span class="input-icon">
-                        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    </span>
-                    <input type="password" id="confirmPassword" name="ConfirmPassword"
-                           placeholder="Re-enter your password"
-                           autocomplete="new-password" />
-                    <button type="button" class="toggle-pw" id="togglePwConfirm" aria-label="Toggle confirm password">
-                        <svg id="eyeIconConfirm" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </button>
-                </div>
-                <div class="field-error">Passwords do not match.</div>
-            </div>
+                    // Password toggle
+                    document.getElementById('togglePw').addEventListener('click', () => {
+                        const pw = document.getElementById('password');
+                        pw.type = pw.type === 'password' ? 'text' : 'password';
+                        document.getElementById('eyeIcon').innerHTML = pw.type === 'text' ? eyeOff : eyeOn;
+                    });
 
-            <!-- Terms -->
-            <div class="terms-row">
-                <input type="checkbox" id="terms" name="AgreeToTerms" value="true" />
-                <input type="hidden" name="AgreeToTerms" value="false" />
-                <span>
-                    I agree to the NSIA <a href="~/NPI_4_0_Terms_of_Service.pdf" target="_blank">Terms of Use</a> and
-                    <a href="~/NPI_4_0_Privacy_Policy.pdf" target="_blank">Privacy Policy</a>,
-                    and consent to the processing of my data under NDPR guidelines.
-                </span>
-            </div>
+                    // Confirm password toggle
+                    document.getElementById('togglePwConfirm').addEventListener('click', () => {
+                        const cp = document.getElementById('confirmPassword');
+                        cp.type = cp.type === 'password' ? 'text' : 'password';
+                        document.getElementById('eyeIconConfirm').innerHTML = cp.type === 'text' ? eyeOff : eyeOn;
+                    });
 
-            <button type="submit" class="btn-submit" id="submitBtn">
-                <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-                Create my account
-            </button>
+                    // Password strength
+                    const pwInput = document.getElementById('password');
+                    const strengthMeter = document.getElementById('strengthMeter');
+                    const strengthLabel = document.getElementById('strengthLabel');
+                    const segs = ['seg1', 'seg2', 'seg3', 'seg4'].map(id => document.getElementById(id));
+                    const levels = [, { label: 'Weak', cls: 'weak' }, { label: 'Fair', cls: 'fair' }, { label: 'Good', cls: 'good' }, { label: 'Strong', cls: 'strong' }];
 
-            <p class="signin-row">Already have an account? <a href="/account/login">Sign in</a></p>
-        </form>
-    </div>
-</div>
+                    function getStrength(pw) {
+                        let s = 0;
+                        if (pw.length >= 8) s++;
+                        if (pw.length >= 12) s++;
+                        if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) s++;
+                        if (/\d/.test(pw)) s++;
+                        if (/[^A-Za-z0-9]/.test(pw)) s++;
+                        return Math.min(4, Math.max(1, s));
+                    }
 
-<script>
-    const eyeOn  = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-    const eyeOff = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+                    pwInput.addEventListener('input', () => {
+                        if (!pwInput.value) { strengthMeter.style.display = 'none'; return; }
+                        strengthMeter.style.display = 'block';
+                        const s = getStrength(pwInput.value);
+                        segs.forEach((seg, i) => {
+                            seg.className = 'strength-seg' + (i < s ? ' ' + levels[s].cls : '');
+                        });
+                        strengthLabel.textContent = levels[s].label + ' password';
+                        updateProgress();
+                    });
 
-    // Password toggle
-    document.getElementById('togglePw').addEventListener('click', () => {
-        const pw = document.getElementById('password');
-        pw.type = pw.type === 'password' ? 'text' : 'password';
-        document.getElementById('eyeIcon').innerHTML = pw.type === 'text' ? eyeOff : eyeOn;
-    });
+                    // Progress bar — tracks all 7 fields
+                    const trackFields = ['fullname', 'email', 'phone', 'gender', 'location', 'howHeard', 'password', 'confirmPassword'];
+                    function updateProgress() {
+                        const filled = trackFields.filter(id => {
+                            const el = document.getElementById(id);
+                            return el && el.value.trim().length > 0;
+                        }).length;
+                        document.getElementById('progressFill').style.width =
+                            Math.round((filled / trackFields.length) * 100) + '%';
+                    }
+                    trackFields.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            el.addEventListener('input', updateProgress);
+                            el.addEventListener('change', updateProgress);
+                        }
+                    });
 
-    // Confirm password toggle
-    document.getElementById('togglePwConfirm').addEventListener('click', () => {
-        const cp = document.getElementById('confirmPassword');
-        cp.type = cp.type === 'password' ? 'text' : 'password';
-        document.getElementById('eyeIconConfirm').innerHTML = cp.type === 'text' ? eyeOff : eyeOn;
-    });
+                    // Clear errors on input
+                    const clearMap = [
+                        ['fullname', 'grp-fullname'],
+                        ['email', 'grp-email'],
+                        ['phone', 'grp-phone'],
+                        ['gender', 'grp-gender'],
+                        ['location', 'grp-location'],
+                        ['howHeard', 'grp-howheard'],
+                        ['password', 'grp-password'],
+                        ['confirmPassword', 'grp-confirm'],
+                    ];
+                    clearMap.forEach(([id, grp]) => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            el.addEventListener('input', () => document.getElementById(grp).classList.remove('invalid'));
+                            el.addEventListener('change', () => document.getElementById(grp).classList.remove('invalid'));
+                        }
+                    });
 
-    // Password strength
-    const pwInput       = document.getElementById('password');
-    const strengthMeter = document.getElementById('strengthMeter');
-    const strengthLabel = document.getElementById('strengthLabel');
-    const segs          = ['seg1','seg2','seg3','seg4'].map(id => document.getElementById(id));
-    const levels        = [, {label:'Weak',cls:'weak'},{label:'Fair',cls:'fair'},{label:'Good',cls:'good'},{label:'Strong',cls:'strong'}];
+                    @* function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^s@]+$/.test(v); } *@
+                        function isValidPhone(v) { return /^[+\d][\d\s\-(). ]{6,19}$/.test(v.trim()); }
+                    function setInvalid(id) { document.getElementById(id).classList.add('invalid'); }
 
-    function getStrength(pw) {
-        let s = 0;
-        if (pw.length >= 8)  s++;
-        if (pw.length >= 12) s++;
-        if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) s++;
-        if (/\d/.test(pw))   s++;
-        if (/[^A-Za-z0-9]/.test(pw)) s++;
-        return Math.min(4, Math.max(1, s));
-    }
+                    // Form submit validation
+                    document.getElementById('registerForm').addEventListener('submit', function (e) {
+                        let valid = true;
 
-    pwInput.addEventListener('input', () => {
-        if (!pwInput.value) { strengthMeter.style.display = 'none'; return; }
-        strengthMeter.style.display = 'block';
-        const s = getStrength(pwInput.value);
-        segs.forEach((seg, i) => {
-            seg.className = 'strength-seg' + (i < s ? ' ' + levels[s].cls : '');
-        });
-        strengthLabel.textContent = levels[s].label + ' password';
-        updateProgress();
-    });
+                        if (document.getElementById('fullname').value.trim().length < 2) { setInvalid('grp-fullname'); valid = false; }
 
-    // Progress bar — tracks all 7 fields
-    const trackFields = ['fullname','email','phone','gender','location','howHeard','password','confirmPassword'];
-    function updateProgress() {
-        const filled = trackFields.filter(id => {
-            const el = document.getElementById(id);
-            return el && el.value.trim().length > 0;
-        }).length;
-        document.getElementById('progressFill').style.width =
-            Math.round((filled / trackFields.length) * 100) + '%';
-    }
-    trackFields.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('input', updateProgress);
-            el.addEventListener('change', updateProgress);
-        }
-    });
+                        if (!isValidEmail(document.getElementById('email').value.trim())) { setInvalid('grp-email'); valid = false; }
 
-    // Clear errors on input
-    const clearMap = [
-        ['fullname',        'grp-fullname'],
-        ['email',           'grp-email'],
-        ['phone',           'grp-phone'],
-        ['gender',          'grp-gender'],
-        ['location',        'grp-location'],
-        ['howHeard',        'grp-howheard'],
-        ['password',        'grp-password'],
-        ['confirmPassword', 'grp-confirm'],
-    ];
-    clearMap.forEach(([id, grp]) => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('input',  () => document.getElementById(grp).classList.remove('invalid'));
-            el.addEventListener('change', () => document.getElementById(grp).classList.remove('invalid'));
-        }
-    });
+                        if (!isValidPhone(document.getElementById('phone').value)) { setInvalid('grp-phone'); valid = false; }
 
-    @* function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^s@]+$/.test(v); } *@
-    function isValidPhone(v) { return /^[+\d][\d\s\-(). ]{6,19}$/.test(v.trim()); }
-    function setInvalid(id)  { document.getElementById(id).classList.add('invalid'); }
+                        if (!document.getElementById('gender').value) { setInvalid('grp-gender'); valid = false; }
 
-    // Form submit validation
-    document.getElementById('registerForm').addEventListener('submit', function (e) {
-        let valid = true;
+                        if (pwInput.value.length < 8) { setInvalid('grp-password'); valid = false; }
 
-        if (document.getElementById('fullname').value.trim().length < 2)
-            { setInvalid('grp-fullname'); valid = false; }
+                        if (document.getElementById('confirmPassword').value !== pwInput.value ||
+                            document.getElementById('confirmPassword').value.length === 0) { setInvalid('grp-confirm'); valid = false; }
 
-        if (!isValidEmail(document.getElementById('email').value.trim()))
-            { setInvalid('grp-email'); valid = false; }
+                        if (!document.getElementById('terms').checked) {
+                            alert('Please agree to the Terms of Use and Privacy Policy to continue.');
+                            valid = false;
+                        }
 
-        if (!isValidPhone(document.getElementById('phone').value))
-            { setInvalid('grp-phone'); valid = false; }
+                        if (!valid) { e.preventDefault(); return; }
 
-        if (!document.getElementById('gender').value)
-            { setInvalid('grp-gender'); valid = false; }
+                        const btn = document.getElementById('submitBtn');
+                        btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2" fill="none" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Creating account...';
+                        btn.disabled = true;
+                    });
 
-        if (pwInput.value.length < 8)
-            { setInvalid('grp-password'); valid = false; }
+            </script>
+        </body>
 
-        if (document.getElementById('confirmPassword').value !== pwInput.value ||
-            document.getElementById('confirmPassword').value.length === 0)
-            { setInvalid('grp-confirm'); valid = false; }
-
-        if (!document.getElementById('terms').checked) {
-            alert('Please agree to the Terms of Use and Privacy Policy to continue.');
-            valid = false;
-        }
-
-        if (!valid) { e.preventDefault(); return; }
-
-        const btn = document.getElementById('submitBtn');
-        btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2" fill="none" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Creating account...';
-        btn.disabled = true;
-    });
-
-</script>
-</body>
-</html>
+    </html>

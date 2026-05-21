@@ -69,7 +69,7 @@ namespace Nsia.Controllers
                 OtpExpiresAt = DateTime.UtcNow.AddMinutes(10),
                 ReferenceNumber = refNumber,
                 Status = "Draft",
-                ApplicationStep = 1,
+                ApplicationStep = 0,
                 // AgreesToNsiaPrivacyPolicy = model.AgreeToTerms
             };
 

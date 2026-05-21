@@ -10,12 +10,12 @@ namespace nsia.Services
         private string RootPath => _config["UploadSettings:RootPath"]
             ?? throw new InvalidOperationException("UploadSettings:RootPath not configured.");
 
-        private string BaseUrl => _config["UploadSettings:BaseUrl"]
-            ?? throw new InvalidOperationException("UploadSettings:BaseUrl not configured.");
-
         private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10MB
+
         private static readonly string[] AllowedExtensions =
-            { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".png", ".jpg", ".jpeg" };
+        {
+            ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".png", ".jpg", ".jpeg"
+        };
 
         public FileService(IConfiguration config, ILogger<FileService> logger)
         {
@@ -37,55 +37,67 @@ namespace nsia.Services
             if (!AllowedExtensions.Contains(ext))
                 throw new ArgumentException($"File type '{ext}' is not allowed.");
 
-            // Build folder: /var/www/npi/uploads/applications/{applicationId}/
+            var originalFileName = Path.GetFileName(file.FileName);
+
             var relativeFolder = Path.Combine("applications", applicationId.ToString());
             var absoluteFolder = Path.Combine(RootPath, relativeFolder);
 
             Directory.CreateDirectory(absoluteFolder);
 
-            // Sanitise original filename
-            var safeName = Path.GetFileNameWithoutExtension(file.FileName)
+            var safeName = Path.GetFileNameWithoutExtension(originalFileName)
                 .Replace(" ", "_")
                 .Replace("..", "")
                 .Replace("/", "")
                 .Replace("\\", "");
 
+            safeName = string.IsNullOrWhiteSpace(safeName) ? "document" : safeName;
             safeName = safeName.Length > 60 ? safeName[..60] : safeName;
 
             var uniqueName = $"{safeName}_{Guid.NewGuid():N}{ext}";
-
-            // Absolute path on disk
             var absolutePath = Path.Combine(absoluteFolder, uniqueName);
 
-            // Relative stored path — used to reconstruct the public URL
-            // e.g. applications/550e8400-e29b.../myfile_abc123.pdf
             var storedPath = Path.Combine(relativeFolder, uniqueName)
-                                   .Replace("\\", "/"); // normalise for all OS
+                .Replace("\\", "/");
 
-            // Public URL — e.g. https://nsia.com/uploads/applications/550e.../myfile.pdf
-            var publicUrl = $"{BaseUrl.TrimEnd('/')}/{storedPath}";
-
-            using var stream = new FileStream(absolutePath, FileMode.Create);
+            await using var stream = new FileStream(absolutePath, FileMode.Create);
             await file.CopyToAsync(stream);
 
             _logger.LogInformation(
-                "Saved file {FileName} to {AbsolutePath}. Public URL: {PublicUrl}",
-                file.FileName, absolutePath, publicUrl);
+                "Saved file {OriginalFileName} to {AbsolutePath} (stored path: {StoredPath})",
+                originalFileName, absolutePath, storedPath);
 
-            return (publicUrl, file.FileName);
+            return (storedPath, originalFileName);
         }
 
-        // FileService
         public void DeleteFile(string storedPath)
         {
             try
             {
-                var root = _config["UploadSettings:RootPath"] ?? "../uploads";
-                var fullPath = Path.Combine(root, storedPath);
+                if (string.IsNullOrWhiteSpace(storedPath))
+                    return;
+
+                var normalisedPath = storedPath.Replace('/', Path.DirectorySeparatorChar);
+
+                var fullPath = Path.Combine(RootPath, normalisedPath);
+
                 if (System.IO.File.Exists(fullPath))
+                {
                     System.IO.File.Delete(fullPath);
+                    _logger.LogInformation("Deleted file at {FullPath}", fullPath);
+                }
             }
-            catch { /* swallow — file may already be gone */ }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to delete file at stored path {StoredPath}", storedPath);
+            }
+        }
+
+        public string GetPublicUrl(string storedPath)
+        {
+            var baseUrl = _config["UploadSettings:BaseUrl"]
+                ?? throw new InvalidOperationException("UploadSettings:BaseUrl not configured.");
+
+            return $"{baseUrl.TrimEnd('/')}/{storedPath.TrimStart('/')}";
         }
     }
 }

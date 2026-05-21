@@ -127,4 +127,3 @@
 /Users/phataii/Documents/work/wennovationhub/nsia/obj/Debug/net8.0/nsia.csproj.AssemblyReference.cache
 /Users/phataii/Documents/work/wennovationhub/nsia/obj/Debug/net8.0/nsia.MvcApplicationPartsAssemblyInfo.cs
 /Users/phataii/Documents/work/wennovationhub/nsia/obj/Debug/net8.0/nsia.csproj.Up2Date
-/Users/phataii/Documents/work/wennovationhub/nsia/obj/Debug/net8.0/nsia.sourcelink.json

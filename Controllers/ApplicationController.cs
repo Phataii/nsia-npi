@@ -36,6 +36,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
 
             PopulateStepViewBag(app);
             ViewBag.IsRegisteredInNigeria = app.IsRegisteredInNigeria;
@@ -88,7 +89,11 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 2) return RedirectToAction("PreChecklist");
+
+            if (!string.IsNullOrEmpty(app.NinEncrypted))
+                ViewBag.DecryptedNin = _ninService.Decrypt(app.NinEncrypted);
 
             PopulateStepViewBag(app);
             ViewBag.FullName = app.FullName;
@@ -110,7 +115,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-
+            Console.WriteLine(Gender);
             app.FullName = FullName?.Trim();
             app.Phone = Phone?.Trim();
             app.Gender = Gender;
@@ -176,8 +181,12 @@ namespace Nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> CompanyInfo()
         {
+
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
+
+            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
+
             if (app.ApplicationStep < 3) return RedirectToAction("PersonalInfo");
 
             PopulateStepViewBag(app);
@@ -305,6 +314,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync(includeFounders: true);
             if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 4) return RedirectToAction("CompanyInfo");
 
             PopulateStepViewBag(app);
@@ -427,6 +437,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 5) return RedirectToAction("TeamInfo");
 
             PopulateStepViewBag(app);
@@ -513,6 +524,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 6) return RedirectToAction("ProductInfo");
 
             PopulateStepViewBag(app);
@@ -600,6 +612,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 7) return RedirectToAction("Commercial1");
 
             PopulateStepViewBag(app);
@@ -721,6 +734,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 8) return RedirectToAction("Commercial2");
 
             PopulateStepViewBag(app);
@@ -798,6 +812,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
+            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 9) return RedirectToAction("Sustainability");
 
             PopulateStepViewBag(app);
@@ -913,6 +928,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync(includeDocuments: true);
             if (app == null) return RedirectToLogin();
+            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 10) return RedirectToAction("Impact");
 
             PopulateStepViewBag(app);
@@ -931,7 +947,8 @@ namespace Nsia.Controllers
             return View();
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveAdditional(
             string? AdditionalInformation,
             List<IFormFile>? Documents,
@@ -940,10 +957,11 @@ namespace Nsia.Controllers
             var app = await GetCurrentApplicationAsync(includeDocuments: true);
             if (app == null) return RedirectToLogin();
 
-            app.AdditionalInformation = AdditionalInformation?.Trim();
-            app.UpdatedAt = DateTime.UtcNow;
+            if (app.ApplicationStep < 10)
+                return RedirectToAction("Additional");
 
-            // Upload new documents
+            app.AdditionalInformation = AdditionalInformation?.Trim();
+            app.Status = "Submitted";
             if (Documents != null)
             {
                 for (int i = 0; i < Documents.Count; i++)
@@ -951,34 +969,26 @@ namespace Nsia.Controllers
                     var file = Documents[i];
                     if (file == null || file.Length == 0) continue;
 
-                    // var (storedPath, publicUrl, fileName) =
-                    //     await _fileService.SaveFileAsync(file, app.Id.ToString());
+                    var (storedPath, originalFileName) =
+                        await _fileService.SaveDocumentAsync(file, app.Id);
 
-                    // app.Documents.Add(new ApplicationDocument
-                    // {
-                    //     ApplicationId = app.Id,
-                    //     OriginalFileName = fileName,
-                    //     StoredFilePath = storedPath,
-                    //     // PublicUrl = publicUrl,
-                    //     DocumentType = DocumentTypes?.ElementAtOrDefault(i) ?? "Supporting Document",
-                    //     FileSizeBytes = file.Length,
-                    //     FileExtension = Path.GetExtension(fileName).ToLowerInvariant(),
-                    //     UploadedAt = DateTime.UtcNow,
-                    // });
+                    _db.ApplicationDocuments.Add(new ApplicationDocument
+                    {
+                        ApplicationId = app.Id,
+                        OriginalFileName = originalFileName,
+                        StoredFilePath = storedPath,
+                        DocumentType = DocumentTypes?.ElementAtOrDefault(i) ?? "Supporting Document",
+                        FileSizeBytes = file.Length,
+                        FileExtension = Path.GetExtension(originalFileName).ToLowerInvariant(),
+                        UploadedAt = DateTime.UtcNow,
+                    });
                 }
             }
 
-            // Mark as submitted
-            app.Status = "Submitted";
-            app.SubmittedAt = DateTime.UtcNow;
-
             await _db.SaveChangesAsync();
-
-            // Send confirmation email (fire and forget)
-            _ = _email.SendSubmissionConfirmationAsync(app.Email!, app.FullName!, app.ReferenceNumber!);
-
             return RedirectToAction("Submitted");
         }
+
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveAdditionalDraft(
