@@ -420,7 +420,7 @@ namespace Nsia.Controllers
                     EscapeCsv(a.ReferenceNumber),
                     EscapeCsv(a.Status),
                     a.ApplicationStep.ToString(),
-                    a.SubmittedAt?.ToString("yyyy-MM-dd HH:mm") ?? "",
+                    a.SubmittedAt?.AddHours(1).ToString("yyyy-MM-dd HH:mm") ?? "",
                     a.CreatedAt.ToString("yyyy-MM-dd HH:mm"),
                     // Profile
                     EscapeCsv(a.FullName),

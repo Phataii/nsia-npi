@@ -189,14 +189,14 @@ namespace nsia.Services
 
             var html = $@"
             <div style='font-family:DM Sans,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#faf8f3'>
-                <div style='background:#20A1B8;border-radius:12px;padding:32px;margin-bottom:24px'>
-                    <p style='font-size:11px;color: white;letter-spacing:.08em;text-transform:uppercase;margin:0 0 16px'>
+                <div style='background:#E8F7F6;border-radius:12px;padding:32px;margin-bottom:24px'>
+                    <p style='font-size:11px;color: #1C2B2A;letter-spacing:.08em;text-transform:uppercase;margin:0 0 16px'>
                         NSIA · Prize for Innovation
                     </p>
-                    <h1 style='font-family:Georgia,serif;font-size:28px;color:white;margin:0 0 8px;line-height:1.1'>
+                    <h1 style='font-family:Georgia,serif;font-size:28px;color:#1C2B2A;margin:0 0 8px;line-height:1.1'>
                         Application <span style='color:#83c240;font-style:italic'>received!</span>
                     </h1>
-                    <p style='font-size:14px;color:rgba(255,255,255,0.55);margin:0'>
+                    <p style='font-size:14px;color:#1C2B2A;margin:0'>
                         Thank you {firstName} — your NPI 4.0 application has been successfully submitted.
                     </p>
                 </div>

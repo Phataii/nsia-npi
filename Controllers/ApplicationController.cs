@@ -36,7 +36,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
+            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
 
             PopulateStepViewBag(app);
             ViewBag.IsRegisteredInNigeria = app.IsRegisteredInNigeria;
@@ -89,7 +89,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
+            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 2) return RedirectToAction("PreChecklist");
 
             if (!string.IsNullOrEmpty(app.NinEncrypted))
@@ -185,7 +185,7 @@ namespace Nsia.Controllers
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
 
-            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
+            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
 
             if (app.ApplicationStep < 3) return RedirectToAction("PersonalInfo");
 
@@ -314,7 +314,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync(includeFounders: true);
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
+            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 4) return RedirectToAction("CompanyInfo");
 
             PopulateStepViewBag(app);
@@ -437,7 +437,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
+            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 5) return RedirectToAction("TeamInfo");
 
             PopulateStepViewBag(app);
@@ -524,7 +524,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
+            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 6) return RedirectToAction("ProductInfo");
 
             PopulateStepViewBag(app);
@@ -612,7 +612,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
+            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 7) return RedirectToAction("Commercial1");
 
             PopulateStepViewBag(app);
@@ -734,7 +734,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
+            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 8) return RedirectToAction("Commercial2");
 
             PopulateStepViewBag(app);
@@ -812,7 +812,7 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            if (app.ApplicationStep == 10) return RedirectToAction("Dashboard");
+            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
             if (app.ApplicationStep < 9) return RedirectToAction("Sustainability");
 
             PopulateStepViewBag(app);
@@ -1094,7 +1094,7 @@ namespace Nsia.Controllers
 
             ViewBag.ApplicantName = app.FullName;
             ViewBag.ReferenceNumber = app.ReferenceNumber;
-            ViewBag.SubmittedAt = app.SubmittedAt?.ToString("dd MMMM yyyy, HH:mm") + " UTC";
+            ViewBag.SubmittedAt = app.SubmittedAt?.AddHours(1).ToString("dd MMMM yyyy, HH:mm") + " GMT +1";
             return View();
         }
 
