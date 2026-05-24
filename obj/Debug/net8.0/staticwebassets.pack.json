@@ -333,6 +333,90 @@
       "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/wow/wow.js"
     },
     {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/1.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/1.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/10.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/10.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/11.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/11.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/12.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/12.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/13.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/13.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/14.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/14.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/15.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/15.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/16.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/16.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/17.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/17.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/18.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/18.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/19.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/19.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/2.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/2.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/20.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/20.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/21.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/21.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/3.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/3.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/4.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/4.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/5.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/5.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/6.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/6.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/7.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/7.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/8.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/8.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/9.jpg",
+      "PackagePath": "staticwebassets/web/gallery1.0/9.jpg"
+    },
+    {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery2.0/1.jpg",
       "PackagePath": "staticwebassets/web/gallery2.0/1.jpg"
     },
@@ -555,6 +639,10 @@
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/9.jpg",
       "PackagePath": "staticwebassets/web/gallery3.0/9.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/program.jpg",
+      "PackagePath": "staticwebassets/web/program.jpg"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.nsia.props",

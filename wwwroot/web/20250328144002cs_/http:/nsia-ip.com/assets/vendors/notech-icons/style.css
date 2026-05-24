@@ -43,7 +43,7 @@
 .icon-magnifying-glass:before {
   content: "\e901";
 }
-.icon-email:before {
+.fa fa-envelope:before {
   content: "\e902";
 }
 .icon-cyber:before {

@@ -161,7 +161,7 @@ namespace nsia.Services
                 </div>
                 <p style='font-size:11px;color:#aab5af;text-align:center;margin:0'>
                     Questions? Email
-                    <a href='mailto:corporatecommunications@loftyincltd.biz' style='color:#0e86ab;text-decoration:none'>corporatecommunications@loftyincltd.biz</a>
+                    <a href='mailto:npi@nsia.com.ng' style='color:#0e86ab;text-decoration:none'>npi@nsia.com.ng</a>
                     &nbsp;·&nbsp;
                     &copy; {DateTime.UtcNow.Year} Nigeria Sovereign Investment Authority
                 </p>
@@ -243,7 +243,7 @@ namespace nsia.Services
                 </div>
                 <p style='font-size:11px;color:#aab5af;text-align:center;margin:0;line-height:1.8'>
                     Questions? Email
-                    <a href='mailto:corporatecommunications@loftyincltd.biz' style='color:#0e86ab;text-decoration:none'>corporatecommunications@loftyincltd.biz</a>
+                    <a href='mailto:npi@nsia.com.ng' style='color:#0e86ab;text-decoration:none'>npi@nsia.com.ng</a>
                     <br />
                     &copy; {DateTime.UtcNow.Year} Nigeria Sovereign Investment Authority &nbsp;·&nbsp; Abuja, Nigeria
                 </p>
