@@ -62,6 +62,7 @@ namespace Nsia.Controllers
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
                 Phone = model.PhoneNumber.Trim(),
                 Gender = model.Gender,
+                CountryOfOrigin = "Nigeria",
                 // Location = model.Location?.Trim(),
                 // HowDidYouHear = model.HowDidYouHear?.Trim(),
                 IsEmailVerified = false,

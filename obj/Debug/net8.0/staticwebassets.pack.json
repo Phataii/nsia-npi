@@ -333,6 +333,10 @@
       "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/wow/wow.js"
     },
     {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/edc.png",
+      "PackagePath": "staticwebassets/web/edc.png"
+    },
+    {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/1.jpg",
       "PackagePath": "staticwebassets/web/gallery1.0/1.jpg"
     },
@@ -641,8 +645,20 @@
       "PackagePath": "staticwebassets/web/gallery3.0/9.jpg"
     },
     {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/innovate.png",
+      "PackagePath": "staticwebassets/web/innovate.png"
+    },
+    {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/program.jpg",
       "PackagePath": "staticwebassets/web/program.jpg"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/pula.png",
+      "PackagePath": "staticwebassets/web/pula.png"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/wema.png",
+      "PackagePath": "staticwebassets/web/wema.png"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.nsia.props",

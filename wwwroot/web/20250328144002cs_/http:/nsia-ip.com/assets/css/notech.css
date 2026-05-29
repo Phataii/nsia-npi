@@ -285,7 +285,7 @@ ul {
 
 .thm-btn {
   position: relative;
-  display: inline-block;
+  /* display: inline-block; */
   vertical-align: middle;
   -webkit-appearance: none;
   outline: none !important;
@@ -298,6 +298,7 @@ ul {
   transition: all 0.5s linear;
   overflow: hidden;
   z-index: 1;
+  
 }
 
 .thm-btn:hover {
@@ -4692,7 +4693,7 @@ ul {
 .swiper-wrapper {
   align-items: center;
   justify-content: center;
-  gap: 4rem;
+  gap: 3rem;
 }
 
 .brand-one__title {

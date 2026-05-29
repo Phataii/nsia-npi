@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "VS8hm+mfVlLhsyAAZ+zZ7Jnw6GTUxKd+Vn6U6v3O3OA=",
+  "Hash": "jB7asjrB3XVgZJndlu1OcJYRwFZDnKUtitVZGsvnXxo=",
   "Source": "nsia",
   "BasePath": "_content/nsia",
   "Mode": "Default",
@@ -2753,6 +2753,25 @@
       "OriginalItemSpec": "wwwroot/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/wow/wow.js"
     },
     {
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/edc.png",
+      "SourceId": "nsia",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
+      "BasePath": "_content/nsia",
+      "RelativePath": "web/edc.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/web/edc.png"
+    },
+    {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery1.0/1.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
@@ -4216,6 +4235,25 @@
       "OriginalItemSpec": "wwwroot/web/gallery3.0/9.jpg"
     },
     {
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/innovate.png",
+      "SourceId": "nsia",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
+      "BasePath": "_content/nsia",
+      "RelativePath": "web/innovate.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/web/innovate.png"
+    },
+    {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/program.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
@@ -4233,6 +4271,44 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/web/program.jpg"
+    },
+    {
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/pula.png",
+      "SourceId": "nsia",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
+      "BasePath": "_content/nsia",
+      "RelativePath": "web/pula.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/web/pula.png"
+    },
+    {
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/wema.png",
+      "SourceId": "nsia",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
+      "BasePath": "_content/nsia",
+      "RelativePath": "web/wema.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/web/wema.png"
     }
   ]
 }

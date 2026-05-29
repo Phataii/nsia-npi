@@ -226,7 +226,7 @@
             /* ── MOBILE HEADER ── */
             .mobile-header {
                 display: none;
-                background: var(--ink);
+                background: white;
                 padding: 1rem 1.25rem;
                 align-items: center;
                 justify-content: space-between;
@@ -239,32 +239,6 @@
                 display: flex;
                 align-items: center;
                 gap: 8px;
-            }
-
-            .mobile-brand-icon {
-                width: 32px;
-                height: 32px;
-                border-radius: 6px;
-                background: linear-gradient(135deg, var(--teal), var(--green));
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .mobile-brand-icon svg {
-                width: 15px;
-                height: 15px;
-                stroke: white;
-                stroke-width: 2;
-                fill: none;
-            }
-
-            .mobile-brand-text {
-                font-size: 11px;
-                font-weight: 500;
-                color: white;
-                letter-spacing: .06em;
-                text-transform: uppercase;
             }
 
             .mobile-step-badge {
@@ -688,14 +662,11 @@
     <!-- MOBILE HEADER -->
     <header class="mobile-header">
         <div class="mobile-brand">
-            <div class="mobile-brand-icon">
-                <svg viewBox="0 0 24 24">
-                    <polyline points="2 7 12 2 22 7" />
-                    <polyline points="2 12 12 17 22 12" />
-                    <polyline points="2 17 12 22 22 17" />
-                </svg>
-            </div>
-            <span class="mobile-brand-text">NSIA Prize for Innovation</span>
+            <a href="/">
+                <div class="brand-icon">
+                    <img src="~/web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" alt="NSIA" />
+                </div>
+            </a>
         </div>
         <span class="mobile-step-badge">Step 1 of 3</span>
     </header>
