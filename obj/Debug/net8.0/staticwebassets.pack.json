@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets/nsia.bundle.scp.css"
     },
     {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/Competition_Submission_Agreement.pdf",
+      "PackagePath": "staticwebassets/Competition_Submission_Agreement.pdf"
+    },
+    {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/NPI_4_0_Privacy_Policy.pdf",
       "PackagePath": "staticwebassets/NPI_4_0_Privacy_Policy.pdf"
     },
@@ -333,6 +337,10 @@
       "PackagePath": "staticwebassets/web/20250328144002js_/http:/nsia-ip.com/assets/vendors/wow/wow.js"
     },
     {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/NSIA.jpg",
+      "PackagePath": "staticwebassets/web/NSIA.jpg"
+    },
+    {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/edc.png",
       "PackagePath": "staticwebassets/web/edc.png"
     },
@@ -537,36 +545,36 @@
       "PackagePath": "staticwebassets/web/gallery2.0/9.jpg"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/1.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/1.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/1.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/1.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/10.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/10.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/10.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/10.JPG"
     },
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/11.jpg",
       "PackagePath": "staticwebassets/web/gallery3.0/11.jpg"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/12.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/12.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/12.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/12.JPG"
     },
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/13.jpg",
       "PackagePath": "staticwebassets/web/gallery3.0/13.jpg"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/14.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/14.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/14.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/14.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/15.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/15.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/15.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/15.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/16.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/16.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/16.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/16.JPG"
     },
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/17.jpg",
@@ -581,8 +589,8 @@
       "PackagePath": "staticwebassets/web/gallery3.0/19.jpg"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/2.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/2.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/2.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/2.JPG"
     },
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/20.jpg",
@@ -597,264 +605,96 @@
       "PackagePath": "staticwebassets/web/gallery3.0/22.jpg"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/23.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/23.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/23.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/23.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/24.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/24.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/24.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/24.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/25.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/25.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/25.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/25.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/26.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/26.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/26.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/26.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/27.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/27.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/27.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/27.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/3.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/3.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/28.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/28.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/4.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/4.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/29.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/29.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/5.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/5.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/3.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/3.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/6.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/6.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/30.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/30.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/7.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/7.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/31.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/31.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/8.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/8.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/32.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/32.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/9.jpg",
-      "PackagePath": "staticwebassets/web/gallery3.0/9.jpg"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/33.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/33.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00010.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00010.JPG"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/4.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/4.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00077.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00077.JPG"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/5.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/5.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00101.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00101.JPG"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/6.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/6.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00134.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00134.JPG"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/7.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/7.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00184.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00184.JPG"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/8.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/8.JPG"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00199.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00199.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00223.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00223.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00226.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00226.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00228.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00228.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00231.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00231.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00233.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00233.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00284.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00284.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00368.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00368.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00388.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00388.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00476.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00476.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00478.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00478.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00492.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00492.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00534.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00534.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00678.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00678.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00762.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00762.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00796.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00796.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00841.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00841.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC00931.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC00931.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01178.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01178.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01183.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01183.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01194.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01194.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01212.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01212.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01243.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01243.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01245.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01245.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01250.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01250.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01273.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01273.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01307.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01307.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01366.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01366.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01376 (1).JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01376 (1).JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01387.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01387.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01401.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01401.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01407.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01407.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01430.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01430.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01461.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01461.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01481.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01481.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01494.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01494.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01504.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01504.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01518.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01518.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC01540.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC01540.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC09879.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC09879.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC09912.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC09912.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC09921.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC09921.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/DSC09995.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/DSC09995.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/Gallery Header.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/Gallery Header.JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/Homepage (About NPI).JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/Homepage (About NPI).JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/Homepage (Building...).JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/Homepage (Building...).JPG"
-    },
-    {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/Programme Stages or details.JPG",
-      "PackagePath": "staticwebassets/web/gallery3.0/NPI/Programme Stages or details.JPG"
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/9.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/9.JPG"
     },
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/aboutHeader.JPG",
       "PackagePath": "staticwebassets/web/gallery3.0/NPI/aboutHeader.JPG"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/about_npi.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/NPI/about_npi.JPG"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/building.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/NPI/building.JPG"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/gallery.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/NPI/gallery.JPG"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/gallery3.0/NPI/program.JPG",
+      "PackagePath": "staticwebassets/web/gallery3.0/NPI/program.JPG"
     },
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/innovate.png",
