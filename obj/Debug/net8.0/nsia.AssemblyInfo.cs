@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("nsia")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+97cf5680e3c774b50b8b5c543ecb622440c9d3fb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8cba43ffed0f173b2b58593c08fcc2b646d33827")]
 [assembly: System.Reflection.AssemblyProductAttribute("nsia")]
 [assembly: System.Reflection.AssemblyTitleAttribute("nsia")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -11,6 +11,8 @@
     <title>@ViewData["Title"]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="https://web.archive.org/web/20250328161536im_/http://nsia-ip.com/assets/images/favicons/favicon-16x16.png" />
     <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet">
@@ -86,9 +88,6 @@
             .brand-icon img {
                 width: 150px;
                 height: 40px;
-                stroke: white;
-                stroke-width: 2;
-                fill: none;
             }
 
             .panel-center {
@@ -96,7 +95,7 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
-                padding: 3rem 0;
+                padding: 2.5rem 0;
             }
 
             .left-eyebrow {
@@ -573,10 +572,10 @@
         </div>
 
         <div class="panel-center">
-            <div class="left-eyebrow">
+            @* <div class="left-eyebrow">
                 <span class="left-eyebrow-dot"></span>
                 NPI 4.0. Now Open
-            </div>
+            </div> *@
             <h1 class="left-title">
                 Your Innovation<br />
                 Starts Here.
@@ -621,7 +620,7 @@
     <div class="panel-right">
         <div class="form-wrap">
             <div class="form-header">
-                <h2 class="form-title">Welcome Back</h2>
+                <h2 class="form-title">Welcome!</h2>
                 @* <p class="form-subtitle">
                 Don't have an account?
                 <a href="/account/register">Create one free</a>
@@ -689,7 +688,7 @@
                 <div class="form-row">
                     <label class="checkbox-wrap">
                         <input type="checkbox" name="RememberMe" id="remember" />
-                        <span>Remember me for 30 days</span>
+                        <span>Remember me</span>
                     </label>
                     <a asp-action="ForgotPassword" asp-controller="Account" class="forgot-link">Forgot password?</a>
                 </div>

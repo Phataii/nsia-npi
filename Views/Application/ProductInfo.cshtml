@@ -37,6 +37,7 @@
     <title>@ViewData["Title"]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" sizes="16x16" href="https://web.archive.org/web/20250328161536im_/http://nsia-ip.com/assets/images/favicons/favicon-16x16.png"/>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -661,7 +662,7 @@
                         <label class="field-label">
                             What is your core business model? <span class="label-req">*</span>
                         </label>
-                        <div class="radio-options cols-2">
+                        <div class="radio-options cols-1">
                             @{
                                 var bizModels = new[]
                                 {
@@ -751,7 +752,7 @@
                         <label class="field-label">
                             How do you plan to penetrate the market with your products/services? <span class="label-req">*</span>
                         </label>
-                        <div class="radio-options cols-2">
+                        <div class="radio-options cols-1">
                             @{
                                 var penetrations = new[]
                                 {

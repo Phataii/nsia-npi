@@ -9916,7 +9916,7 @@ img {
 }
 
 .service-details__need-help-title {
-  font-size: 26px;
+  /* font-size: 26px; */
   color: var(--notech-white);
   line-height: 31px;
   font-weight: 700;

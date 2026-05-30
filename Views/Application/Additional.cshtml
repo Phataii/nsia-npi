@@ -36,6 +36,8 @@ w[0]));
     <title>@ViewData["Title"]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="https://web.archive.org/web/20250328161536im_/http://nsia-ip.com/assets/images/favicons/favicon-16x16.png" />
     <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap"
     rel="stylesheet">
@@ -1800,16 +1802,16 @@ w[0]));
                                 item.className = 'file-item';
                                 item.dataset.pendingIdx = idx;
                                 item.innerHTML = `
-                                                    <div class="file-icon">
-                                                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                                    </div>
-                                                    <div class="file-info">
-                                                        <div class="file-name">${escHtml(file.name)}</div>
-                                                        <div class="file-meta">${escHtml(type)} · ${(file.size / 1024).toFixed(1)} KB</div>
-                                                    </div>
-                                                    <button type="button" class="file-remove" onclick="removePendingFile(${idx}, this)">
-                                                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                                                    </button>`;
+                                                                        <div class="file-icon">
+                                                                            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                                                        </div>
+                                                                        <div class="file-info">
+                                                                            <div class="file-name">${escHtml(file.name)}</div>
+                                                                            <div class="file-meta">${escHtml(type)} · ${(file.size / 1024).toFixed(1)} KB</div>
+                                                                        </div>
+                                                                        <button type="button" class="file-remove" onclick="removePendingFile(${idx}, this)">
+                                                                            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                                                        </button>`;
                                 fileList.appendChild(item);
                             }
 

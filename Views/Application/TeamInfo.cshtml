@@ -36,6 +36,8 @@
     <title>@ViewData["Title"]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="https://web.archive.org/web/20250328161536im_/http://nsia-ip.com/assets/images/favicons/favicon-16x16.png" />
     <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap"
     rel="stylesheet">
@@ -1583,7 +1585,7 @@
                                         <div class="mc-option">
                                             <input type="checkbox" id="tt-@val.Replace(" ","-").ToLower()"
                                                    name="FoundingTeamType" value="@val" @(savedTeamType.Contains(val) ? "checked" :
-                                                                                                                                                                                                                                                                                   "") />
+                                                                                                                                                                                                                                                                                                                                      "") />
                                             <label class="mc-label" for="tt-@val.Replace(" ","-").ToLower()">
                                                 <div class="mc-box"><svg viewBox="0 0 12 12">
                                                     <polyline points="2,6 5,9 10,3" />
@@ -1758,15 +1760,15 @@
 
             <script>
                     const savedFounders = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    (ViewBag.Founders as IEnumerable<dynamic> ?? new List<dynamic>())
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .Select(f => new
-                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        name = (string)(f.name ?? ""),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        phone = (string)(f.phone ?? ""),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        role = (string)(f.role ?? ""),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        linkedin = (string)(f.linkedin ?? ""),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        nationality = (string)(f.nationality ?? "")
-                                                                                                                                                                                                                                                                            })
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    (ViewBag.Founders as IEnumerable<dynamic> ?? new List<dynamic>())
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .Select(f => new
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            name = (string)(f.name ?? ""),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            phone = (string)(f.phone ?? ""),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            role = (string)(f.role ?? ""),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            linkedin = (string)(f.linkedin ?? ""),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            nationality = (string)(f.nationality ?? "")
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            })
                                     ));
 
                     const foundersList = document.getElementById('foundersList');
@@ -1842,78 +1844,78 @@
                         card.className = 'founder-card';
                         card.dataset.index = index;
                         card.innerHTML = `
-                                                                        <div class="founder-card-header" onclick="toggleFounder(this)">
-                                                                            <div class="founder-card-header-left">
-                                                                                <div class="founder-num">${num}</div>
-                                                                                <div>
-                                                                                    <div class="founder-title" id="ftitle-${index}">
-                                                                                        ${escHtml(data.name || ('Founder ' + num))}
+                                                                                    <div class="founder-card-header" onclick="toggleFounder(this)">
+                                                                                        <div class="founder-card-header-left">
+                                                                                            <div class="founder-num">${num}</div>
+                                                                                            <div>
+                                                                                                <div class="founder-title" id="ftitle-${index}">
+                                                                                                    ${escHtml(data.name || ('Founder ' + num))}
+                                                                                                </div>
+                                                                                                <div class="founder-subtitle">${escHtml(data.role || 'Click to expand')}</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <button type="button" class="founder-card-toggle">
+                                                                                            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                                                                                        </button>
                                                                                     </div>
-                                                                                    <div class="founder-subtitle">${escHtml(data.role || 'Click to expand')}</div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <button type="button" class="founder-card-toggle">
-                                                                                <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="founder-card-body">
-                                                                            <div class="founder-grid">
-                                                                                <div class="form-group">
-                                                                                    <label class="field-label">Full name <span style="color:#e53e3e">*</span></label>
-                                                                                    <div class="input-wrap">
-                                                                                        <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-                                                                                        <input type="text" name="FounderName" placeholder="Full name"
-                                                                                            value="${escHtml(data.name || '')}"
-                                                                                            oninput="updateFounderTitle(${index}, this.value)" />
-                                                                                    </div>
-                                                                                </div>
+                                                                                    <div class="founder-card-body">
+                                                                                        <div class="founder-grid">
+                                                                                            <div class="form-group">
+                                                                                                <label class="field-label">Full name <span style="color:#e53e3e">*</span></label>
+                                                                                                <div class="input-wrap">
+                                                                                                    <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                                                                                                    <input type="text" name="FounderName" placeholder="Full name"
+                                                                                                        value="${escHtml(data.name || '')}"
+                                                                                                        oninput="updateFounderTitle(${index}, this.value)" />
+                                                                                                </div>
+                                                                                            </div>
 
-                                                                                <div class="form-group">
-                                                                                    <label class="field-label">Phone number</label>
-                                                                                    <div class="input-wrap">
-                                                                                        <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-                                                                                        <input type="tel" name="FounderPhone" placeholder="+234 800 000 0000"
-                                                                                            value="${escHtml(data.phone || '')}"
-                                                                                            data-validate="phone" />
-                                                                                    </div>
-                                                                                    <div class="field-error">Please enter a valid phone number.</div>
-                                                                                </div>
+                                                                                            <div class="form-group">
+                                                                                                <label class="field-label">Phone number</label>
+                                                                                                <div class="input-wrap">
+                                                                                                    <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+                                                                                                    <input type="tel" name="FounderPhone" placeholder="+234 800 000 0000"
+                                                                                                        value="${escHtml(data.phone || '')}"
+                                                                                                        data-validate="phone" />
+                                                                                                </div>
+                                                                                                <div class="field-error">Please enter a valid phone number.</div>
+                                                                                            </div>
 
-                                                                                <div class="form-group">
-                                                                                    <label class="field-label">Role in company <span style="color:#e53e3e">*</span></label>
-                                                                                    <div class="input-wrap">
-                                                                                        <span class="input-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
-                                                                                        <input type="text" name="FounderRole" placeholder="e.g. CEO, CTO"
-                                                                                            value="${escHtml(data.role || '')}" />
-                                                                                    </div>
-                                                                                </div>
+                                                                                            <div class="form-group">
+                                                                                                <label class="field-label">Role in company <span style="color:#e53e3e">*</span></label>
+                                                                                                <div class="input-wrap">
+                                                                                                    <span class="input-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+                                                                                                    <input type="text" name="FounderRole" placeholder="e.g. CEO, CTO"
+                                                                                                        value="${escHtml(data.role || '')}" />
+                                                                                                </div>
+                                                                                            </div>
 
-                                                                                <div class="form-group">
-                                                                                    <label class="field-label">LinkedIn / Profile URL</label>
-                                                                                    <div class="input-wrap">
-                                                                                        <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
-                                                                                        <input type="text" name="FounderLinkedIn" placeholder="https://linkedin.com/in/..."
-                                                                                            value="${escHtml(data.linkedin || '')}"
-                                                                                            data-validate="linkedin" />
-                                                                                    </div>
-                                                                                    <div class="field-error">Please enter a valid LinkedIn URL.</div>
-                                                                                </div>
+                                                                                            <div class="form-group">
+                                                                                                <label class="field-label">LinkedIn / Profile URL</label>
+                                                                                                <div class="input-wrap">
+                                                                                                    <span class="input-icon"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
+                                                                                                    <input type="text" name="FounderLinkedIn" placeholder="https://linkedin.com/in/..."
+                                                                                                        value="${escHtml(data.linkedin || '')}"
+                                                                                                        data-validate="linkedin" />
+                                                                                                </div>
+                                                                                                <div class="field-error">Please enter a valid LinkedIn URL.</div>
+                                                                                            </div>
 
-                                                                                <div class="form-group full">
-                                                                                    <label class="field-label">Nationality</label>
-                                                                                    <div class="input-wrap">
-                                                                                        <span class="input-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-                                                                                        <input type="text" name="FounderNationality" placeholder="e.g. Nigerian"
-                                                                                            value="${escHtml(data.nationality || '')}" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
+                                                                                            <div class="form-group full">
+                                                                                                <label class="field-label">Nationality</label>
+                                                                                                <div class="input-wrap">
+                                                                                                    <span class="input-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+                                                                                                    <input type="text" name="FounderNationality" placeholder="e.g. Nigerian"
+                                                                                                        value="${escHtml(data.nationality || '')}" />
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
 
-                                                                            ${index > 0 ? `<button type="button" class="btn-remove-founder" onclick="removeFounder(${index})">
-                                                                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                                                                                Remove founder
-                                                                            </button>` : ''}
-                                                                        </div>`;
+                                                                                        ${index > 0 ? `<button type="button" class="btn-remove-founder" onclick="removeFounder(${index})">
+                                                                                            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                                                                            Remove founder
+                                                                                        </button>` : ''}
+                                                                                    </div>`;
                         return card;
                     }
 
