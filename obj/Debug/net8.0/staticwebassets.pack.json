@@ -5,10 +5,6 @@
       "PackagePath": "staticwebassets/nsia.bundle.scp.css"
     },
     {
-      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/Competition_Submission_Agreement.pdf",
-      "PackagePath": "staticwebassets/Competition_Submission_Agreement.pdf"
-    },
-    {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/NPI_4_0_Privacy_Policy.pdf",
       "PackagePath": "staticwebassets/NPI_4_0_Privacy_Policy.pdf"
     },
@@ -35,6 +31,10 @@
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/benefits.html",
       "PackagePath": "staticwebassets/benefits.html"
+    },
+    {
+      "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/competition_submission_agreement.pdf",
+      "PackagePath": "staticwebassets/competition_submission_agreement.pdf"
     },
     {
       "Id": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/contact.html",

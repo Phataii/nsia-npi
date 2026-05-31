@@ -28,6 +28,8 @@ namespace nsia.ViewModels
         public string ConfirmPassword { get; set; } = default!;
 
         public bool AgreeToTerms { get; set; }
+        public bool Agreement { get; set; }
+
     }
 
     public class LoginViewModel

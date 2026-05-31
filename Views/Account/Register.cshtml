@@ -944,6 +944,17 @@
                                                     </span>
                                                 </div>
 
+                                                <!-- Submission agreement -->
+                                                <div class="terms-row">
+                                                    <input type="checkbox" id="agreementId" name="Agreement" value="true" />
+                                                    <input type="hidden" name="Agreement" value="false" />
+                                                    <span>
+                                                        I have read, understood and agree the<a href="~/competition_submission_agreement.pdf"
+                                                                                            target="_blank">
+                                                        Competition Submission Agreement</a>
+                                                    </span>
+                                                </div>
+
                                                 <button type="submit" class="btn-submit" id="submitBtn">
                                                     <svg viewBox="0 0 24 24">
                                                         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -1064,7 +1075,12 @@
                                                     document.getElementById('confirmPassword').value.length === 0) { setInvalid('grp-confirm'); valid = false; }
 
                                                 if (!document.getElementById('terms').checked) {
-                                                    alert('Please agree to the Terms of Use and Privacy Policy to continue.');
+                                                    alert('Please agree to the Terms of Useddd and Privacy Policy to continue.');
+                                                    valid = false;
+                                                }
+
+                                                if (!document.getElementById('agreementId').checked) {
+                                                    alert('Please agree to the Competition Submission Agreement to continue.');
                                                     valid = false;
                                                 }
 
