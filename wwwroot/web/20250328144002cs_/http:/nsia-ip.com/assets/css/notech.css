@@ -2538,15 +2538,13 @@ ul {
 }
 
 .hero_main {
-  background: url("https://web.archive.org/web/20250323050834im_/https://nsia-ip.com/assets/images/brand/bg.webp") #f6fcfd00 no-repeat right
-    center/contain;
   height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   border: 1px solid #20a1b8;
-  position: relative;
+  /* position: relative; */
 }
 
 .hero_main::before {
@@ -2557,21 +2555,18 @@ ul {
   right: 0;
   height: 100%;
   background: rgba(32, 161, 184, 0.7) no-repeat center center/cover;
-  /* background: url("/web/20250323050834im_/https://nsia-ip.com/assets/images/overlay.webp") #f6fcfd00 no-repeat center
-    center/cover; */
-  /* z-index: -1; */
   opacity: 0.1;
 }
 
 .hero_main .container {
   position: relative;
   z-index: 10;
-  max-width: 700px;
+  max-width: 100%;
   margin-right: auto !important;
   margin-left: 2rem;
 }
 
-.hero_main .container h2 {
+.left {
   background: linear-gradient(265.91deg, #bad871 -7.82%, #20a1b8 96.1%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -2579,11 +2574,11 @@ ul {
   text-fill-color: transparent;
   font-size: 58px;
 }
+
 .hero_main .container p {
   color: black;
   margin-top: 1rem;
   font-size: 600;
-  /* text-align: justify; */
   max-width: 500px;
 }
 

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "chr8kYIaWcAd7/6h3z4tOx6ZYvx9rKamp0TqUF89p+Q=",
+  "Hash": "7wYzoLn36Ig38wmBpOemyWpiCdc6oeeaK5lHxZsUCEU=",
   "Source": "nsia",
   "BasePath": "_content/nsia",
   "Mode": "Default",
@@ -4575,6 +4575,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/web/section-title-shape.png"
+    },
+    {
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/thumbnail.JPG",
+      "SourceId": "nsia",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
+      "BasePath": "_content/nsia",
+      "RelativePath": "web/thumbnail.JPG",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/web/thumbnail.JPG"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/web/wema.png",

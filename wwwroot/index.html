@@ -131,11 +131,13 @@
               <div class="main-menu__logo">
                 <a href="index.html">
                   <img style="max-width: 250px" class="logo-dark" src="./web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" alt=""/>
-                  <img style="max-width: 250px" class="logo-light" src="./web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" alt=""/>
+                  <!-- <img style="max-width: 250px" class="logo-light" src="./web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" alt=""/> -->
                 </a>
               </div>
               <div class="main-menu__main-menu-box main-menu__main-menu-box--two">
-                <a href="index.html#" class="mobile-nav__toggler"><i class="fa fa-bars"></i></a>
+                <button onclick="openMobileNav()" class="mobile-nav__toggler" style="background:none; border:none; cursor:pointer;">
+                  <i class="fa fa-bars"></i>
+                </button>
                 <ul class="main-menu__list">
                   <li class="dropdown megamenu">
                     <a href="index.html">Home</a>
@@ -178,52 +180,79 @@
       <!-- /.stricky-header -->
 
       <!--Main Slider Start-->
-      <section class="">
-        <div class="">
-          <div class="">
-            <div class="hero_main">
-              <div class="container">
-                <div class="row">
-                  <div class="col-xl-12">
-                    <div class="">
-                      <h2>Innovate. Scale. Impact.</h2>
-                      <p>
-                        Does your startup have the potential to drive innovation
-                        and deliver impactful solutions in
-                        <strong>Healthcare, Climate & Food security, or Manufacturing?</strong>
-                        Apply for NPI 4.0 for an opportunity to win a share of the US$275,000 prize pool, comprising the NSIA Prize of
-                        US$220,000, the Cascador Prize for Impact valued at US$45,000, and the Wema Bank Enterprise Award worth US$10,000,
-                        alongside fully sponsored training at a partner institution.
-                      </p>
-
-                      <div style="
-                          margin-top: 1rem;
-                          align-items: center;
-                          display: flex;
-                          gap: 4rem;
-                        ">
-                        <div class="">
-                          <a href="account/login" target="_blank" class="apply_button">Apply Now</a>
-                        </div>
-                        <div class="">
-                          <a target="_blank" href="https://www.youtube.com/watch?v=7KZURcclu_Q">
-                            <div class="main-slider__video-icon">
-                              <span style="color: black" class="fa fa-play"></span>
-                              <i class="ripple"></i>
-                            </div>
-                          </a>
-                          <!-- <h3 class="main-slider__video-text">Watch <br /></h3> -->
-                        </div>
+      <section class="hero_main">
+        <!-- <div> -->
+          <div class="" style="margin-left: 50px; margin-right: 50px;">
+            <div class="row">
+              <div class="col-xl-12">
+                <div style="display: flex; align-items: center; gap: 3rem; flex-wrap: wrap;">
+              
+                  <!-- LEFT: Text content (6 cols) -->
+                  <div style="flex: 0 0 calc(50% - 1.5rem); min-width: 280px;">
+                    <h2 style="background: linear-gradient(265.91deg, #bad871 -7.82%, #20a1b8 96.1%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    text-fill-color: transparent;
+                    font-size: 58px;" class="left">Innovate. Scale. Impact.</h2>
+                    <p style="color: black;">
+                      Does your startup have the potential to drive innovation
+                      and deliver impactful solutions in
+                      <strong>Healthcare, Climate & Food security, or Manufacturing?</strong>
+                      Apply for NPI 4.0 for an opportunity to win a share of the US$275,000 prize pool,
+                      comprising the NSIA Prize of US$220,000, the Cascador Prize for Impact valued at
+                      US$45,000, and the Wema Bank Enterprise Award worth US$10,000, alongside fully
+                      sponsored training at a partner institution.
+                    </p>
+              
+                    <div style="margin-top: 1rem; align-items: center; display: flex; gap: 4rem;">
+                      <div>
+                        <a href="account/login" target="_blank" class="apply_button">Apply Now</a>
+                      </div>
+                      <div>
+                        <a target="_blank" href="https://www.youtube.com/watch?v=7KZURcclu_Q">
+                          <div class="main-slider__video-icon">
+                            <span style="color: black" class="fa fa-play"></span>
+                            <i class="ripple"></i>
+                          </div>
+                        </a>
                       </div>
                     </div>
                   </div>
+              
+                  <!-- RIGHT: YouTube thumbnail (6 cols) -->
+                  <div style="flex: 0 0 calc(50% - 1.5rem); min-width: 280px;">
+                    <a href="https://www.youtube.com/watch?v=7KZURcclu_Q" target="_blank"
+                      style="display: block; position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.18);">
+                      <img src="./web/thumbnail.JPG" alt="Watch NPI 4.0 Video"
+                        style="width: 100%; display: block; border-radius: 12px;" />
+                      <div style="
+                          position: absolute; inset: 0;
+                          display: flex; align-items: center; justify-content: center;
+                          background: rgba(0,0,0,0.25);
+                          border-radius: 12px;">
+                        <div style="
+                            width: 64px; height: 64px; border-radius: 50%;
+                            background: white;
+                            display: flex; align-items: center; justify-content: center;
+                            box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+                          <span style="
+                              display: inline-block;
+                              width: 0; height: 0;
+                              border-top: 12px solid transparent;
+                              border-bottom: 12px solid transparent;
+                              border-left: 20px solid #e53e3e;
+                              margin-left: 4px;">
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+              
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- If we need navigation buttons -->
-          <!-- <div class="swiper-pagination" id="main-slider-pagination"></div> -->
         </div>
       </section>
       <!--Main Slider End-->
@@ -651,48 +680,107 @@
     </div>
     <!-- /.page-wrapper -->
 
-    <div class="mobile-nav__wrapper">
-      <div class="mobile-nav__overlay mobile-nav__toggler"></div>
-      <!-- /.mobile-nav__overlay -->
-      <div class="mobile-nav__content">
-        <span class="mobile-nav__close mobile-nav__toggler"><i class="fa fa-times"></i></span>
-
-        <div class="logo-box">
-          <a href="index.html" aria-label="logo image"><img src="./web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" width="155" alt=""/></a>
+    <!-- Mobile Nav -->
+    <div id="mobileNav" style="
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 9999;
+    ">
+      <!-- Overlay -->
+      <div onclick="closeMobileNav()" style="
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+      "></div>
+    
+      <!-- Drawer -->
+      <div id="mobileNavDrawer" style="
+        position: absolute;
+        top: 0; right: 0;
+        width: 300px; height: 100%;
+        background: white;
+        padding: 2rem 1.5rem;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      ">
+        <!-- Close + Logo -->
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <img src="./web/20250328144002im_/http:/nsia-ip.com/assets/images/logo.png" style="max-width: 160px;"
+            alt="NPI Logo" />
+          <button onclick="closeMobileNav()" style="
+            background: none; border: none; cursor: pointer;
+            font-size: 1.5rem; color: #333; line-height: 1;
+          ">&times;</button>
         </div>
-        <!-- /.logo-box -->
-        <div class="mobile-nav__container"></div>
-        <!-- /.mobile-nav__container -->
-        <div style="margin: 2rem 0">
-          <a href="account/login" target="_blank" class="apply_button">
-            Apply Now
-          </a>
+    
+        <!-- Nav Links -->
+        <nav style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <a href="index.html"
+            style="padding: 0.75rem 0; border-bottom: 1px solid #eee; color: #333; text-decoration: none; font-weight: 500;">Home</a>
+          <a href="about.html"
+            style="padding: 0.75rem 0; border-bottom: 1px solid #eee; color: #333; text-decoration: none; font-weight: 500;">About
+            NPI</a>
+          <a href="program-stages.html"
+            style="padding: 0.75rem 0; border-bottom: 1px solid #eee; color: #333; text-decoration: none; font-weight: 500;">Programme
+            Details</a>
+          <a href="gallery.html"
+            style="padding: 0.75rem 0; border-bottom: 1px solid #eee; color: #333; text-decoration: none; font-weight: 500;">Gallery</a>
+          <a href="faq.html"
+            style="padding: 0.75rem 0; border-bottom: 1px solid #eee; color: #333; text-decoration: none; font-weight: 500;">FAQs</a>
+          <a href="contact.html"
+            style="padding: 0.75rem 0; border-bottom: 1px solid #eee; color: #333; text-decoration: none; font-weight: 500;">Contact
+            Us</a>
+        </nav>
+    
+        <!-- Apply Button -->
+        <a href="account/login" target="_blank" class="apply_button" style="text-align: center;">Apply Now</a>
+    
+        <!-- Contact -->
+        <div style="display: flex; align-items: center; gap: 0.5rem; color: #555; font-size: 14px;">
+          <i class="fa fa-envelope"></i>
+          <a href="mailto:npi@nsia.com.ng" style="color: #20a1b8; text-decoration: none;">npi@nsia.com.ng</a>
         </div>
-        <ul class="mobile-nav__contact list-unstyled">
-          <li>
-            <i class="fa fa-envelope"></i>
-            <a target="_blank" href="mailto:npi@nsia.com.ng">npi@nsia.com.ng</a>
-          </li>
-          <!-- <li>
-            <i class="fa fa-phone-alt"></i>
-            <a href="tel:+23408103004002">08103004002</a>
-          </li> -->
-        </ul>
-        <!-- /.mobile-nav__contact -->
-        <div class="mobile-nav__top">
-          <div class="mobile-nav__social">
-            <a href="https://twitter.com/NSIAInnovationP" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="https://web.facebook.com/nsiaprizeforinnovation/" target="_blank" class="fab fa-facebook-square"></a>
-            <a href="https://www.youtube.com/@nsiaprizeforinnovation" target="_blank" class="fab fa-youtube"></a>
-            <a href="https://www.instagram.com/nsiainnovationprize/" target="_blank" class="fab fa-instagram"></a>
-          </div>
-          <!-- /.mobile-nav__social -->
+    
+        <!-- Social Icons -->
+        <div style="display: flex; gap: 1rem; font-size: 1.2rem;">
+          <a href="https://twitter.com/NSIAInnovationP" target="_blank" style="color: #333;"><i
+              class="fa-brands fa-x-twitter"></i></a>
+          <a href="https://web.facebook.com/nsiaprizeforinnovation/" target="_blank" style="color: #1877f2;"><i
+              class="fab fa-facebook"></i></a>
+          <a href="https://www.youtube.com/@nsiaprizeforinnovation" target="_blank" style="color: #ff0000;"><i
+              class="fab fa-youtube"></i></a>
+          <a href="https://www.instagram.com/nsiainnovationprize/" target="_blank" style="color: #e1306c;"><i
+              class="fab fa-instagram"></i></a>
         </div>
-        <!-- /.mobile-nav__top -->
       </div>
-      <!-- /.mobile-nav__content -->
     </div>
-    <!-- /.mobile-nav__wrapper -->
+    
+    <script>
+      function openMobileNav() {
+        const nav = document.getElementById('mobileNav');
+        const drawer = document.getElementById('mobileNavDrawer');
+        nav.style.display = 'block';
+        requestAnimationFrame(() => {
+          drawer.style.transform = 'translateX(0)';
+        });
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMobileNav() {
+        const drawer = document.getElementById('mobileNavDrawer');
+        drawer.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+          document.getElementById('mobileNav').style.display = 'none';
+          document.body.style.overflow = '';
+        }, 300);
+      }
+    </script>
 
     <div class="search-popup">
       <div class="search-popup__overlay search-toggler"></div>

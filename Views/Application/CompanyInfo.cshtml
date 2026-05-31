@@ -760,14 +760,41 @@
                             Have you applied to any other innovation competitions, grants, or accelerator programmes?
                             <span class="label-opt">(optional)</span>
                         </label>
-                        <div class="input-wrap">
-                            <span class="input-icon" style="top:14px;transform:none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
-                            <textarea id="otherCompetitions" name="OtherCompetitions"
-                                      placeholder="List the name(s) and current status of your application(s), or leave blank if none."
-                                      rows="2">@ViewBag.OtherCompetitions</textarea>
+                        <div class="radio-options cols-2">
+                            <div class="r-option">
+                                <input type="radio" id="comp-yes" name="HasOtherCompetitions" value="Yes"
+                                    @(ViewBag.HasOtherCompetitions == "Yes" ? "checked" : "") />
+                                <label class="r-label" for="comp-yes">
+                                    <div class="r-radio"><div class="r-dot"></div></div>
+                                    <span class="r-text">Yes</span>
+                                </label>
+                            </div>
+                            <div class="r-option">
+                                <input type="radio" id="comp-no" name="HasOtherCompetitions" value="No"
+                                    @(ViewBag.HasOtherCompetitions == "No" ? "checked" : "") />
+                                <label class="r-label" for="comp-no">
+                                    <div class="r-radio"><div class="r-dot"></div></div>
+                                    <span class="r-text">No</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
+                    <div class="conditional" id="cond-competitions">
+                        <div class="form-group" id="grp-competitions-detail">
+                            <label class="field-label" for="otherCompetitions">
+                                Please list the name(s) and current status of your application(s)
+                            </label>
+                            <div class="input-wrap">
+                                <span class="input-icon" style="top:14px;transform:none">
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                </span>
+                                <textarea id="otherCompetitions" name="OtherCompetitions"
+                                        placeholder="e.g. XXX Grant — shortlisted; XYZ Grant — applied"
+                                        rows="3">@ViewBag.OtherCompetitions</textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -836,6 +863,7 @@
 
     toggleConditional('HasForeignAffiliates', 'Yes', 'cond-primary');
     toggleConditional('CompanyStructure', 'Subsidiary', 'cond-parentname');
+    toggleConditional('HasOtherCompetitions', 'Yes', 'cond-competitions');
 
     // ── Drawer
     const hamburger     = document.getElementById('hamburger');

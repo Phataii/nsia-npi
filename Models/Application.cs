@@ -28,6 +28,8 @@ namespace nsia.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? SubmittedAt { get; set; }
+        public string? Location { get; set; }
+        public string? HowDidYouHear { get; set; }
 
         // ── PRE-SUBMISSION CHECKLIST (Step 1)
 
