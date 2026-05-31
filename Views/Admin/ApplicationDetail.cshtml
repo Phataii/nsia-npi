@@ -742,7 +742,7 @@ else
             <select name="status" class="status-select">
                 @foreach (var s in new[] { "Draft", "Submitted", "Reviewed", "Shortlisted", "Rejected" })
                 {
-                    <option value="@s" @@(app.Status==s ? "selected" : "" )>@s</option>
+                    <option value="@s" selected="@(app.Status == s)">@s</option>
                 }
             </select>
             <button type="submit" class="btn-update">Update status</button>
@@ -951,7 +951,7 @@ else
                 <div class="field-row">
                     <div class="field-label">State / LGA</div>
                     <div class="field-value">@Val(app.BusinessState) @(app.BusinessLga != null ? $"· {app.BusinessLga}" :
-                                                               "")</div>
+                                                                                       "")</div>
                     </div>
                     <div class="field-row">
                         <div class="field-label">HQ Address</div>
