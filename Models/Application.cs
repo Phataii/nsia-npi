@@ -35,7 +35,6 @@ namespace nsia.Models
 
         public string? IsRegisteredInNigeria { get; set; } // Yes / No
 
-
         public string? BusinessSector { get; set; } // Manufacturing / Healthcare / Climate & Food Security
 
 
