@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Hqc3rjGNmO7OP49JRjwEZ4i70ORvkdGn3PNeJU3HHKA=",
+  "Hash": "7wYzoLn36Ig38wmBpOemyWpiCdc6oeeaK5lHxZsUCEU=",
   "Source": "nsia",
   "BasePath": "_content/nsia",
   "Mode": "Default",
@@ -1290,12 +1290,12 @@
       "OriginalItemSpec": "wwwroot/benefits.html"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/competition_submission_agreement.pdf",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/Competition_Submission_Agreement.pdf",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "competition_submission_agreement.pdf",
+      "RelativePath": "Competition_Submission_Agreement.pdf",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1306,7 +1306,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/competition_submission_agreement.pdf"
+      "OriginalItemSpec": "wwwroot/Competition_Submission_Agreement.pdf"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/contact.html",

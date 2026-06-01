@@ -698,7 +698,7 @@ ul {
 .main-menu {
   position: relative;
   display: block;
-  padding: 0 80px;
+  padding: 10px 30px;
   z-index: 91;
 }
 
