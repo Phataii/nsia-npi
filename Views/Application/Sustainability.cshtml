@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Sustainability — NSIA Prize for Innovation";
+    ViewData["Title"] = "Sustainability || NSIA Prize for Innovation";
     Layout = null;
 
     var applicantName = ViewBag.ApplicantName as string ?? "";
@@ -843,8 +843,9 @@
                 cursor: pointer;
                 transition: border-color .2s, background .2s;
                 user-select: none;
-                min-height: 72px;
-                height: 100%;
+                min-height: 50px;
+                height: 20%;
+
             }
 
             .r-label:hover {
@@ -932,7 +933,7 @@
                 cursor: pointer;
                 transition: border-color .2s, background .2s;
                 user-select: none;
-                min-height: 64px;
+                min-height: 50px;
                 height: 100%;
             }
 
@@ -1393,11 +1394,11 @@
                                             class="label-req">*</span></label>
                                             <div class="radio-options cols-2">
                                                 @foreach (var val in new[] {
-                                "Already scaled to 5+ regions",
-                                "Designed for easy replication",
-                                "Needs adaptation",
-                                "Not replicable"
-                            })
+                                                    "Already scaled to 5+ regions",
+                                                    "Designed for easy replication",
+                                                    "Needs adaptation",
+                                                    "Not replicable"
+                                                })
                                                 {
                                                     var id = SafeId("br-", val);
                                                     <div class="r-option">
@@ -1418,13 +1419,13 @@
                                         <div class="form-group" id="grp-integration">
                                             <label class="field-label">How does your business integrate sustainability into its
                                                 operations, products, or services? <span class="label-req">*</span></label>
-                                                <div class="radio-options cols-2">
+                                                <div class="radio-options cols-1">
                                                     @foreach (var val in new[] {
-                                "Eco-friendly materials & waste reduction",
-                                "Sustainable sourcing & ethical partnerships",
-                                "Energy-efficient processes & technology",
-                                "None"
-                            })
+                                                        "Eco-friendly materials & waste reduction",
+                                                        "Sustainable sourcing & ethical partnerships",
+                                                        "Energy-efficient processes & technology",
+                                                        "None"
+                                                    })
                                                     {
                                                         var id = SafeId("si-", val);
                                                         <div class="r-option">
@@ -1445,13 +1446,13 @@
                                             <div class="form-group" id="grp-energywaste">
                                                 <label class="field-label">What measures do you take to minimize energy consumption and
                                                     reduce waste? <span class="label-req">*</span></label>
-                                                    <div class="radio-options cols-2">
+                                                    <div class="radio-options cols-1">
                                                         @foreach (var val in new[] {
-                                "Optimized supply chain & resource management",
-                                "Use of renewable energy sources",
-                                "Waste recycling & upcycling initiatives",
-                                "None"
-                            })
+                                                            "Optimized supply chain & resource management",
+                                                            "Use of renewable energy sources",
+                                                            "Waste recycling & upcycling initiatives",
+                                                            "None"
+                                                        })
                                                         {
                                                             var id = SafeId("ew-", val);
                                                             <div class="r-option">
@@ -1472,13 +1473,13 @@
                                                 <div class="form-group" id="grp-sustaintech">
                                                     <label class="field-label">What innovations or emerging technologies are you leveraging to
                                                         enhance sustainability? <span class="label-req">*</span></label>
-                                                        <div class="radio-options cols-2">
+                                                        <div class="radio-options cols-1">
                                                             @foreach (var val in new[] {
-                                "Renewable Energy & Smart grids",
-                                "Biodegradable solutions",
-                                "Waste-to-energy & circular economy solutions",
-                                "None"
-                            })
+                                                                "Renewable Energy & Smart grids",
+                                                                "Biodegradable solutions",
+                                                                "Waste-to-energy & circular economy solutions",
+                                                                "None"
+                                                            })
                                                             {
                                                                 var id = SafeId("st-", val);
                                                                 <div class="r-option">
@@ -1499,13 +1500,13 @@
                                                     <div class="form-group" id="grp-scalingsustain">
                                                         <label class="field-label">What strategies do you have in place to scale your business while
                                                             maintaining quality and sustainability? <span class="label-req">*</span></label>
-                                                            <div class="radio-options cols-2">
+                                                            <div class="radio-options cols-1">
                                                                 @foreach (var val in new[] {
-                                "Collaborations & Partnerships",
-                                "Quality control & Continuous training",
-                                "Automated processes & smart technology",
-                                "None"
-                            })
+                                                                    "Collaborations & Partnerships",
+                                                                    "Quality control & Continuous training",
+                                                                    "Automated processes & smart technology",
+                                                                    "None"
+                                                                })
                                                                 {
                                                                     var id = SafeId("ss-", val);
                                                                     <div class="r-option">
@@ -1544,13 +1545,13 @@
                                                             <div class="form-group" id="grp-climate">
                                                                 <label class="field-label">How does your business address the challenges of climate change?
                                                                     <span class="label-req">*</span></label>
-                                                                    <div class="radio-options cols-2">
+                                                                    <div class="radio-options cols-1">
                                                                         @foreach (var val in new[] {
-                                "Community education & advocacy",
-                                "Sustainable sourcing & eco-friendly materials",
-                                "Climate-smart technology & innovations",
-                                "None"
-                            })
+                                                                            "Community education & advocacy",
+                                                                            "Sustainable sourcing & eco-friendly materials",
+                                                                            "Climate-smart technology & innovations",
+                                                                            "None"
+                                                                        })
                                                                         {
                                                                             var id = SafeId("cc-", val);
                                                                             <div class="r-option">
@@ -1571,13 +1572,13 @@
                                                                 <div class="form-group" id="grp-digitalaccess">
                                                                     <label class="field-label">What steps are you taking to ensure digital accessibility for
                                                                         underprivileged communities? <span class="label-req">*</span></label>
-                                                                        <div class="radio-options cols-2">
+                                                                        <div class="radio-options cols-1">
                                                                             @foreach (var val in new[] {
-                                "Partnerships for subsidized tech & internet",
-                                "Training & digital literacy initiatives",
-                                "Low-cost or free digital access programs",
-                                "Mobile-friendly & offline solutions"
-                            })
+                                                                                "Partnerships for subsidized tech & internet",
+                                                                                "Training & digital literacy initiatives",
+                                                                                "Low-cost or free digital access programs",
+                                                                                "Mobile-friendly & offline solutions"
+                                                                            })
                                                                             {
                                                                                 var id = SafeId("da-", val);
                                                                                 <div class="r-option">
