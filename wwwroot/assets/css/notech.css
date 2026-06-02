@@ -920,7 +920,9 @@ ul {
   -webkit-transition: -webkit-transform 500ms ease;
   transition: -webkit-transform 500ms ease;
   transition: transform 500ms ease;
-  transition: transform 500ms ease, -webkit-transform 500ms ease;
+  transition:
+    transform 500ms ease,
+    -webkit-transform 500ms ease;
   -webkit-transform: scale(0, 1);
   transform: scale(0, 1);
   -webkit-transform-origin: left center;
@@ -1052,10 +1054,18 @@ ul {
   visibility: hidden;
   -webkit-transform: translateY(-120%);
   transform: translateY(-120%);
-  -webkit-transition: visibility 500ms ease, -webkit-transform 500ms ease;
-  transition: visibility 500ms ease, -webkit-transform 500ms ease;
-  transition: transform 500ms ease, visibility 500ms ease;
-  transition: transform 500ms ease, visibility 500ms ease,
+  -webkit-transition:
+    visibility 500ms ease,
+    -webkit-transform 500ms ease;
+  transition:
+    visibility 500ms ease,
+    -webkit-transform 500ms ease;
+  transition:
+    transform 500ms ease,
+    visibility 500ms ease;
+  transition:
+    transform 500ms ease,
+    visibility 500ms ease,
     -webkit-transform 500ms ease;
   -webkit-box-shadow: 0px 10px 60px 0px rgba(0, 0, 0, 0.05);
   box-shadow: 0px 10px 60px 0px rgba(0, 0, 0, 0.05);
@@ -1261,10 +1271,18 @@ ul {
   opacity: 0;
   -webkit-transform: translateY(-30%);
   transform: translateY(-30%);
-  -webkit-transition: opacity 500ms ease, -webkit-transform 500ms ease;
-  transition: opacity 500ms ease, -webkit-transform 500ms ease;
-  transition: opacity 500ms ease, transform 500ms ease;
-  transition: opacity 500ms ease, transform 500ms ease,
+  -webkit-transition:
+    opacity 500ms ease,
+    -webkit-transform 500ms ease;
+  transition:
+    opacity 500ms ease,
+    -webkit-transform 500ms ease;
+  transition:
+    opacity 500ms ease,
+    transform 500ms ease;
+  transition:
+    opacity 500ms ease,
+    transform 500ms ease,
     -webkit-transform 500ms ease;
 }
 
@@ -1311,11 +1329,18 @@ ul {
   transform: translateX(-100%);
   -webkit-transform-origin: left center;
   transform-origin: left center;
-  -webkit-transition: visibility 500ms ease 500ms,
+  -webkit-transition:
+    visibility 500ms ease 500ms,
     -webkit-transform 500ms ease 500ms;
-  transition: visibility 500ms ease 500ms, -webkit-transform 500ms ease 500ms;
-  transition: transform 500ms ease 500ms, visibility 500ms ease 500ms;
-  transition: transform 500ms ease 500ms, visibility 500ms ease 500ms,
+  transition:
+    visibility 500ms ease 500ms,
+    -webkit-transform 500ms ease 500ms;
+  transition:
+    transform 500ms ease 500ms,
+    visibility 500ms ease 500ms;
+  transition:
+    transform 500ms ease 500ms,
+    visibility 500ms ease 500ms,
     -webkit-transform 500ms ease 500ms;
   visibility: hidden;
 }
@@ -1330,11 +1355,18 @@ ul {
   -webkit-transform: translateX(0%);
   transform: translateX(0%);
   visibility: visible;
-  -webkit-transition: visibility 500ms ease 0ms,
+  -webkit-transition:
+    visibility 500ms ease 0ms,
     -webkit-transform 500ms ease 0ms;
-  transition: visibility 500ms ease 0ms, -webkit-transform 500ms ease 0ms;
-  transition: transform 500ms ease 0ms, visibility 500ms ease 0ms;
-  transition: transform 500ms ease 0ms, visibility 500ms ease 0ms,
+  transition:
+    visibility 500ms ease 0ms,
+    -webkit-transform 500ms ease 0ms;
+  transition:
+    transform 500ms ease 0ms,
+    visibility 500ms ease 0ms;
+  transition:
+    transform 500ms ease 0ms,
+    visibility 500ms ease 0ms,
     -webkit-transform 500ms ease 0ms;
 }
 
@@ -1364,14 +1396,23 @@ ul {
   visibility: hidden;
   -webkit-transform: translateX(-100%);
   transform: translateX(-100%);
-  -webkit-transition: opacity 500ms ease 0ms, visibility 500ms ease 0ms,
+  -webkit-transition:
+    opacity 500ms ease 0ms,
+    visibility 500ms ease 0ms,
     -webkit-transform 500ms ease 0ms;
-  transition: opacity 500ms ease 0ms, visibility 500ms ease 0ms,
+  transition:
+    opacity 500ms ease 0ms,
+    visibility 500ms ease 0ms,
     -webkit-transform 500ms ease 0ms;
-  transition: opacity 500ms ease 0ms, visibility 500ms ease 0ms,
+  transition:
+    opacity 500ms ease 0ms,
+    visibility 500ms ease 0ms,
     transform 500ms ease 0ms;
-  transition: opacity 500ms ease 0ms, visibility 500ms ease 0ms,
-    transform 500ms ease 0ms, -webkit-transform 500ms ease 0ms;
+  transition:
+    opacity 500ms ease 0ms,
+    visibility 500ms ease 0ms,
+    transform 500ms ease 0ms,
+    -webkit-transform 500ms ease 0ms;
 }
 
 .mobile-nav__wrapper.expanded .mobile-nav__content {
@@ -1379,14 +1420,23 @@ ul {
   visibility: visible;
   -webkit-transform: translateX(0);
   transform: translateX(0);
-  -webkit-transition: opacity 500ms ease 500ms, visibility 500ms ease 500ms,
+  -webkit-transition:
+    opacity 500ms ease 500ms,
+    visibility 500ms ease 500ms,
     -webkit-transform 500ms ease 500ms;
-  transition: opacity 500ms ease 500ms, visibility 500ms ease 500ms,
+  transition:
+    opacity 500ms ease 500ms,
+    visibility 500ms ease 500ms,
     -webkit-transform 500ms ease 500ms;
-  transition: opacity 500ms ease 500ms, visibility 500ms ease 500ms,
+  transition:
+    opacity 500ms ease 500ms,
+    visibility 500ms ease 500ms,
     transform 500ms ease 500ms;
-  transition: opacity 500ms ease 500ms, visibility 500ms ease 500ms,
-    transform 500ms ease 500ms, -webkit-transform 500ms ease 500ms;
+  transition:
+    opacity 500ms ease 500ms,
+    visibility 500ms ease 500ms,
+    transform 500ms ease 500ms,
+    -webkit-transform 500ms ease 500ms;
 }
 
 .mobile-nav__content .notech-btn {
@@ -1478,7 +1528,9 @@ ul {
   -webkit-transition: -webkit-transform 500ms ease;
   transition: -webkit-transform 500ms ease;
   transition: transform 500ms ease;
-  transition: transform 500ms ease, -webkit-transform 500ms ease;
+  transition:
+    transform 500ms ease,
+    -webkit-transform 500ms ease;
 }
 
 .mobile-nav__content .main-menu__list li a button.expanded {
@@ -1842,10 +1894,18 @@ ul {
   align-items: center;
   -webkit-transform: translateY(-110%);
   transform: translateY(-110%);
-  -webkit-transition: opacity 500ms ease, -webkit-transform 500ms ease;
-  transition: opacity 500ms ease, -webkit-transform 500ms ease;
-  transition: transform 500ms ease, opacity 500ms ease;
-  transition: transform 500ms ease, opacity 500ms ease,
+  -webkit-transition:
+    opacity 500ms ease,
+    -webkit-transform 500ms ease;
+  transition:
+    opacity 500ms ease,
+    -webkit-transform 500ms ease;
+  transition:
+    transform 500ms ease,
+    opacity 500ms ease;
+  transition:
+    transform 500ms ease,
+    opacity 500ms ease,
     -webkit-transform 500ms ease;
 }
 
@@ -1955,10 +2015,18 @@ ul {
   background-position: center;
   -webkit-transform: scale(1);
   transform: scale(1);
-  -webkit-transition: opacity 1500ms ease-in, -webkit-transform 7000ms ease;
-  transition: opacity 1500ms ease-in, -webkit-transform 7000ms ease;
-  transition: transform 7000ms ease, opacity 1500ms ease-in;
-  transition: transform 7000ms ease, opacity 1500ms ease-in,
+  -webkit-transition:
+    opacity 1500ms ease-in,
+    -webkit-transform 7000ms ease;
+  transition:
+    opacity 1500ms ease-in,
+    -webkit-transform 7000ms ease;
+  transition:
+    transform 7000ms ease,
+    opacity 1500ms ease-in;
+  transition:
+    transform 7000ms ease,
+    opacity 1500ms ease-in,
     -webkit-transform 7000ms ease;
   background-blend-mode: luminosity;
   background-color: var(--notech-black);
@@ -2069,10 +2137,18 @@ ul {
   transform: translateY(-120px);
   -webkit-transition-delay: 1000ms;
   transition-delay: 1000ms;
-  -webkit-transition: opacity 2000ms ease, -webkit-transform 2000ms ease;
-  transition: opacity 2000ms ease, -webkit-transform 2000ms ease;
-  transition: transform 2000ms ease, opacity 2000ms ease;
-  transition: transform 2000ms ease, opacity 2000ms ease,
+  -webkit-transition:
+    opacity 2000ms ease,
+    -webkit-transform 2000ms ease;
+  transition:
+    opacity 2000ms ease,
+    -webkit-transform 2000ms ease;
+  transition:
+    transform 2000ms ease,
+    opacity 2000ms ease;
+  transition:
+    transform 2000ms ease,
+    opacity 2000ms ease,
     -webkit-transform 2000ms ease;
 }
 
@@ -2089,10 +2165,18 @@ ul {
   transform: translateY(-120px);
   -webkit-transition-delay: 1000ms;
   transition-delay: 1000ms;
-  -webkit-transition: opacity 2000ms ease, -webkit-transform 2000ms ease;
-  transition: opacity 2000ms ease, -webkit-transform 2000ms ease;
-  transition: transform 2000ms ease, opacity 2000ms ease;
-  transition: transform 2000ms ease, opacity 2000ms ease,
+  -webkit-transition:
+    opacity 2000ms ease,
+    -webkit-transform 2000ms ease;
+  transition:
+    opacity 2000ms ease,
+    -webkit-transform 2000ms ease;
+  transition:
+    transform 2000ms ease,
+    opacity 2000ms ease;
+  transition:
+    transform 2000ms ease,
+    opacity 2000ms ease,
     -webkit-transform 2000ms ease;
 }
 
@@ -2113,10 +2197,18 @@ ul {
   transform: translateY(120px);
   -webkit-transition-delay: 1000ms;
   transition-delay: 1000ms;
-  -webkit-transition: opacity 2000ms ease, -webkit-transform 2000ms ease;
-  transition: opacity 2000ms ease, -webkit-transform 2000ms ease;
-  transition: transform 2000ms ease, opacity 2000ms ease;
-  transition: transform 2000ms ease, opacity 2000ms ease,
+  -webkit-transition:
+    opacity 2000ms ease,
+    -webkit-transform 2000ms ease;
+  transition:
+    opacity 2000ms ease,
+    -webkit-transform 2000ms ease;
+  transition:
+    transform 2000ms ease,
+    opacity 2000ms ease;
+  transition:
+    transform 2000ms ease,
+    opacity 2000ms ease,
     -webkit-transform 2000ms ease;
 }
 
@@ -2388,10 +2480,18 @@ ul {
   transform: translateY(120px);
   -webkit-transition-delay: 1000ms;
   transition-delay: 1000ms;
-  -webkit-transition: opacity 2000ms ease, -webkit-transform 2000ms ease;
-  transition: opacity 2000ms ease, -webkit-transform 2000ms ease;
-  transition: transform 2000ms ease, opacity 2000ms ease;
-  transition: transform 2000ms ease, opacity 2000ms ease,
+  -webkit-transition:
+    opacity 2000ms ease,
+    -webkit-transform 2000ms ease;
+  transition:
+    opacity 2000ms ease,
+    -webkit-transform 2000ms ease;
+  transition:
+    transform 2000ms ease,
+    opacity 2000ms ease;
+  transition:
+    transform 2000ms ease,
+    opacity 2000ms ease,
     -webkit-transform 2000ms ease;
 }
 
@@ -2612,10 +2712,18 @@ ul {
   transform: translateY(120px);
   -webkit-transition-delay: 1000ms;
   transition-delay: 1000ms;
-  -webkit-transition: opacity 2000ms ease, -webkit-transform 2000ms ease;
-  transition: opacity 2000ms ease, -webkit-transform 2000ms ease;
-  transition: transform 2000ms ease, opacity 2000ms ease;
-  transition: transform 2000ms ease, opacity 2000ms ease,
+  -webkit-transition:
+    opacity 2000ms ease,
+    -webkit-transform 2000ms ease;
+  transition:
+    opacity 2000ms ease,
+    -webkit-transform 2000ms ease;
+  transition:
+    transform 2000ms ease,
+    opacity 2000ms ease;
+  transition:
+    transform 2000ms ease,
+    opacity 2000ms ease,
     -webkit-transform 2000ms ease;
 }
 
@@ -2818,7 +2926,9 @@ ul {
   -webkit-transition: -webkit-transform 500ms ease;
   transition: -webkit-transform 500ms ease;
   transition: transform 500ms ease;
-  transition: transform 500ms ease, -webkit-transform 500ms ease;
+  transition:
+    transform 500ms ease,
+    -webkit-transform 500ms ease;
 }
 
 .feature-one__single:hover .feature-one__img img {
@@ -4269,6 +4379,7 @@ ul {
 
 .helping__left-bg {
   position: absolute;
+  margin-top: 70px;
   top: 0;
   bottom: 0;
   left: 0;
@@ -4437,12 +4548,22 @@ ul {
   align-items: center;
   font-size: 30px;
   color: var(--notech-base);
-  -webkit-transition: opacity 500ms ease, visibility 500ms ease,
+  -webkit-transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
     -webkit-transform 500ms ease;
-  transition: opacity 500ms ease, visibility 500ms ease,
+  transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
     -webkit-transform 500ms ease;
-  transition: opacity 500ms ease, visibility 500ms ease, transform 500ms ease;
-  transition: opacity 500ms ease, visibility 500ms ease, transform 500ms ease,
+  transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
+    transform 500ms ease;
+  transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
+    transform 500ms ease,
     -webkit-transform 500ms ease;
   visibility: hidden;
   opacity: 0;
@@ -4726,7 +4847,7 @@ ul {
   -webkit-transition: 500ms;
   transition: 500ms;
   /* opacity: 0.15; */
-  max-width: 100%;
+  max-width: 80%;
 }
 
 .brand-one .swiper-slide img:hover {
@@ -5049,7 +5170,7 @@ ul {
   text-align: center;
   color: #fff;
   font-size: 15px;
-  background-color: #100d17;
+  background-color: gray;
   border-radius: 50%;
   overflow: hidden;
   -webkit-transition: all 500ms ease;
@@ -5100,7 +5221,7 @@ ul {
 .site-footer__bottom {
   position: relative;
   display: block;
-  background-color: #100d17;
+  background-color: gray;
 }
 
 .site-footer__bottom-inner {
@@ -5213,7 +5334,9 @@ ul {
   -webkit-transition: -webkit-transform 500ms ease;
   transition: -webkit-transform 500ms ease;
   transition: transform 500ms ease;
-  transition: transform 500ms ease, -webkit-transform 500ms ease;
+  transition:
+    transform 500ms ease,
+    -webkit-transform 500ms ease;
   -webkit-transform-origin: top center;
   transform-origin: top center;
   z-index: 1;
@@ -5233,7 +5356,9 @@ ul {
   -webkit-transition: -webkit-transform 500ms ease;
   transition: -webkit-transform 500ms ease;
   transition: transform 500ms ease;
-  transition: transform 500ms ease, -webkit-transform 500ms ease;
+  transition:
+    transform 500ms ease,
+    -webkit-transform 500ms ease;
 }
 
 .delivering-it__single:hover .delivering-it__img img {
@@ -6684,8 +6809,12 @@ ul {
 .testimonial-two__carousel.owl-carousel .owl-item {
   opacity: 0;
   visibility: hidden;
-  -webkit-transition: opacity 500ms ease, visibility 500ms ease;
-  transition: opacity 500ms ease, visibility 500ms ease;
+  -webkit-transition:
+    opacity 500ms ease,
+    visibility 500ms ease;
+  transition:
+    opacity 500ms ease,
+    visibility 500ms ease;
 }
 
 .testimonial-two__carousel.owl-carousel .owl-item.active {
@@ -6747,12 +6876,22 @@ ul {
   align-items: center;
   font-size: 30px;
   color: var(--notech-base);
-  -webkit-transition: opacity 500ms ease, visibility 500ms ease,
+  -webkit-transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
     -webkit-transform 500ms ease;
-  transition: opacity 500ms ease, visibility 500ms ease,
+  transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
     -webkit-transform 500ms ease;
-  transition: opacity 500ms ease, visibility 500ms ease, transform 500ms ease;
-  transition: opacity 500ms ease, visibility 500ms ease, transform 500ms ease,
+  transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
+    transform 500ms ease;
+  transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
+    transform 500ms ease,
     -webkit-transform 500ms ease;
   visibility: hidden;
   opacity: 0;
@@ -7833,8 +7972,9 @@ ul {
 }
 
 .notech-more__text {
-  padding-bottom: 8px;
-  text-align: justify;
+  font-size: 16px;
+  margin: 0;
+  line-height: 30px;
 }
 
 .notech-more__points {
@@ -9232,7 +9372,7 @@ ul {
 
 .contact-details__info li .text a {
   font-size: 18px;
-color: black;
+  color: black;
   font-weight: 500;
   -webkit-transition: all 500ms ease;
   transition: all 500ms ease;
@@ -9874,7 +10014,7 @@ color: black;
   font-size: 26px;
   color: var(--notech-white);
   line-height: 31px;
-  font-weight: 700;
+  font-weight: 300;
   position: relative;
   z-index: 5;
 }
@@ -9953,7 +10093,7 @@ color: black;
 
 .service-details__text-1 {
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 200;
   line-height: 30px;
 }
 
@@ -11058,7 +11198,9 @@ color: black;
   -webkit-transition: -webkit-transform 500ms ease;
   transition: -webkit-transform 500ms ease;
   transition: transform 500ms ease;
-  transition: transform 500ms ease, -webkit-transform 500ms ease;
+  transition:
+    transform 500ms ease,
+    -webkit-transform 500ms ease;
 }
 
 .gallery-page__single:hover .gallery-page__img img {
@@ -12318,12 +12460,22 @@ body.boxed-wrapper {
   left: 0;
   right: 0;
   background-color: rgba(var(--notech-black-rgb), 0.1);
-  -webkit-transition: opacity 500ms ease, visibility 500ms ease,
+  -webkit-transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
     -webkit-transform 500ms ease;
-  transition: opacity 500ms ease, visibility 500ms ease,
+  transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
     -webkit-transform 500ms ease;
-  transition: opacity 500ms ease, visibility 500ms ease, transform 500ms ease;
-  transition: opacity 500ms ease, visibility 500ms ease, transform 500ms ease,
+  transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
+    transform 500ms ease;
+  transition:
+    opacity 500ms ease,
+    visibility 500ms ease,
+    transform 500ms ease,
     -webkit-transform 500ms ease;
   visibility: hidden;
   opacity: 0;
