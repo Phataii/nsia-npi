@@ -301,7 +301,7 @@ ul {
 }
 
 .thm-btn:hover {
-  color: var(--notech-white);
+  color: var(--notech-base);
 }
 
 .thm-btn:after {
@@ -3066,7 +3066,7 @@ ul {
 # Get To Know
 --------------------------------------------------------------*/
 .margin {
-  margin-top: 200px;
+  margin-top: 100px;
 }
 .get-to-know {
   position: relative;
@@ -3311,6 +3311,7 @@ ul {
   padding: 120px 0 90px;
   background-position: center center;
   overflow: hidden;
+  margin-top: -70px;
 }
 
 .service-one__shape-1 {
@@ -3346,6 +3347,7 @@ ul {
   position: relative;
   display: block;
   margin-bottom: 49px;
+  margin-top: -50px;
 }
 
 .services-one__top-left {
@@ -3375,6 +3377,7 @@ ul {
   color: #000;
   /* color: #000; */
   line-height: 30px;
+  text-align: justify;
 }
 
 .services-one__bottom {
@@ -3419,12 +3422,14 @@ ul {
 .services-one__content {
   position: relative;
   display: block;
-  border: 1px solid #322d3b;
-  padding: 37px 0 32px;
+  border: 1px solid var(--notech-base);
+  /* padding: 37px 0 32px; */
+  padding-top: 10px;
   background-color: var(--notech-black);
   -webkit-transition: all 500ms ease;
   transition: all 500ms ease;
   min-height: 250px;
+  border-radius: 5%;
 }
 
 .services-one__single:hover .services-one__content {
@@ -3468,6 +3473,7 @@ ul {
   line-height: 24px;
   -webkit-transition: all 500ms ease;
   transition: all 500ms ease;
+  padding: 15px;
 }
 
 .services-one__single:hover .services-one__text {
@@ -4380,13 +4386,14 @@ ul {
 .helping__left-bg {
   position: absolute;
   margin-top: 70px;
+  margin-left: 50px;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: cover;
+  background-size: contain;
 }
 
 .helping__right {
@@ -4423,6 +4430,7 @@ ul {
   font-weight: 400;
   font-size: 16px;
   padding-bottom: 35px;
+  text-align: justify;
 }
 
 .helping__points {
@@ -5090,7 +5098,7 @@ ul {
 }
 
 .footer-widget__links-list li a:hover {
-  color: var(--notech-white);
+  color: var(--notech-base);
 }
 
 .footer-widget__contact {
@@ -5136,7 +5144,7 @@ ul {
 }
 
 .footer-widget__contact-list li:hover .text p a {
-  color: var(--notech-white);
+  color: var(--notech-base);
 }
 
 .footer-widget__social-box {
@@ -7975,6 +7983,7 @@ ul {
   font-size: 16px;
   margin: 0;
   line-height: 30px;
+  text-align: justify;
 }
 
 .notech-more__points {
@@ -10011,7 +10020,7 @@ ul {
 }
 
 .service-details__need-help-title {
-  font-size: 26px;
+  font-size: 16px;
   color: var(--notech-white);
   line-height: 31px;
   font-weight: 300;
@@ -10095,6 +10104,7 @@ ul {
   font-size: 16px;
   font-weight: 200;
   line-height: 30px;
+  text-align: justify;
 }
 
 .service-details__text-2 {
@@ -10104,6 +10114,7 @@ ul {
   color: var(--notech-base);
   padding-top: 29px;
   padding-bottom: 28px;
+  text-align: justify;
 }
 
 .service-details__text-3 {
