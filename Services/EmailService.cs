@@ -156,7 +156,7 @@ namespace nsia.Services
                     <p style='font-size:12px;color:#065a2f;margin:0 0 4px;font-weight:500'>Next steps</p>
                     <p style='font-size:12px;color:#08703a;margin:0;line-height:1.6'>
                         Log in to your dashboard and complete all 10 sections of your application
-                        before the deadline of <strong>30 June 2026</strong>.
+                        before the deadline of <strong>5 July 2026</strong>.
                     </p>
                 </div>
                 <p style='font-size:11px;color:#aab5af;text-align:center;margin:0'>
