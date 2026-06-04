@@ -166,6 +166,7 @@ namespace Nsia.Controllers
 
             ViewBag.ApplicantName = app.FullName;
             ViewBag.CompletedStep = app.ApplicationStep;
+            ViewBag.Status = app.Status;
             return View();
         }
 

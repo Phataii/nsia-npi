@@ -3191,6 +3191,160 @@ ul {
     line-height: 1.7;
   }
 }
+.benefit-item {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 15px;
+  line-height: 1.8;
+}
+
+.benefit-item::before {
+  content: "-";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: bold;
+}
+
+.criteria-item {
+  margin-bottom: 25px;
+}
+
+.criteria-title {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 10px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.criteria-title::before {
+  content: "-";
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.criteria-text {
+  padding-left: 18px;
+  margin: 0;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+.criteria-subtitle {
+  padding-left: 18px;
+  margin: 18px 0 8px;
+  font-weight: 600;
+}
+
+.eligibility-item {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 18px;
+}
+
+.eligibility-item::before {
+  content: "-";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 700;
+}
+
+.eligibility-item p {
+  margin: 0;
+  line-height: 1.8;
+}
+
+.eligibility-heading {
+  margin-top: 35px;
+  margin-bottom: 12px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.eligibility-sectors {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.eligibility-sectors li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 12px;
+  line-height: 1.8;
+}
+
+.eligibility-sectors li::before {
+  content: "-";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .eligibility-item {
+    padding-left: 18px;
+    margin-bottom: 15px;
+  }
+
+  .eligibility-sectors li {
+    padding-left: 18px;
+  }
+
+  .eligibility-heading {
+    font-size: 20px;
+  }
+}
+
+.program-stage {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 24px;
+}
+
+.program-stage::before {
+  content: "-";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.program-stage p {
+  margin: 0;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+.program-stage strong {
+  font-weight: 700;
+}
+
+.prize-item {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 18px;
+}
+
+.prize-item::before {
+  content: "-";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.prize-item p {
+  margin: 0;
+  line-height: 1.8;
+  text-align: justify;
+}
 
 .get-to-know__img:after {
   position: absolute;
@@ -4886,12 +5040,12 @@ ul {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80px;
+  height: 100px;
 }
 
 .brand-one .swiper-slide img {
   max-width: 100%;
-  max-height: 60px;
+  max-height: 100px;
   width: auto;
   height: auto;
   object-fit: contain;

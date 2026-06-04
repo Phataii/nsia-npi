@@ -944,7 +944,7 @@
                                             </div>
 
                                             <!-- Submission agreement -->
-                                            <div class="terms-row">
+                                            @* <div class="terms-row">
                                                 <input type="checkbox" id="agreementId" name="Agreement" value="true" />
                                                 <input type="hidden" name="Agreement" value="false" />
                                                 <span>
@@ -952,7 +952,7 @@
                                                                                         target="_blank">
                                                     Competition Submission Agreement</a>
                                                 </span>
-                                            </div>
+                                            </div> *@
 
                                             <button type="submit" class="btn-submit" id="submitBtn">
                                                 <svg viewBox="0 0 24 24">
@@ -1078,10 +1078,7 @@
                                                 valid = false;
                                             }
 
-                                            if (!document.getElementById('agreementId').checked) {
-                                                alert('Please agree to the Competition Submission Agreement to continue.');
-                                                valid = false;
-                                            }
+                                            
 
                                             if (!valid) { e.preventDefault(); return; }
 

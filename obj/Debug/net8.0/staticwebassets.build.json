@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ICNlSl5jlrP1DhpgP3TwvS73YDuaq9N4gIGDvO0GGfs=",
+  "Hash": "Z1xsBFpIcHsBezd6sXg3wZ58spJ6xytovVw707XdV4Y=",
   "Source": "nsia",
   "BasePath": "_content/nsia",
   "Mode": "Default",
@@ -4518,6 +4518,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/assets/images/logo.png"
+    },
+    {
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/management.jpeg",
+      "SourceId": "nsia",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
+      "BasePath": "_content/nsia",
+      "RelativePath": "assets/images/management.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/assets/images/management.jpeg"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/prize.png",

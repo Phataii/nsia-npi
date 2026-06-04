@@ -1529,553 +1529,695 @@ w[0]));
                                     </svg>
                                 </div>
                                 <div>
-                                    <div class="form-card-title">Supporting Documents <span class="req">*</span></div>
-                                    <div class="form-card-desc">Upload pitch decks, financial statements, product demos, or any
-                                        relevant supporting files. PDF, Word, Excel, images accepted, max 10MB each.</div>
-                                        <div class="upload-error" id="uploadError">Please upload at least one supporting document.
-                                        </div>
+                                    <div class="form-card-title">Supporting Documents</div>
+                                    <div class="form-card-desc">
+                                        You must upload a <strong>Business Deck</strong> and a <strong>CAC Document</strong>.
+                                        Additional documents are optional. PDF, Word, Excel, images accepted — max 10MB each.
                                     </div>
+                                    <div class="upload-error" id="uploadError"></div>
                                 </div>
-                                <div class="form-card-body">
-                                    <div>
-                                        <label class="field-label" style="margin-bottom:.6rem;display:block">
-                                            Select document type before uploading
-                                        </label>
-                                        <div class="doc-type-bar" id="docTypeBar">
-                                            @foreach (var t in new[] { "Pitch Deck", "Financial Statements", "Product Demo",
-                     "Business Plan", "Certificate/License", "Other" })
-                                            {
-                                                <button type="button" class="doc-type-btn @(t == "Pitch Deck" ? "active" : "")"
-                                                        data-type="@t" onclick="selectDocType(this)">@t</button>
-                                            }
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="form-card-body">
 
-                                    <div class="upload-zone" id="uploadZone">
-                                        <input type="file" id="fileInput" name="Documents" multiple
-                                               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.gif" />
-                                        <div class="upload-icon">
-                                            <svg viewBox="0 0 24 24">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                <polyline points="17 8 12 3 7 8" />
-                                                <line x1="12" y1="3" x2="12" y2="15" />
-                                            </svg>
-                                        </div>
-                                        <div class="upload-title">Drop files here or <span
-                                            style="color:var(--teal);font-weight:500">browse</span></div>
-                                            <div class="upload-sub">PDF, Word, Excel, PowerPoint, Images · Max 10MB each</div>
-                                        </div>
+                                <!-- Required uploads -->
+                                <div style="display:flex;flex-direction:column;gap:1rem;">
 
-                                        <div class="file-list" id="fileList">
-                                            @{
-                                                var savedDocs = ViewBag.Documents as IEnumerable<dynamic> ?? new List<dynamic>();
-                                            }
-                                            @foreach (var doc in savedDocs)
-                                            {
-                                                <div class="file-item" data-docid="@doc.id">
-                                                    <div class="file-icon">
-                                                        <svg viewBox="0 0 24 24">
-                                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                                            <polyline points="14 2 14 8 20 8" />
+                                    <!-- Business Deck -->
+                                    <div class="required-upload-slot" id="slot-business-deck">
+                                        <label class="field-label"
+                                               style="margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem">
+                                            Business Deck
+                                            <span style="color:#e53e3e;font-size:.72rem">* Required</span>
+                                            <span class="slot-done" id="slot-done-business-deck"
+                                                  style="display:none;font-size:.7rem;color:var(--teal-deep);background:var(--teal-light);padding:.1rem .55rem;border-radius:100px;font-weight:500">✓
+                                                Uploaded</span>
+                                            </label>
+                                            <div class="upload-zone" id="zone-business-deck" style="padding:1.25rem"
+                                                 onclick="document.getElementById('input-business-deck').click()">
+                                                <input type="file" id="input-business-deck" style="display:none"
+                                                       accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg"
+                                                       onchange="handleRequiredUpload(this,'Business Deck','business-deck')" />
+                                                <div style="display:flex;align-items:center;gap:.75rem;justify-content:center">
+                                                    <div class="upload-icon" style="width:32px;height:32px;margin:0;flex-shrink:0">
+                                                        <svg viewBox="0 0 24 24" style="width:15px;height:15px">
+                                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                            <polyline points="17 8 12 3 7 8" />
+                                                            <line x1="12" y1="3" x2="12" y2="15" />
                                                         </svg>
                                                     </div>
-                                                    <div class="file-info">
-                                                        <div class="file-name">@doc.name</div>
-                                                        <div class="file-meta">@doc.type · @(Math.Round((double)doc.size / 1024, 1)) KB
+                                                    <div style="text-align:left">
+                                                        <div class="upload-title" style="font-size:.82rem">Upload Business Deck
+                                                        </div>
+                                                        <div class="upload-sub">PDF, Word, PowerPoint, Images</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- CAC Document -->
+                                        <div class="required-upload-slot" id="slot-cac">
+                                            <label class="field-label"
+                                                   style="margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem">
+                                                CAC Document
+                                                <span style="color:#e53e3e;font-size:.72rem">* Required</span>
+                                                <span class="slot-done" id="slot-done-cac"
+                                                      style="display:none;font-size:.7rem;color:var(--teal-deep);background:var(--teal-light);padding:.1rem .55rem;border-radius:100px;font-weight:500">✓
+                                                    Uploaded</span>
+                                                </label>
+                                                <div class="upload-zone" id="zone-cac" style="padding:1.25rem"
+                                                     onclick="document.getElementById('input-cac').click()">
+                                                    <input type="file" id="input-cac" style="display:none"
+                                                           accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                                                           onchange="handleRequiredUpload(this,'CAC Document','cac')" />
+                                                    <div style="display:flex;align-items:center;gap:.75rem;justify-content:center">
+                                                        <div class="upload-icon" style="width:32px;height:32px;margin:0;flex-shrink:0">
+                                                            <svg viewBox="0 0 24 24" style="width:15px;height:15px">
+                                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                                <polyline points="17 8 12 3 7 8" />
+                                                                <line x1="12" y1="3" x2="12" y2="15" />
+                                                            </svg>
+                                                        </div>
+                                                        <div style="text-align:left">
+                                                            <div class="upload-title" style="font-size:.82rem">Upload CAC Document</div>
+                                                            <div class="upload-sub">PDF, Word, Images</div>
                                                         </div>
                                                     </div>
-                                                    <button type="button" class="file-remove" onclick="removeExistingDoc('@doc.id', this)">
-                                                        <svg viewBox="0 0 24 24">
-                                                            <polyline points="3 6 5 6 21 6" />
-                                                            <path
-                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                                                        </svg>
-                                                    </button>
                                                 </div>
-                                            }
+                                            </div>
+
                                         </div>
 
-                                        <div id="docTypeInputs"></div>
-                                    </div>
-                                </div>
-
-                                <div class="submit-warning">
-                                    <svg viewBox="0 0 24 24">
-                                        <path
-                                        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                                        <line x1="12" y1="9" x2="12" y2="13" />
-                                        <line x1="12" y1="17" x2="12.01" y2="17" />
-                                    </svg>
-                                    <div class="submit-warning-text">
-                                        <strong>You are about to submit your application.</strong><br />
-                                        Once submitted, you will not be able to edit your responses. Please review all steps before
-                                        proceeding. Your reference number will be sent to your email upon submission.
-                                    </div>
-                                </div>
-
-                                <div class="form-card">
-                                    <div class="form-card-header">
-                                        <div class="form-card-icon">
-                                            <svg viewBox="0 0 24 24">
-                                                <path d="M9 11l3 3L22 4" />
-                                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                                            </svg>
+                                        <!-- Divider -->
+                                        <div
+                                            style="display:flex;align-items:center;gap:.75rem;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:500">
+                                            <div style="flex:1;height:1px;background:var(--border)"></div>
+                                            Additional documents (optional)
+                                            <div style="flex:1;height:1px;background:var(--border)"></div>
                                         </div>
+
+                                        <!-- Optional uploads -->
                                         <div>
-                                            <div class="form-card-title">Declaration &amp; Agreement</div>
-                                            <div class="form-card-desc">Please confirm your declarations before submitting.</div>
-                                        </div>
-                                    </div>
-                                    <div class="form-card-body">
-                                        <div class="checklist">
-                                            <div class="check-item">
-                                                <svg viewBox="0 0 24 24">
-                                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                                    <polyline points="22 4 12 14.01 9 11.01" />
-                                                </svg>
-                                                All 9 previous steps have been completed
-                                            </div>
-                                            <div class="check-item">
-                                                <svg viewBox="0 0 24 24">
-                                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                                    <polyline points="22 4 12 14.01 9 11.01" />
-                                                </svg>
-                                                All information provided is accurate and truthful
-                                            </div>
-                                            <div class="check-item">
-                                                <svg viewBox="0 0 24 24">
-                                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                                    <polyline points="22 4 12 14.01 9 11.01" />
-                                                </svg>
-                                                You understand this application cannot be edited after submission
+                                            <label class="field-label" style="margin-bottom:.6rem;display:block">
+                                                Select document type before uploading
+                                            </label>
+                                            <div class="doc-type-bar" id="docTypeBar">
+                                                @foreach (var t in new[] { "Pitch Deck", "Product Demo", "Financial Statements",
+     "Certificate/License", "Other" })
+                                                {
+                                                    <button type="button" class="doc-type-btn @(t == "Pitch Deck" ? "active" : "")"
+                                                            data-type="@t" onclick="selectDocType(this)">@t</button>
+                                                }
                                             </div>
                                         </div>
 
-                                        <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:.75rem;">
-                                            <div class="form-group" id="grp-terms">
-                                                <div class="terms-row">
-                                                    <input type="checkbox" id="agreeTerms" name="AgreeTerms" value="true" disabled />
-                                                    <label for="agreeTerms">
-                                                        I have read and agree to the NSIA Prize for Innovation
-                                                        <button type="button" class="policy-link-btn"
-                                                                onclick="openPolicyModal('terms')">Terms of Service</button>
-                                                        <span id="termsStatus" class="policy-status">Read required</span>
-                                                    </label>
-                                                </div>
-                                                <div class="field-error">You must agree to the Terms of Service to submit.</div>
+                                        <div class="upload-zone" id="uploadZone">
+                                            <input type="file" id="fileInput" name="Documents" multiple
+                                                   accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.gif" />
+                                            <div class="upload-icon">
+                                                <svg viewBox="0 0 24 24">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                    <polyline points="17 8 12 3 7 8" />
+                                                    <line x1="12" y1="3" x2="12" y2="15" />
+                                                </svg>
+                                            </div>
+                                            <div class="upload-title">Drop files here or <span
+                                                style="color:var(--teal);font-weight:500">browse</span></div>
+                                                <div class="upload-sub">PDF, Word, Excel, PowerPoint, Images · Max 10MB each</div>
                                             </div>
 
-                                            <div class="form-group" id="grp-privacy">
-                                                <div class="terms-row">
-                                                    <input type="checkbox" id="agreePrivacy" name="AgreePrivacy" value="true"
-                                                           disabled />
-                                                    <label for="agreePrivacy">
-                                                        I have read and agree to the NSIA
-                                                        <button type="button" class="policy-link-btn"
-                                                                onclick="openPolicyModal('privacy')">Privacy Policy</button>
-                                                        <span id="privacyStatus" class="policy-status">Read required</span>
-                                                    </label>
-                                                </div>
-                                                <div class="field-error">You must agree to the Privacy Policy to submit.</div>
+                                            <div class="file-list" id="fileList">
+                                                @{
+                                                    var savedDocs = ViewBag.Documents as IEnumerable<dynamic> ?? new List<dynamic>();
+                                                }
+                                                @foreach (var doc in savedDocs)
+                                                {
+                                                    <div class="file-item" data-docid="@doc.id">
+                                                        <div class="file-icon">
+                                                            <svg viewBox="0 0 24 24">
+                                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                                <polyline points="14 2 14 8 20 8" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="file-info">
+                                                            <div class="file-name">@doc.name</div>
+                                                            <div class="file-meta">@doc.type · @(Math.Round((double)doc.size / 1024, 1)) KB
+                                                            </div>
+                                                        </div>
+                                                        <button type="button" class="file-remove" onclick="removeExistingDoc('@doc.id', this)">
+                                                            <svg viewBox="0 0 24 24">
+                                                                <polyline points="3 6 5 6 21 6" />
+                                                                <path
+                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                }
                                             </div>
 
-                                            <div class="form-group" id="grp-agreement">
-                                                <div class="terms-row">
-                                                    <input type="checkbox" id="agreeAgreement" name="AgreeAgreement" value="true"
-                                                           disabled />
-                                                    <label for="agreeAgreement">
-                                                        I have read, understood and agree the
-                                                        <button type="button" class="policy-link-btn"
-                                                                onclick="openPolicyModal('agreement')">Competition Submission
-                                                            Agreement</button>
-                                                            <span id="agreementStatus" class="policy-status">Read required</span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="field-error">You must agree to the Competition Submission Agreement to
-                                                        submit.</div>
-                                                    </div>
+                                            <div id="docTypeInputs"></div>
 
-                                                    <div class="form-group" id="grp-accuracy">
+                                        </div>
+
+                                        <div class="submit-warning">
+                                            <svg viewBox="0 0 24 24">
+                                                <path
+                                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                                <line x1="12" y1="9" x2="12" y2="13" />
+                                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                                            </svg>
+                                            <div class="submit-warning-text">
+                                                <strong>You are about to submit your application.</strong><br />
+                                                Once submitted, you will not be able to edit your responses. Please review all steps before
+                                                proceeding. Your reference number will be sent to your email upon submission.
+                                            </div>
+                                        </div>
+
+                                        <div class="form-card">
+                                            <div class="form-card-header">
+                                                <div class="form-card-icon">
+                                                    <svg viewBox="0 0 24 24">
+                                                        <path d="M9 11l3 3L22 4" />
+                                                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <div class="form-card-title">Declaration &amp; Agreement</div>
+                                                    <div class="form-card-desc">Please confirm your declarations before submitting.</div>
+                                                </div>
+                                            </div>
+                                            <div class="form-card-body">
+                                                <div class="checklist">
+                                                    <div class="check-item">
+                                                        <svg viewBox="0 0 24 24">
+                                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                                            <polyline points="22 4 12 14.01 9 11.01" />
+                                                        </svg>
+                                                        All 9 previous steps have been completed
+                                                    </div>
+                                                    <div class="check-item">
+                                                        <svg viewBox="0 0 24 24">
+                                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                                            <polyline points="22 4 12 14.01 9 11.01" />
+                                                        </svg>
+                                                        All information provided is accurate and truthful
+                                                    </div>
+                                                    <div class="check-item">
+                                                        <svg viewBox="0 0 24 24">
+                                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                                            <polyline points="22 4 12 14.01 9 11.01" />
+                                                        </svg>
+                                                        You understand this application cannot be edited after submission
+                                                    </div>
+                                                </div>
+
+                                                <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:.75rem;">
+                                                    <div class="form-group" id="grp-terms">
                                                         <div class="terms-row">
-                                                            <input type="checkbox" id="agreeAccuracy" name="AgreeAccuracy" value="true" />
-                                                            <label for="agreeAccuracy">
-                                                                I declare that all information provided in this application is accurate,
-                                                                complete and truthful to the best of my knowledge.
+                                                            <input type="checkbox" id="agreeTerms" name="AgreeTerms" value="true"
+                                                                   disabled />
+                                                            <label for="agreeTerms">
+                                                                I have read and agree to the NSIA Prize for Innovation
+                                                                <button type="button" class="policy-link-btn"
+                                                                        onclick="openPolicyModal('terms')">Terms of Service</button>
+                                                                <span id="termsStatus" class="policy-status">Read required</span>
                                                             </label>
                                                         </div>
-                                                        <div class="field-error">You must confirm the accuracy of your information.</div>
+                                                        <div class="field-error">You must agree to the Terms of Service to submit.</div>
                                                     </div>
+
+                                                    <div class="form-group" id="grp-privacy">
+                                                        <div class="terms-row">
+                                                            <input type="checkbox" id="agreePrivacy" name="AgreePrivacy" value="true"
+                                                                   disabled />
+                                                            <label for="agreePrivacy">
+                                                                I have read and agree to the NSIA
+                                                                <button type="button" class="policy-link-btn"
+                                                                        onclick="openPolicyModal('privacy')">Privacy Policy</button>
+                                                                <span id="privacyStatus" class="policy-status">Read required</span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="field-error">You must agree to the Privacy Policy to submit.</div>
+                                                    </div>
+
+                                                    <div class="form-group" id="grp-agreement">
+                                                        <div class="terms-row">
+                                                            <input type="checkbox" id="agreeAgreement" name="AgreeAgreement" value="true"
+                                                                   disabled />
+                                                            <label for="agreeAgreement">
+                                                                I have read, understood and agree the
+                                                                <button type="button" class="policy-link-btn"
+                                                                        onclick="openPolicyModal('agreement')">Competition Submission
+                                                                    Agreement</button>
+                                                                    <span id="agreementStatus" class="policy-status">Read required</span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="field-error">You must agree to the Competition Submission Agreement to
+                                                                submit.</div>
+                                                            </div>
+
+                                                            <div class="form-group" id="grp-accuracy">
+                                                                <div class="terms-row">
+                                                                    <input type="checkbox" id="agreeAccuracy" name="AgreeAccuracy" value="true" />
+                                                                    <label for="agreeAccuracy">
+                                                                        I declare that all information provided in this application is accurate,
+                                                                        complete and truthful to the best of my knowledge.
+                                                                    </label>
+                                                                </div>
+                                                                <div class="field-error">You must confirm the accuracy of your information.</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-actions">
+                                                    <div class="actions-left">
+                                                        <a asp-action="Impact" asp-controller="Application" class="btn-back">
+                                                            <svg viewBox="0 0 24 24">
+                                                                <path d="M19 12H5M12 5l-7 7 7 7" />
+                                                            </svg>
+                                                            Back
+                                                        </a>
+
+                                                    </div>
+                                                    <button type="submit" class="btn-submit" id="submitBtn">
+                                                        <svg viewBox="0 0 24 24">
+                                                            <path d="M22 2L11 13" />
+                                                            <path d="M22 2L15 22 11 13 2 9l20-7z" />
+                                                        </svg>
+                                                        Submit Application
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </main>
+
+                                    <div class="policy-modal" id="policyModal" aria-hidden="true">
+                                        <div class="policy-modal-backdrop"></div>
+                                        <div class="policy-modal-dialog">
+                                            <div class="policy-modal-header">
+                                                <h3 id="policyModalTitle">Document Preview</h3>
+                                            </div>
+                                            <div class="policy-modal-body">
+                                                <iframe id="policyFrame" class="policy-frame" title="Policy document preview"></iframe>
+                                            </div>
+                                            <div class="policy-modal-footer">
+                                                <div id="policyCountdown" class="policy-countdown">Please read for 10 seconds</div>
+                                                <button type="button" id="policyConfirmBtn" class="doc-type-btn" disabled>I have read and I assent to
+                                                    this</button>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="form-actions">
-                                            <div class="actions-left">
-                                                <a asp-action="Impact" asp-controller="Application" class="btn-back">
-                                                    <svg viewBox="0 0 24 24">
-                                                        <path d="M19 12H5M12 5l-7 7 7 7" />
-                                                    </svg>
-                                                    Back
-                                                </a>
-                                                @* <button type="button" class="btn-save" id="saveBtn">
-                        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2
-                        2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        Save draft
-                    </button> *@
-                                            </div>
-                                            <button type="submit" class="btn-submit" id="submitBtn">
-                                                <svg viewBox="0 0 24 24">
-                                                    <path d="M22 2L11 13" />
-                                                    <path d="M22 2L15 22 11 13 2 9l20-7z" />
-                                                </svg>
-                                                Submit Application
-                                            </button>
+                                        <div class="toast" id="toast">
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                                <polyline points="22 4 12 14.01 9 11.01" />
+                                            </svg>
+                                            <span id="toastMsg">Draft saved</span>
                                         </div>
-                                    </form>
-                                </div>
-                            </main>
 
-                            <div class="policy-modal" id="policyModal" aria-hidden="true">
-                                <div class="policy-modal-backdrop"></div>
-                                <div class="policy-modal-dialog">
-                                    <div class="policy-modal-header">
-                                        <h3 id="policyModalTitle">Document Preview</h3>
-                                    </div>
-                                    <div class="policy-modal-body">
-                                        <iframe id="policyFrame" class="policy-frame" title="Policy document preview"></iframe>
-                                    </div>
-                                    <div class="policy-modal-footer">
-                                        <div id="policyCountdown" class="policy-countdown">Please read for 10 seconds</div>
-                                        <button type="button" id="policyConfirmBtn" class="doc-type-btn" disabled>I have read this</button>
-                                    </div>
-                                </div>
-                            </div>
+                                        <script>
+                                                const hamburger = document.getElementById('hamburger');
+                                                const sideDrawer = document.getElementById('sideDrawer');
+                                                const drawerOverlay = document.getElementById('drawerOverlay');
+                                                const openDrawer = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display = 'block'; setTimeout(() => drawerOverlay.classList.add('open'), 10); hamburger.classList.add('open'); document.body.style.overflow = 'hidden'; };
+                                                const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(() => drawerOverlay.style.display = '', 300); hamburger.classList.remove('open'); document.body.style.overflow = ''; };
+                                                hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
+                                                drawerOverlay.addEventListener('click', closeDrawer);
 
-                            <div class="toast" id="toast">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                    <polyline points="22 4 12 14.01 9 11.01" />
-                                </svg>
-                                <span id="toastMsg">Draft saved</span>
-                            </div>
+                                                // ── Char count
+                                                const textarea = document.getElementById('additionalInfo');
+                                                const charCount = document.getElementById('charCount');
+                                                function updateCount() { charCount.textContent = textarea.value.length; }
+                                                textarea.addEventListener('input', updateCount);
+                                                updateCount();
 
-                            <script>
-                                    const hamburger = document.getElementById('hamburger');
-                                    const sideDrawer = document.getElementById('sideDrawer');
-                                    const drawerOverlay = document.getElementById('drawerOverlay');
-                                    const openDrawer = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display = 'block'; setTimeout(() => drawerOverlay.classList.add('open'), 10); hamburger.classList.add('open'); document.body.style.overflow = 'hidden'; };
-                                    const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(() => drawerOverlay.style.display = '', 300); hamburger.classList.remove('open'); document.body.style.overflow = ''; };
-                                    hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
-                                    drawerOverlay.addEventListener('click', closeDrawer);
+                                                // ── Doc type selection (optional uploads)
+                                                let selectedDocType = 'Pitch Deck';
+                                                function selectDocType(btn) {
+                                                    document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('active'));
+                                                    btn.classList.add('active');
+                                                    selectedDocType = btn.dataset.type;
+                                                }
 
-                                    const textarea = document.getElementById('additionalInfo');
-                                    const charCount = document.getElementById('charCount');
-                                    function updateCount() { charCount.textContent = textarea.value.length; }
-                                    textarea.addEventListener('input', updateCount);
-                                    updateCount();
+                                                // ── Required upload slots
+                                                // Tracks files uploaded into the two required slots
+                                                const requiredSlots = {
+                                                    'business-deck': null,  // { file, type }
+                                                    'cac': null,
+                                                };
 
-                                    let selectedDocType = 'Pitch Deck';
-                                    function selectDocType(btn) {
-                                        document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('active'));
-                                        btn.classList.add('active');
-                                        selectedDocType = btn.dataset.type;
-                                    }
+                                                function handleRequiredUpload(input, docType, slotKey) {
+                                                    const file = input.files[0];
+                                                    if (!file) return;
 
-                                    const fileInput = document.getElementById('fileInput');
-                                    const fileList = document.getElementById('fileList');
-                                    const docTypeInputs = document.getElementById('docTypeInputs');
-                                    const uploadZone = document.getElementById('uploadZone');
-                                    let pendingFiles = [];
+                                                    if (file.size > 10 * 1024 * 1024) {
+                                                        showToast(`${file.name} exceeds 10MB`, true);
+                                                        input.value = '';
+                                                        return;
+                                                    }
 
-                                    fileInput.addEventListener('change', handleFiles);
+                                                    requiredSlots[slotKey] = { file, type: docType };
 
-                                    uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
-                                    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
-                                    uploadZone.addEventListener('drop', e => {
-                                        e.preventDefault();
-                                        uploadZone.classList.remove('drag');
-                                        handleFilesFromList(e.dataTransfer.files);
-                                    });
+                                                    // Update zone UI to show uploaded file
+                                                    const zone = document.getElementById(`zone-${slotKey}`);
+                                                    zone.innerHTML = `
+                                                                                                                                <div style="display:flex;align-items:center;gap:.75rem;justify-content:center">
+                                                                                                                                    <div style="width:32px;height:32px;border-radius:7px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                                                                                                                                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="var(--teal)" stroke-width="1.75" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                                                                                                                    </div>
+                                                                                                                                    <div style="text-align:left;flex:1;min-width:0">
+                                                                                                                                        <div style="font-size:.82rem;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(file.name)}</div>
+                                                                                                                                        <div style="font-size:.7rem;color:var(--muted)">${(file.size / 1024).toFixed(1)} KB</div>
+                                                                                                                                    </div>
+                                                                                                                                    <button type="button" onclick="clearRequiredSlot('${slotKey}')"
+                                                                                                                                            style="background:none;border:none;cursor:pointer;color:#dc2626;padding:4px;flex-shrink:0">
+                                                                                                                                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="1.75" fill="none"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                                                                                                                    </button>
+                                                                                                                                </div>`;
+                                                    zone.style.borderColor = 'var(--teal)';
+                                                    zone.style.background = 'var(--teal-light)';
+                                                    zone.style.cursor = 'default';
+                                                    zone.onclick = null;
 
-                                    function handleFiles() { handleFilesFromList(fileInput.files); }
+                                                    document.getElementById(`slot-done-${slotKey}`).style.display = 'inline-block';
 
-                                    function handleFilesFromList(files) {
-                                        Array.from(files).forEach(file => {
-                                            if (file.size > 10 * 1024 * 1024) {
-                                                showToast(`${file.name} exceeds 10MB`, true);
-                                                return;
-                                            }
-                                            pendingFiles.push({ file, type: selectedDocType });
-                                            renderPendingFile(file, selectedDocType, pendingFiles.length - 1);
-                                        });
-                                        rebuildFileInputs();
-                                        uploadZone.classList.remove('error');
-                                        document.getElementById('uploadError').classList.remove('show');
-                                    }
+                                                    // Clear any error state
+                                                    zone.classList.remove('error');
+                                                    rebuildRequiredInputs();
+                                                }
 
-                                    function renderPendingFile(file, type, idx) {
-                                        const item = document.createElement('div');
-                                        item.className = 'file-item';
-                                        item.dataset.pendingIdx = idx;
-                                        item.innerHTML = `
-                                                                                                                                                                                                                                <div class="file-icon">
-                                                                                                                                                                                                                                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                <div class="file-info">
-                                                                                                                                                                                                                                    <div class="file-name">${escHtml(file.name)}</div>
-                                                                                                                                                                                                                                    <div class="file-meta">${escHtml(type)} · ${(file.size / 1024).toFixed(1)} KB</div>
-                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                <button type="button" class="file-remove" onclick="removePendingFile(${idx}, this)">
-                                                                                                                                                                                                                                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                                                                                                                                                                                                                                </button>`;
-                                        fileList.appendChild(item);
-                                    }
+                                                function clearRequiredSlot(slotKey) {
+                                                    requiredSlots[slotKey] = null;
 
-                                    function removePendingFile(idx, btn) {
-                                        pendingFiles[idx] = null;
-                                        btn.closest('.file-item').remove();
-                                        rebuildFileInputs();
-                                    }
+                                                    const docType = slotKey === 'business-deck' ? 'Business Deck' : 'CAC Document';
+                                                    const label = slotKey === 'business-deck' ? 'Upload Business Deck' : 'Upload CAC Document';
+                                                    const inputId = `input-${slotKey}`;
+                                                    const zone = document.getElementById(`zone-${slotKey}`);
 
-                                    function rebuildFileInputs() {
-                                        docTypeInputs.innerHTML = '';
-                                        pendingFiles.forEach(pf => {
-                                            if (!pf) return;
-                                            const inp = document.createElement('input');
-                                            inp.type = 'hidden';
-                                            inp.name = 'DocumentTypes';
-                                            inp.value = pf.type;
-                                            docTypeInputs.appendChild(inp);
-                                        });
+                                                    zone.style.borderColor = '';
+                                                    zone.style.background = '';
+                                                    zone.style.cursor = 'pointer';
+                                                    zone.onclick = () => document.getElementById(inputId).click();
+                                                    zone.innerHTML = `
+                                                                                                                                <input type="file" id="${inputId}" style="display:none"
+                                                                                                                                       accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg"
+                                                                                                                                       onchange="handleRequiredUpload(this,'${docType}','${slotKey}')" />
+                                                                                                                                <div style="display:flex;align-items:center;gap:.75rem;justify-content:center">
+                                                                                                                                    <div class="upload-icon" style="width:32px;height:32px;margin:0;flex-shrink:0">
+                                                                                                                                        <svg viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                                                                                                                    </div>
+                                                                                                                                    <div style="text-align:left">
+                                                                                                                                        <div class="upload-title" style="font-size:.82rem">${label}</div>
+                                                                                                                                        <div class="upload-sub">PDF, Word, PowerPoint, Images</div>
+                                                                                                                                    </div>
+                                                                                                                                </div>`;
 
-                                        const dt = new DataTransfer();
-                                        pendingFiles.forEach(pf => { if (pf) dt.items.add(pf.file); });
-                                        fileInput.files = dt.files;
-                                    }
+                                                    document.getElementById(`slot-done-${slotKey}`).style.display = 'none';
+                                                    rebuildRequiredInputs();
+                                                }
 
-                                    async function removeExistingDoc(docId, btn) {
-                                        const item = btn.closest('.file-item');
-                                        btn.disabled = true;
-                                        try {
-                                            const fd = new FormData();
-                                            fd.append('documentId', docId);
-                                            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-                                            fd.append('__RequestVerificationToken', token);
-                                            const res = await fetch('/Application/DeleteDocument', { method: 'POST', body: fd });
-                                            if (res.ok) item.remove();
-                                            else showToast('Could not delete document', true);
-                                        } catch {
-                                            showToast('Could not delete document', true);
-                                        }
-                                    }
+                                                // Inject required files into a hidden input list so they submit with the form
+                                                function rebuildRequiredInputs() {
+                                                    // Remove previously injected required inputs
+                                                    document.querySelectorAll('.required-file-input').forEach(el => el.remove());
 
-                                    function escHtml(s) {
-                                        return String(s)
-                                            .replace(/&/g, '&amp;')
-                                            .replace(/"/g, '&quot;')
-                                            .replace(/</g, '&lt;')
-                                            .replace(/>/g, '&gt;');
-                                    }
+                                                    // We can't set file inputs programmatically for required files
+                                                    // so we keep them in requiredSlots and rebuild the main fileInput DataTransfer
+                                                    // to include them alongside optional files
+                                                    rebuildAllFileInputs();
+                                                }
+                                                // ── Optional file uploads
+                                                const fileInput = document.getElementById('fileInput');
+                                                const fileList = document.getElementById('fileList');
+                                                const docTypeInputs = document.getElementById('docTypeInputs');
+                                                const uploadZone = document.getElementById('uploadZone');
+                                                let pendingFiles = [];
 
-                                    function setInvalid(id) { document.getElementById(id)?.classList.add('invalid'); }
-                                    function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
+                                                fileInput.addEventListener('change', handleFiles);
+                                                uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
+                                                uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
+                                                uploadZone.addEventListener('drop', e => {
+                                                    e.preventDefault();
+                                                    uploadZone.classList.remove('drag');
+                                                    handleFilesFromList(e.dataTransfer.files);
+                                                });
 
-                                    ['agreeTerms', 'agreePrivacy', 'agreeAgreement', 'agreeAccuracy'].forEach(id => {
-                                        document.getElementById(id)?.addEventListener('change', () => {
-                                            const map = { agreeTerms: 'grp-terms', agreePrivacy: 'grp-privacy', agreeAgreement: 'grp-agreement', agreeAccuracy: 'grp-accuracy' };
-                                            clearInvalid(map[id]);
-                                        });
-                                    });
+                                                function handleFiles() { handleFilesFromList(fileInput.files); }
 
-                                    function validate() {
-                                        let ok = true;
+                                                function handleFilesFromList(files) {
+                                                    Array.from(files).forEach(file => {
+                                                        if (file.size > 10 * 1024 * 1024) { showToast(`${file.name} exceeds 10MB`, true); return; }
+                                                        pendingFiles.push({ file, type: selectedDocType });
+                                                        renderPendingFile(file, selectedDocType, pendingFiles.length - 1);
+                                                    });
+                                                    rebuildAllFileInputs();
+                                                }
 
-                                        if (!policyReadState.terms || !document.getElementById('agreeTerms').checked) {
-                                            setInvalid('grp-terms');
-                                            ok = false;
-                                        }
+                                                function renderPendingFile(file, type, idx) {
+                                                    const item = document.createElement('div');
+                                                    item.className = 'file-item';
+                                                    item.dataset.pendingIdx = idx;
+                                                    item.innerHTML = `
+                                                                                                                                <div class="file-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                                                                                                                                <div class="file-info">
+                                                                                                                                    <div class="file-name">${escHtml(file.name)}</div>
+                                                                                                                                    <div class="file-meta">${escHtml(type)} · ${(file.size / 1024).toFixed(1)} KB</div>
+                                                                                                                                </div>
+                                                                                                                                <button type="button" class="file-remove" onclick="removePendingFile(${idx}, this)">
+                                                                                                                                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                                                                                                                </button>`;
+                                                    fileList.appendChild(item);
+                                                }
 
-                                        if (!policyReadState.privacy || !document.getElementById('agreePrivacy').checked) {
-                                            setInvalid('grp-privacy');
-                                            ok = false;
-                                        }
+                                                function removePendingFile(idx, btn) {
+                                                    pendingFiles[idx] = null;
+                                                    btn.closest('.file-item').remove();
+                                                    rebuildAllFileInputs();
+                                                }
 
-                                        if (!policyReadState.agremment || !document.getElementById('agreeAgreement').checked) {
-                                            setInvalid('grp-agreement');
-                                            ok = false;
-                                        }
+                                                function rebuildAllFileInputs() {
+                                                    // Rebuild hidden type inputs for optional files
+                                                    docTypeInputs.innerHTML = '';
 
-                                        if (!document.getElementById('agreeAccuracy').checked) {
-                                            setInvalid('grp-accuracy');
-                                            ok = false;
-                                        }
+                                                    const dt = new DataTransfer();
 
-                                        const hasPending = pendingFiles.some(pf => pf !== null);
-                                        const hasExisting = document.querySelectorAll('#fileList .file-item[data-docid]').length > 0;
+                                                    // 1. Add required files first
+                                                    Object.entries(requiredSlots).forEach(([slotKey, slot]) => {
+                                                        if (!slot) return;
+                                                        dt.items.add(slot.file);
+                                                        const inp = document.createElement('input');
+                                                        inp.type = 'hidden';
+                                                        inp.name = 'DocumentTypes';
+                                                        inp.value = slot.type;
+                                                        docTypeInputs.appendChild(inp);
+                                                    });
 
-                                        if (!hasPending && !hasExisting) {
-                                            document.getElementById('uploadZone').classList.add('error');
-                                            document.getElementById('uploadError').classList.add('show');
-                                            ok = false;
-                                        }
+                                                    // 2. Add optional files
+                                                    pendingFiles.forEach(pf => {
+                                                        if (!pf) return;
+                                                        dt.items.add(pf.file);
+                                                        const inp = document.createElement('input');
+                                                        inp.type = 'hidden';
+                                                        inp.name = 'DocumentTypes';
+                                                        inp.value = pf.type;
+                                                        docTypeInputs.appendChild(inp);
+                                                    });
 
-                                        if (!ok) {
-                                            document.querySelector('.invalid, .upload-zone.error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                        }
+                                                    fileInput.files = dt.files;
+                                                }
 
-                                        return ok;
-                                    }
+                                                async function removeExistingDoc(docId, btn) {
+                                                    const item = btn.closest('.file-item');
+                                                    btn.disabled = true;
+                                                    try {
+                                                        const fd = new FormData();
+                                                        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                                                        fd.append('documentId', docId);
+                                                        fd.append('__RequestVerificationToken', token);
+                                                        const res = await fetch('/Application/DeleteDocument', { method: 'POST', body: fd });
+                                                        if (res.ok) item.remove();
+                                                        else showToast('Could not delete document', true);
+                                                    } catch { showToast('Could not delete document', true); }
+                                                }
 
-                                    function showToast(msg, isError) {
-                                        const t = document.getElementById('toast');
-                                        t.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--green)';
-                                        document.getElementById('toastMsg').textContent = msg;
-                                        t.classList.add('show');
-                                        setTimeout(() => t.classList.remove('show'), 3000);
-                                    }
+                                                function escHtml(s) {
+                                                    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                                                }
 
-                                    document.getElementById('saveBtn').addEventListener('click', async () => {
-                                        const btn = document.getElementById('saveBtn');
-                                        btn.textContent = 'Saving...';
-                                        btn.disabled = true;
-                                        try {
-                                            const fd = new FormData();
-                                            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-                                            fd.append('__RequestVerificationToken', token);
-                                            fd.append('AdditionalInformation', textarea.value);
-                                            const res = await fetch('/Application/SaveAdditionalDraft', { method: 'POST', body: fd });
-                                            showToast(res.ok ? 'Draft saved' : 'Could not save', !res.ok);
-                                        } catch {
-                                            showToast('Could not save', true);
-                                        } finally {
-                                            btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save draft';
-                                            btn.disabled = false;
-                                        }
-                                    });
+                                                // ── Validation
+                                                function setInvalid(id) { document.getElementById(id)?.classList.add('invalid'); }
+                                                function clearInvalid(id) { document.getElementById(id)?.classList.remove('invalid'); }
 
-                                    document.getElementById('additionalForm').addEventListener('submit', function (e) {
-                                        if (!validate()) {
-                                            e.preventDefault();
-                                            return;
-                                        }
-                                        const btn = document.getElementById('submitBtn');
-                                        btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Submitting...';
-                                        btn.disabled = true;
-                                    });
-                            </script>
-                            <script>
-                                    const policyDocs = {
-                                        terms: {
-                                            title: 'Terms of Service',
-                                            url: '/NPI_4_0_Terms_of_Service.pdf',
-                                            checkboxId: 'agreeTerms',
-                                            statusId: 'termsStatus'
-                                        },
-                                        privacy: {
-                                            title: 'Privacy Policy',
-                                            url: '/NPI_4_0_Privacy_Policy.pdf',
-                                            checkboxId: 'agreePrivacy',
-                                            statusId: 'privacyStatus'
-                                        },
-                                        agreement: {
-                                            title: 'Competition Submission Agreement',
-                                            url: '/Competition_Submission_Agreement.pdf',
-                                            checkboxId: 'agreeAgreement',
-                                            statusId: 'agreementStatus'
-                                        }
-                                    };
+                                                ['agreeTerms', 'agreePrivacy', 'agreeAgreement', 'agreeAccuracy'].forEach(id => {
+                                                    document.getElementById(id)?.addEventListener('change', () => {
+                                                        const map = { agreeTerms: 'grp-terms', agreePrivacy: 'grp-privacy', agreeAgreement: 'grp-agreement', agreeAccuracy: 'grp-accuracy' };
+                                                        clearInvalid(map[id]);
+                                                    });
+                                                });
 
-                                    const policyOrder = ['terms', 'privacy', 'agreement'];
+                                                function validate() {
+                                                    let ok = true;
+                                                    const uploadError = document.getElementById('uploadError');
 
-                                    const policyReadState = {
-                                        terms: false,
-                                        privacy: false,
-                                        agreement: false
-                                    };
+                                                    // Check required documents
+                                                    const missingSlots = [];
+                                                    if (!requiredSlots['business-deck']) missingSlots.push('Business Deck');
+                                                    if (!requiredSlots['cac']) missingSlots.push('CAC Document');
 
-                                    let activePolicyKey = null;
-                                    let policyTimer = null;
-                                    let secondsLeft = 0;
+                                                    if (missingSlots.length > 0) {
+                                                        const msg = `Please upload the required document${missingSlots.length > 1 ? 's' : ''}: ${missingSlots.join(' and ')}`;
+                                                        uploadError.textContent = msg;
+                                                        uploadError.classList.add('show');
 
-                                    const policyModal = document.getElementById('policyModal');
-                                    const policyFrame = document.getElementById('policyFrame');
-                                    const policyModalTitle = document.getElementById('policyModalTitle');
-                                    const policyCountdown = document.getElementById('policyCountdown');
-                                    const policyConfirmBtn = document.getElementById('policyConfirmBtn');
+                                                        if (!requiredSlots['business-deck']) document.getElementById('zone-business-deck').classList.add('error');
+                                                        if (!requiredSlots['cac']) document.getElementById('zone-cac').classList.add('error');
+                                                        ok = false;
+                                                    } else {
+                                                        uploadError.classList.remove('show');
+                                                        document.getElementById('zone-business-deck').classList.remove('error');
+                                                        document.getElementById('zone-cac').classList.remove('error');
+                                                    }
 
-                                    function openPolicyModal(key) {
-                                        const doc = policyDocs[key];
-                                        activePolicyKey = key;
-                                        secondsLeft = 10;
+                                                    if (!policyReadState.terms || !document.getElementById('agreeTerms').checked) { setInvalid('grp-terms'); ok = false; }
+                                                    if (!policyReadState.privacy || !document.getElementById('agreePrivacy').checked) { setInvalid('grp-privacy'); ok = false; }
+                                                    if (!policyReadState.agreement || !document.getElementById('agreeAgreement').checked) { setInvalid('grp-agreement'); ok = false; }
+                                                    if (!document.getElementById('agreeAccuracy').checked) { setInvalid('grp-accuracy'); ok = false; }
 
-                                        policyModalTitle.textContent = doc.title;
-                                        policyFrame.src = doc.url;
-                                        policyConfirmBtn.disabled = true;
-                                        policyCountdown.textContent = `Please read for ${secondsLeft} seconds`;
+                                                    if (!ok) document.querySelector('.invalid, .upload-zone.error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                    return ok;
+                                                }
 
-                                        policyModal.classList.add('open');
-                                        policyModal.setAttribute('aria-hidden', 'false');
-                                        document.body.style.overflow = 'hidden';
+                                                // ── Toast
+                                                function showToast(msg, isError) {
+                                                    const t = document.getElementById('toast');
+                                                    t.querySelector('svg').style.stroke = isError ? '#f87171' : 'var(--green)';
+                                                    document.getElementById('toastMsg').textContent = msg;
+                                                    t.classList.add('show');
+                                                    setTimeout(() => t.classList.remove('show'), 3000);
+                                                }
 
-                                        clearInterval(policyTimer);
-                                        policyTimer = setInterval(() => {
-                                            secondsLeft -= 1;
+                                                // ── Submit
+                                                document.getElementById('additionalForm').addEventListener('submit', function (e) {
+                                                    if (!validate()) { e.preventDefault(); return; }
+                                                    const btn = document.getElementById('submitBtn');
+                                                    btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="white" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Submitting...';
+                                                    btn.disabled = true;
+                                                });
+                                        </script>
+                                        <script>
+                                                const policyDocs = {
+                                                    terms: {
+                                                        title: 'Terms of Service',
+                                                        url: '/NPI_4_0_Terms_of_Service.pdf',
+                                                        checkboxId: 'agreeTerms',
+                                                        statusId: 'termsStatus'
+                                                    },
+                                                    privacy: {
+                                                        title: 'Privacy Policy',
+                                                        url: '/NPI_4_0_Privacy_Policy.pdf',
+                                                        checkboxId: 'agreePrivacy',
+                                                        statusId: 'privacyStatus'
+                                                    },
+                                                    agreement: {
+                                                        title: 'Competition Submission Agreement',
+                                                        url: '/Competition_Submission_Agreement.pdf',
+                                                        checkboxId: 'agreeAgreement',
+                                                        statusId: 'agreementStatus'
+                                                    }
+                                                };
 
-                                            if (secondsLeft > 0) {
-                                                policyCountdown.textContent = `Please read for ${secondsLeft} seconds`;
-                                                return;
-                                            }
+                                                const policyOrder = ['terms', 'privacy', 'agreement'];
 
-                                            clearInterval(policyTimer);
-                                            policyCountdown.textContent = 'You can now confirm that you have read this';
-                                            policyConfirmBtn.disabled = false;
-                                        }, 1000);
-                                    }
+                                                const policyReadState = {
+                                                    terms: false,
+                                                    privacy: false,
+                                                    agreement: false
+                                                };
 
-                                    function closePolicyModal() {
-                                        clearInterval(policyTimer);
-                                        policyTimer = null;
-                                        policyModal.classList.remove('open');
-                                        policyModal.setAttribute('aria-hidden', 'true');
-                                        policyFrame.src = '';
-                                        document.body.style.overflow = '';
-                                        activePolicyKey = null;
-                                    }
+                                                let activePolicyKey = null;
+                                                let policyTimer = null;
+                                                let secondsLeft = 0;
 
-                                    function openNextUnreadPolicy() {
-                                        const nextKey = policyOrder.find(key => !policyReadState[key]);
-                                        if (nextKey) {
-                                            openPolicyModal(nextKey);
-                                        }
-                                    }
+                                                const policyModal = document.getElementById('policyModal');
+                                                const policyFrame = document.getElementById('policyFrame');
+                                                const policyModalTitle = document.getElementById('policyModalTitle');
+                                                const policyCountdown = document.getElementById('policyCountdown');
+                                                const policyConfirmBtn = document.getElementById('policyConfirmBtn');
 
-                                    policyConfirmBtn.addEventListener('click', () => {
-                                        if (!activePolicyKey) return;
+                                                function openPolicyModal(key) {
+                                                    const doc = policyDocs[key];
+                                                    activePolicyKey = key;
+                                                    secondsLeft = 10;
 
-                                        const doc = policyDocs[activePolicyKey];
-                                        const checkbox = document.getElementById(doc.checkboxId);
-                                        const status = document.getElementById(doc.statusId);
-                                        const completedKey = activePolicyKey;
+                                                    policyModalTitle.textContent = doc.title;
+                                                    policyFrame.src = doc.url;
+                                                    policyConfirmBtn.disabled = true;
+                                                    policyCountdown.textContent = `Please read for ${secondsLeft} seconds`;
 
-                                        policyReadState[completedKey] = true;
-                                        checkbox.disabled = false;
-                                        checkbox.checked = true;
+                                                    policyModal.classList.add('open');
+                                                    policyModal.setAttribute('aria-hidden', 'false');
+                                                    document.body.style.overflow = 'hidden';
 
-                                        status.textContent = 'Read confirmed';
-                                        status.classList.add('done');
+                                                    clearInterval(policyTimer);
+                                                    policyTimer = setInterval(() => {
+                                                        secondsLeft -= 1;
 
-                                        closePolicyModal();
+                                                        if (secondsLeft > 0) {
+                                                            policyCountdown.textContent = `Please read for ${secondsLeft} seconds`;
+                                                            return;
+                                                        }
 
-                                        setTimeout(() => {
-                                            openNextUnreadPolicy();
-                                        }, 200);
-                                    });
+                                                        clearInterval(policyTimer);
+                                                        policyCountdown.textContent = 'You can now confirm that you have read this';
+                                                        policyConfirmBtn.disabled = false;
+                                                    }, 1000);
+                                                }
 
-                                    window.addEventListener('load', () => {
-                                        openNextUnreadPolicy();
-                                    });
-                            </script>
+                                                function closePolicyModal() {
+                                                    clearInterval(policyTimer);
+                                                    policyTimer = null;
+                                                    policyModal.classList.remove('open');
+                                                    policyModal.setAttribute('aria-hidden', 'true');
+                                                    policyFrame.src = '';
+                                                    document.body.style.overflow = '';
+                                                    activePolicyKey = null;
+                                                }
 
-                        </body>
+                                                function openNextUnreadPolicy() {
+                                                    const nextKey = policyOrder.find(key => !policyReadState[key]);
+                                                    if (nextKey) {
+                                                        openPolicyModal(nextKey);
+                                                    }
+                                                }
 
-                    </html>
+                                                policyConfirmBtn.addEventListener('click', () => {
+                                                    if (!activePolicyKey) return;
+
+                                                    const doc = policyDocs[activePolicyKey];
+                                                    const checkbox = document.getElementById(doc.checkboxId);
+                                                    const status = document.getElementById(doc.statusId);
+                                                    const completedKey = activePolicyKey;
+
+                                                    policyReadState[completedKey] = true;
+                                                    checkbox.disabled = false;
+                                                    checkbox.checked = true;
+
+                                                    status.textContent = 'Read confirmed';
+                                                    status.classList.add('done');
+
+                                                    closePolicyModal();
+
+                                                    setTimeout(() => {
+                                                        openNextUnreadPolicy();
+                                                    }, 200);
+                                                });
+
+                                                window.addEventListener('load', () => {
+                                                    openNextUnreadPolicy();
+                                                });
+                                        </script>
+
+                                    </body>
+
+                                </html>

@@ -42,11 +42,6 @@ namespace Nsia.Controllers
                 ModelState.AddModelError("", "You must agree to the Terms of Use and Privacy Policy.");
                 return View(model);
             }
-            if (!model.Agreement)
-            {
-                ModelState.AddModelError("", "You must agree to the Competition Submission Agreement.");
-                return View(model);
-            }
 
             var exists = await _db.Applications
                 .AnyAsync(a => a.Email == model.Email.ToLowerInvariant());
