@@ -707,32 +707,41 @@ ul {
   display: block;
 }
 
+.main-menu__wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .main-menu__left {
   position: relative;
-  display: block;
-  float: left;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0; /* allows it to shrink */
 }
 
 .main-menu__logo {
   position: relative;
   display: block;
-  float: left;
   padding: 38.5px 0;
-  margin-right: 100px;
-  /* margin-right: 140px; */
+  margin-right: 60px; /* reduce if still tight */
+  flex-shrink: 0;
 }
 
 .main-menu__main-menu-box {
   position: relative;
   display: block;
-  float: left;
+  min-width: 0; /* allows shrinking */
 }
 
 .main-menu__right {
   position: relative;
   display: block;
-  /* float: right; */
   padding: 35px 0;
+  flex-shrink: 0; /* never let the button shrink */
+  padding-left: 20px; /* guarantee gap between nav and button */
 }
 
 .main-menu__search-call {
@@ -2681,9 +2690,24 @@ ul {
 .hero_main .container p {
   color: black;
   margin-top: 1rem;
-  font-size: 600;
+  font-size: 16px;
 }
+@media (max-width: 768px) {
+  .hero_main {
+    background-image: none;
+    height: auto;
+    padding: 3rem 0;
+  }
 
+  .hero_main .container {
+    max-width: 100%;
+    margin: 0 1rem !important;
+  }
+
+  .hero_main .container h2 {
+    font-size: 38px;
+  }
+}
 .main-slider-three h2 {
   font-size: 70px;
   color: var(--notech-white);
@@ -3226,9 +3250,9 @@ ul {
 }
 
 .criteria-text {
-  padding-left: 18px;
+  font-size: 16px;
   margin: 0;
-  line-height: 1.8;
+  line-height: 30px;
   text-align: justify;
 }
 
@@ -10389,7 +10413,7 @@ ul {
 
 .service-details__text-1 {
   font-size: 16px;
-  font-weight: 200;
+  /* font-weight: 200; */
   line-height: 30px;
   text-align: justify;
 }
