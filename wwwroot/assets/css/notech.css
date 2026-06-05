@@ -2665,9 +2665,7 @@ ul {
   right: 0;
   height: 100%;
   background: rgba(32, 161, 184, 0.7) no-repeat center center/cover;
-  /* background: url("/assets/images/overlay.webp") #f6fcfd00 no-repeat center
-    center/cover; */
-  /* z-index: -1; */
+
   opacity: 0.1;
 }
 
@@ -2694,8 +2692,7 @@ ul {
 }
 @media (max-width: 768px) {
   .hero_main {
-    background-image: none;
-    height: auto;
+    height: 80vh !important;
     padding: 3rem 0;
   }
 
@@ -3218,8 +3215,9 @@ ul {
 .benefit-item {
   position: relative;
   padding-left: 20px;
-  margin-bottom: 15px;
-  line-height: 1.8;
+  margin: 0;
+  line-height: 30px;
+  font-size: 16px;
 }
 
 .benefit-item::before {
@@ -3267,18 +3265,16 @@ ul {
   padding-left: 22px;
   margin-bottom: 18px;
 }
-
+.eligibility-item p {
+  font-size: 16px;
+  margin: 0;
+  line-height: 30px;
+}
 .eligibility-item::before {
   content: "-";
   position: absolute;
   left: 0;
   top: 0;
-  font-weight: 700;
-}
-
-.eligibility-item p {
-  margin: 0;
-  line-height: 1.8;
 }
 
 .eligibility-heading {
@@ -3341,7 +3337,9 @@ ul {
 
 .program-stage p {
   margin: 0;
-  line-height: 1.8;
+  font-size: 16px;
+  line-height: 30px;
+
   text-align: justify;
 }
 
@@ -3360,13 +3358,12 @@ ul {
   position: absolute;
   left: 0;
   top: 0;
-  font-weight: 700;
-  font-size: 1.1em;
 }
 
 .prize-item p {
   margin: 0;
-  line-height: 1.8;
+  line-height: 30px;
+  font-size: 16px;
   text-align: justify;
 }
 
@@ -3379,18 +3376,18 @@ ul {
   content: "";
   width: 100%;
   height: 100%;
-  background: -webkit-gradient(
+  /* background: -webkit-gradient(
     linear,
     left top,
     right top,
     from(rgba(255, 255, 255, 0)),
     to(rgba(255, 255, 255, 0.3))
-  );
-  background: linear-gradient(
+  ); */
+  /* background: linear-gradient(
     to right,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0.3) 100%
-  );
+  ); */
   -webkit-transform: skewX(-25deg);
   transform: skewX(-25deg);
   z-index: 1;
@@ -5056,8 +5053,25 @@ ul {
 --------------------------------------------------------------*/
 .brand-one {
   position: relative;
-  display: block;
-  padding: 0px 0 119px;
+  padding: 50px 0;
+}
+
+.brand-one .container {
+  position: relative;
+  padding-top: 70px;
+}
+
+.brand-one__title {
+  color: black;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.brand-one__title:before,
+.brand-one__title:after {
+  display: none;
 }
 
 .brand-one .swiper-slide {
@@ -5068,111 +5082,46 @@ ul {
 }
 
 .brand-one .swiper-slide img {
-  max-width: 100%;
-  max-height: 100px;
+  max-width: 80%;
+  max-height: 80px;
   width: auto;
   height: auto;
   object-fit: contain;
-}
-@media (max-width: 767px) {
-  .brand-one {
-    margin-top: 50px !important;
-  }
-
-  .brand-one__title {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .brand-one .swiper-slide {
-    height: 70px;
-  }
-
-  .brand-one .swiper-slide img {
-    max-height: 45px;
-  }
-}
-.brand-one--home-three {
-  padding-top: 317px;
-  margin-top: -227px;
-  background-image: url(../images/backgrounds/brand-logo-bg-1-1.png);
-}
-
-.brand-one .container {
-  position: relative;
-  padding-top: 110px;
-}
-.swiper-wrapper {
-  align-items: center;
-  justify-content: center;
-}
-
-.brand-one__title {
-  color: black;
-  /* color: var(--notech-black); */
-  font-size: 20px;
-  font-weight: 700;
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  width: 1170px;
-  text-align: center;
-  margin: 0 auto;
-  margin-top: -3px;
-}
-
-.brand-one__title:before {
-  position: absolute;
-  top: 50%;
-  bottom: 0;
-  left: 0;
-  content: "";
-  height: 1px;
-  background-color: var(--notech-bdr-color);
-  max-width: 454px;
-  width: 100%;
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
-
-.brand-one__title:after {
-  position: absolute;
-  top: 50%;
-  bottom: 0;
-  right: 0;
-  content: "";
-  height: 1px;
-  background-color: var(--notech-bdr-color);
-  max-width: 454px;
-  width: 100%;
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
-
-.brand-one .swiper-slide {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
-.brand-one .swiper-slide img {
-  -webkit-transition: 500ms;
-  transition: 500ms;
-  /* opacity: 0.15; */
-  max-width: 80%;
+  transition: 0.3s;
 }
 
 .brand-one .swiper-slide img:hover {
   opacity: 0.5;
 }
 
+.swiper-wrapper {
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .brand-one {
+    margin-top: -50px !important;
+    padding-bottom: 50px;
+  }
+
+  .brand-one .container {
+    padding-top: 40px;
+  }
+
+  .brand-one__title {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .brand-one .swiper-slide {
+    height: 80px;
+  }
+
+  .brand-one .swiper-slide img {
+    max-width: 70%;
+    max-height: 50px;
+  }
+}
 /*--------------------------------------------------------------
 # Site Footer
 --------------------------------------------------------------*/
@@ -10330,14 +10279,14 @@ ul {
   width: auto;
 }
 
-.service-details__need-help-title {
+/* .service-details__need-help-title {
   font-size: 16px;
   color: var(--notech-white);
   line-height: 31px;
   font-weight: 300;
   position: relative;
   z-index: 5;
-}
+} */
 
 .service-details__need-help-contact {
   position: relative;
@@ -10399,24 +10348,24 @@ ul {
   margin-top: 30px;
 }
 
-.service-details__content-title {
-  font-size: 40px;
-  font-weight: 700;
-  line-height: 50px;
-  margin-bottom: 20px;
-}
-.service-details__content-title.smaller {
-  font-size: 30px;
-  line-height: 40px;
-  color: var(--notech-base);
+.service-details__content h4,
+h5 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 400;
+  color: black;
+  /* color: var(--notech-black); */
+  position: relative;
+  -webkit-transition: all 500ms ease;
+  transition: all 500ms ease;
 }
 
-.service-details__text-1 {
+/* .service-details__text-1 {
   font-size: 16px;
-  /* font-weight: 200; */
   line-height: 30px;
   text-align: justify;
-}
+} */
 
 .service-details__text-2 {
   font-size: 20px;
