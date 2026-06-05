@@ -262,32 +262,11 @@
               <div class="contact-details__right">
                 <div class="section-title text-left">
                   <div class="section-title__tagline-box">
-                    <!-- <span class="section-title__tagline">Contact with us</span> -->
-                    <!-- <div class="section-title-shape">
-                      <img
-                        src="assets/images/shapes/section-title-shape.png"
-                        alt=""
-                      />
-                    </div> -->
                   </div>
                   <h2 class="section-title__title">Get in touch with us</h2>
                 </div>
-                <!-- <p class="contact-details__text">
-                  Lorem ipsum dolor sit amet, consectetur notted adipis not
-                  icing elit sed do eiusmod tempor incididunt.
-                </p> -->
+                
                 <ul class="list-unstyled contact-details__info">
-                  <!-- <li>
-                    <div class="icon">
-                      <span class="icon-telephone"></span>
-                    </div>
-                    <div class="text">
-                      <p>Have any question?</p>
-                      <a href="tel:980009850"
-                        ><span>Free</span> +98 (000)-9850</a
-                      >
-                    </div>
-                  </li> -->
                   <li>
                     <div class="icon">
                       <span class="fa fa-envelope"></span>
@@ -297,15 +276,6 @@
                       <a href="mailto:info@nsia-ip.com">info@nsia-ip.com</a>
                     </div>
                   </li>
-                  <!-- <li>
-                    <div class="icon">
-                      <span class="icon-pin"></span>
-                    </div>
-                    <div class="text">
-                      <p>Visit anytime</p>
-                      <span>66 broklyn golden street. New York</span>
-                    </div>
-                  </li> -->
                 </ul>
               </div>
             </div>
@@ -332,57 +302,43 @@
           <div class="row">
             <div class="col-xl-12">
               <div class="contact-page__form">
-                <form
-                  action="https://nsia.netlify.app/assets/inc/sendemail.php"
-                  class="comment-one__form contact-form-validated"
-                  novalidate="novalidate"
-                >
+                <form action="https://formsubmit.co/info@nsia-ip.com" method="POST">
+                  <input type="hidden" name="_subject" value="New Contact Form Submission">
+                  <input type="hidden" name="_captcha" value="false">
+                  <input type="hidden" name="_template" value="table">
+                
                   <div class="row">
                     <div class="col-xl-6">
                       <div class="comment-form__input-box">
-                        <input
-                          type="text"
-                          placeholder="Your name"
-                          name="name"
-                        />
+                        <input type="text" placeholder="Your name" name="name" required />
                       </div>
                     </div>
+                
                     <div class="col-xl-6">
                       <div class="comment-form__input-box">
-                        <input
-                          type="email"
-                          placeholder="Email address"
-                          name="email"
-                        />
+                        <input type="email" placeholder="Email address" name="email" required />
                       </div>
                     </div>
+                
                     <div class="col-xl-6">
                       <div class="comment-form__input-box">
-                        <input
-                          type="text"
-                          placeholder="Phone number"
-                          name="Phone"
-                        />
+                        <input type="text" placeholder="Phone number" name="phone" />
                       </div>
                     </div>
+                
                     <div class="col-xl-6">
                       <div class="comment-form__input-box">
-                        <input
-                          type="text"
-                          placeholder="Subject"
-                          name="Subject"
-                        />
+                        <input type="text" placeholder="Subject" name="subject" />
                       </div>
                     </div>
                   </div>
+                
                   <div class="row">
                     <div class="col-xl-12">
                       <div class="comment-form__input-box text-message-box">
-                        <textarea
-                          name="message"
-                          placeholder="Write comment"
-                        ></textarea>
+                        <textarea name="message" placeholder="Write comment" required></textarea>
                       </div>
+                
                       <div class="comment-form__btn-box">
                         <button type="submit" class="thm-btn comment-form__btn">
                           Send a message
@@ -459,30 +415,7 @@
                         alt=""
                     /></a>
                   </div>
-                  <!-- <div class="footer-widget__about-text-box">
-                    <p class="footer-widget__about-text">
-                      Subsrcibe for our upcoming latest articles and news
-                      resources
-                    </p>
-                  </div>
-                  <form class="footer-widget__newsletter-form">
-                    <div class="footer-widget__newsletter-input-box">
-                      <input
-                        type="email"
-                        placeholder="Email address"
-                        name="email"
-                      />
-                      <button
-                        type="submit"
-                        class="footer-widget__newsletter-btn"
-                      >
-                        <img
-                          src="assets/images/icon/footer-widget-newsletter-send-icon.png"
-                          alt=""
-                        />
-                      </button>
-                    </div>
-                  </form> -->
+                  
                 </div>
               </div>
               <div
@@ -498,8 +431,6 @@
                     <li><a href='gallery.html'>Gallery</a></li>
                     <li><a href='faq.html'>FAQs</a></li>
                     <li><a href='contact.html'>Contact Us</a></li>
-                    <!-- <li><a href="projects-page-1.html">Our projects</a></li> -->
-                    <!-- <li><a href="contact.html">Contacts</a></li> -->
                   </ul>
                 </div>
               </div>
@@ -514,14 +445,7 @@
                   <ul
                     class="footer-widget__contact-list list-unstyled clearfix"
                   >
-                    <!-- <li>
-                      <div class="icon">
-                        <span class="icon-telephone"></span>
-                      </div>
-                      <div class="text">
-                        <p><a href="tel:980009850">+98 (000)-9850</a></p>
-                      </div>
-                    </li> -->
+                   
                     <li>
                       <div class="icon">
                         <span class="fa fa-envelope"></span>
@@ -534,17 +458,7 @@
                         </p>
                       </div>
                     </li>
-                    <!-- <li>
-                      <div class="icon">
-                        <span class="icon-pin"></span>
-                      </div>
-                      <div class="text">
-                        <p>
-                          66 broklyn golden street line <br />
-                          new york
-                        </p>
-                      </div>
-                    </li> -->
+                    
                   </ul>
                 </div>
               </div>
