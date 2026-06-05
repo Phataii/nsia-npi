@@ -3114,23 +3114,27 @@ ul {
   display: block;
   overflow: hidden;
   margin-left: -100px;
+  height: 80vh;
+  width: 46vw;
+  background-color: #000;
 }
 
 @media (max-width: 767px) {
   .get-to-know__img {
     margin-left: 0;
-    margin-top: 0;
+    margin-top: 20px;
     padding-top: 0;
     width: 100%;
+    height: auto;
     overflow: hidden;
   }
 
-  .get-to-know__img img {
+  /* .get-to-know__img img {
     width: 100%;
     height: auto;
     display: block;
     object-fit: cover;
-  }
+  } */
 }
 @media (max-width: 767px) {
   .get-to-know {
