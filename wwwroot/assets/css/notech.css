@@ -3113,9 +3113,10 @@ ul {
   position: relative;
   display: block;
   overflow: hidden;
-  margin-left: -100px;
-  height: 80vh;
-  width: 46vw;
+  margin-left: -50px;
+  margin-top: 20px;
+  height: 70vh;
+  width: 100%;
   background-color: #000;
 }
 

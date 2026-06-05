@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Z1xsBFpIcHsBezd6sXg3wZ58spJ6xytovVw707XdV4Y=",
+  "Hash": "hDtuJ8oqZI2aC3ebYmYKsUgltmlE4ovq8kvBDCI06J4=",
   "Source": "nsia",
   "BasePath": "_content/nsia",
   "Mode": "Default",
@@ -3684,12 +3684,12 @@
       "OriginalItemSpec": "wwwroot/assets/images/gallery/gallery9.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/1.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/1.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/1.JPG",
+      "RelativePath": "assets/images/gallery3.0/1.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -3700,15 +3700,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/1.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/1.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/10.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/10.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/10.JPG",
+      "RelativePath": "assets/images/gallery3.0/10.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -3719,7 +3719,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/10.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/10.jpg"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/11.jpg",
@@ -3741,12 +3741,12 @@
       "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/11.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/12.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/12.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/12.JPG",
+      "RelativePath": "assets/images/gallery3.0/12.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -3757,7 +3757,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/12.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/12.jpg"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/13.jpg",
@@ -3779,12 +3779,12 @@
       "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/13.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/14.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/14.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/14.JPG",
+      "RelativePath": "assets/images/gallery3.0/14.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -3795,15 +3795,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/14.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/14.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/15.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/15.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/15.JPG",
+      "RelativePath": "assets/images/gallery3.0/15.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -3814,15 +3814,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/15.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/15.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/16.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/16.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/16.JPG",
+      "RelativePath": "assets/images/gallery3.0/16.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -3833,7 +3833,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/16.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/16.jpg"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/17.jpg",
@@ -3893,12 +3893,12 @@
       "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/19.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/2.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/2.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/2.JPG",
+      "RelativePath": "assets/images/gallery3.0/2.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -3909,7 +3909,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/2.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/2.jpg"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/20.jpg",
@@ -3969,12 +3969,12 @@
       "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/22.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/23.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/23.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/23.JPG",
+      "RelativePath": "assets/images/gallery3.0/23.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -3985,15 +3985,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/23.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/23.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/24.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/24.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/24.JPG",
+      "RelativePath": "assets/images/gallery3.0/24.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4004,15 +4004,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/24.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/24.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/25.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/25.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/25.JPG",
+      "RelativePath": "assets/images/gallery3.0/25.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4023,15 +4023,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/25.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/25.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/26.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/26.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/26.JPG",
+      "RelativePath": "assets/images/gallery3.0/26.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4042,15 +4042,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/26.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/26.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/27.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/27.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/27.JPG",
+      "RelativePath": "assets/images/gallery3.0/27.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4061,15 +4061,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/27.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/27.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/28.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/28.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/28.JPG",
+      "RelativePath": "assets/images/gallery3.0/28.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4080,15 +4080,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/28.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/28.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/29.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/29.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/29.JPG",
+      "RelativePath": "assets/images/gallery3.0/29.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4099,15 +4099,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/29.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/29.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/3.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/3.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/3.JPG",
+      "RelativePath": "assets/images/gallery3.0/3.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4118,15 +4118,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/3.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/3.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/30.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/30.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/30.JPG",
+      "RelativePath": "assets/images/gallery3.0/30.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4137,15 +4137,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/30.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/30.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/31.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/31.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/31.JPG",
+      "RelativePath": "assets/images/gallery3.0/31.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4156,15 +4156,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/31.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/31.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/32.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/32.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/32.JPG",
+      "RelativePath": "assets/images/gallery3.0/32.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4175,15 +4175,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/32.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/32.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/33.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/33.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/33.JPG",
+      "RelativePath": "assets/images/gallery3.0/33.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4194,15 +4194,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/33.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/33.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/4.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/4.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/4.JPG",
+      "RelativePath": "assets/images/gallery3.0/4.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4213,15 +4213,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/4.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/4.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/5.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/5.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/5.JPG",
+      "RelativePath": "assets/images/gallery3.0/5.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4232,15 +4232,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/5.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/5.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/6.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/6.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/6.JPG",
+      "RelativePath": "assets/images/gallery3.0/6.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4251,15 +4251,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/6.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/6.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/7.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/7.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/7.JPG",
+      "RelativePath": "assets/images/gallery3.0/7.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4270,15 +4270,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/7.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/7.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/8.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/8.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/8.JPG",
+      "RelativePath": "assets/images/gallery3.0/8.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4289,15 +4289,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/8.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/8.jpg"
     },
     {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/9.JPG",
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/9.jpg",
       "SourceId": "nsia",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
       "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/gallery3.0/9.JPG",
+      "RelativePath": "assets/images/gallery3.0/9.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -4308,7 +4308,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/9.JPG"
+      "OriginalItemSpec": "wwwroot/assets/images/gallery3.0/9.jpg"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/gallery3.0/NPI/about_npi.JPG",
@@ -4537,6 +4537,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/assets/images/management.jpeg"
+    },
+    {
+      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/md.jpg",
+      "SourceId": "nsia",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
+      "BasePath": "_content/nsia",
+      "RelativePath": "assets/images/md.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/assets/images/md.jpg"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/prize.png",
