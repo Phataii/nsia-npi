@@ -92,7 +92,7 @@ namespace nsia.Services
                     style='background:white;border-radius:12px;border:1px solid rgba(0,0,0,0.08);padding:32px;text-align:center;margin-bottom:16px'>
                     <p style='font-size:13px;color:#5a6b60;margin:0 0 16px'>Your verification code</p>
                     <div
-                        style='font-family:Georgia,serif;font-size:48px;font-weight:700;color:#0d1a12;letter-spacing:.25em;margin:0 0 16px'>
+                        style='font-family:Georgia,serif;font-size:40px;font-weight:700;color:#0d1a12;letter-spacing:.25em;margin:0 0 16px'>
                         {otp}
                     </div>
                     <p style='font-size:12px;color:#5a6b60;margin:0'>
@@ -156,7 +156,7 @@ namespace nsia.Services
                     <p style='font-size:12px;color:#065a2f;margin:0 0 4px;font-weight:500'>Next steps</p>
                     <p style='font-size:12px;color:#08703a;margin:0;line-height:1.6'>
                         Log in to your dashboard and complete all 10 sections of your application
-                        before the deadline of <strong>5 July 2026</strong>.
+                        before the deadline of <strong>8 July 2026</strong>.
                     </p>
                 </div>
                 <p style='font-size:11px;color:#aab5af;text-align:center;margin:0'>

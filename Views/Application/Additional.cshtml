@@ -1387,7 +1387,7 @@ w[0]));
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                 </svg>
-                Deadline: <span class="deadline-val">5 July 2026</span>
+                Deadline: <span class="deadline-val">8 July 2026</span>
             </div>
             <div class="nav-user">
                 <div class="user-avatar">@initials</div>
@@ -1641,10 +1641,11 @@ w[0]));
                                                 </svg>
                                             </div>
                                             <div class="upload-title">Drop files here or <span
-                                                style="color:var(--teal);font-weight:500">browse</span></div>
-                                                <div class="upload-sub">PDF, Word, Excel, PowerPoint, Images · Max 10MB each</div>
+                                                style="color:var(--teal);font-weight:500">browse</span>
                                             </div>
+                                            <div class="upload-sub">PDF, Word, Excel, PowerPoint, Images · Max 10MB each</div>
 
+                                            
                                             <div class="file-list" id="fileList">
                                                 @{
                                                     var savedDocs = ViewBag.Documents as IEnumerable<dynamic> ?? new List<dynamic>();
@@ -1663,7 +1664,8 @@ w[0]));
                                                             <div class="file-meta">@doc.type · @(Math.Round((double)doc.size / 1024, 1)) KB
                                                             </div>
                                                         </div>
-                                                        <button type="button" class="file-remove" onclick="removeExistingDoc('@doc.id', this)">
+                                                        <button type="button" class="file-remove"
+                                                                onclick="removeExistingDoc('@doc.id', this)">
                                                             <svg viewBox="0 0 24 24">
                                                                 <polyline points="3 6 5 6 21 6" />
                                                                 <path
@@ -1687,7 +1689,8 @@ w[0]));
                                             </svg>
                                             <div class="submit-warning-text">
                                                 <strong>You are about to submit your application.</strong><br />
-                                                Once submitted, you will not be able to edit your responses. Please review all steps before
+                                                Once submitted, you will not be able to edit your responses. Please review all steps
+                                                before
                                                 proceeding. Your reference number will be sent to your email upon submission.
                                             </div>
                                         </div>
@@ -1702,7 +1705,8 @@ w[0]));
                                                 </div>
                                                 <div>
                                                     <div class="form-card-title">Declaration &amp; Agreement</div>
-                                                    <div class="form-card-desc">Please confirm your declarations before submitting.</div>
+                                                    <div class="form-card-desc">Please confirm your declarations before submitting.
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="form-card-body">
@@ -1761,8 +1765,8 @@ w[0]));
 
                                                     <div class="form-group" id="grp-agreement">
                                                         <div class="terms-row">
-                                                            <input type="checkbox" id="agreeAgreement" name="AgreeAgreement" value="true"
-                                                                   disabled />
+                                                            <input type="checkbox" id="agreeAgreement" name="AgreeAgreement"
+                                                                   value="true" disabled />
                                                             <label for="agreeAgreement">
                                                                 I have read, understood and agree the
                                                                 <button type="button" class="policy-link-btn"
@@ -1771,19 +1775,22 @@ w[0]));
                                                                     <span id="agreementStatus" class="policy-status">Read required</span>
                                                                 </label>
                                                             </div>
-                                                            <div class="field-error">You must agree to the Competition Submission Agreement to
+                                                            <div class="field-error">You must agree to the Competition Submission Agreement
+                                                                to
                                                                 submit.</div>
                                                             </div>
 
                                                             <div class="form-group" id="grp-accuracy">
                                                                 <div class="terms-row">
-                                                                    <input type="checkbox" id="agreeAccuracy" name="AgreeAccuracy" value="true" />
+                                                                    <input type="checkbox" id="agreeAccuracy" name="AgreeAccuracy"
+                                                                           value="true" />
                                                                     <label for="agreeAccuracy">
                                                                         I declare that all information provided in this application is accurate,
                                                                         complete and truthful to the best of my knowledge.
                                                                     </label>
                                                                 </div>
-                                                                <div class="field-error">You must confirm the accuracy of your information.</div>
+                                                                <div class="field-error">You must confirm the accuracy of your information.
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1882,19 +1889,19 @@ w[0]));
                                                     // Update zone UI to show uploaded file
                                                     const zone = document.getElementById(`zone-${slotKey}`);
                                                     zone.innerHTML = `
-                                                                                                                                                                        <div style="display:flex;align-items:center;gap:.75rem;justify-content:center">
-                                                                                                                                                                            <div style="width:32px;height:32px;border-radius:7px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                                                                                                                                                                                <svg viewBox="0 0 24 24" width="15" height="15" stroke="var(--teal)" stroke-width="1.75" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                                                                                                                                                            </div>
-                                                                                                                                                                            <div style="text-align:left;flex:1;min-width:0">
-                                                                                                                                                                                <div style="font-size:.82rem;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(file.name)}</div>
-                                                                                                                                                                                <div style="font-size:.7rem;color:var(--muted)">${(file.size / 1024).toFixed(1)} KB</div>
-                                                                                                                                                                            </div>
-                                                                                                                                                                            <button type="button" onclick="clearRequiredSlot('${slotKey}')"
-                                                                                                                                                                                    style="background:none;border:none;cursor:pointer;color:#dc2626;padding:4px;flex-shrink:0">
-                                                                                                                                                                                <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="1.75" fill="none"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                                                                                                                                                                            </button>
-                                                                                                                                                                        </div>`;
+                                                                                                                                                                                                                                                                                                                                                                                <div style="display:flex;align-items:center;gap:.75rem;justify-content:center">
+                                                                                                                                                                                                                                                                                                                                                                                    <div style="width:32px;height:32px;border-radius:7px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                                                                                                                                                                                                                                                                                                                                                                                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="var(--teal)" stroke-width="1.75" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                    <div style="text-align:left;flex:1;min-width:0">
+                                                                                                                                                                                                                                                                                                                                                                                        <div style="font-size:.82rem;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(file.name)}</div>
+                                                                                                                                                                                                                                                                                                                                                                                        <div style="font-size:.7rem;color:var(--muted)">${(file.size / 1024).toFixed(1)} KB</div>
+                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                    <button type="button" onclick="clearRequiredSlot('${slotKey}')"
+                                                                                                                                                                                                                                                                                                                                                                                            style="background:none;border:none;cursor:pointer;color:#dc2626;padding:4px;flex-shrink:0">
+                                                                                                                                                                                                                                                                                                                                                                                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="1.75" fill="none"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                                                                                                                                                                                                                                                                                                                                                                    </button>
+                                                                                                                                                                                                                                                                                                                                                                                </div>`;
                                                     zone.style.borderColor = 'var(--teal)';
                                                     zone.style.background = 'var(--teal-light)';
                                                     zone.style.cursor = 'default';
@@ -1920,18 +1927,18 @@ w[0]));
                                                     zone.style.cursor = 'pointer';
                                                     zone.onclick = () => document.getElementById(inputId).click();
                                                     zone.innerHTML = `
-                                                                                                                                                                        <input type="file" id="${inputId}" style="display:none"
-                                                                                                                                                                               accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg"
-                                                                                                                                                                               onchange="handleRequiredUpload(this,'${docType}','${slotKey}')" />
-                                                                                                                                                                        <div style="display:flex;align-items:center;gap:.75rem;justify-content:center">
-                                                                                                                                                                            <div class="upload-icon" style="width:32px;height:32px;margin:0;flex-shrink:0">
-                                                                                                                                                                                <svg viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                                                                                                                                                            </div>
-                                                                                                                                                                            <div style="text-align:left">
-                                                                                                                                                                                <div class="upload-title" style="font-size:.82rem">${label}</div>
-                                                                                                                                                                                <div class="upload-sub">PDF, Word, PowerPoint, Images</div>
-                                                                                                                                                                            </div>
-                                                                                                                                                                        </div>`;
+                                                                                                                                                                                                                                                                                                                                                                                <input type="file" id="${inputId}" style="display:none"
+                                                                                                                                                                                                                                                                                                                                                                                       accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg"
+                                                                                                                                                                                                                                                                                                                                                                                       onchange="handleRequiredUpload(this,'${docType}','${slotKey}')" />
+                                                                                                                                                                                                                                                                                                                                                                                <div style="display:flex;align-items:center;gap:.75rem;justify-content:center">
+                                                                                                                                                                                                                                                                                                                                                                                    <div class="upload-icon" style="width:32px;height:32px;margin:0;flex-shrink:0">
+                                                                                                                                                                                                                                                                                                                                                                                        <svg viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                    <div style="text-align:left">
+                                                                                                                                                                                                                                                                                                                                                                                        <div class="upload-title" style="font-size:.82rem">${label}</div>
+                                                                                                                                                                                                                                                                                                                                                                                        <div class="upload-sub">PDF, Word, PowerPoint, Images</div>
+                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                </div>`;
 
                                                     document.getElementById(`slot-done-${slotKey}`).style.display = 'none';
                                                     rebuildRequiredInputs();
@@ -1979,14 +1986,14 @@ w[0]));
                                                     item.className = 'file-item';
                                                     item.dataset.pendingIdx = idx;
                                                     item.innerHTML = `
-                                                                                                                                                                        <div class="file-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-                                                                                                                                                                        <div class="file-info">
-                                                                                                                                                                            <div class="file-name">${escHtml(file.name)}</div>
-                                                                                                                                                                            <div class="file-meta">${escHtml(type)} · ${(file.size / 1024).toFixed(1)} KB</div>
-                                                                                                                                                                        </div>
-                                                                                                                                                                        <button type="button" class="file-remove" onclick="removePendingFile(${idx}, this)">
-                                                                                                                                                                            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                                                                                                                                                                        </button>`;
+                                                                                                                                                                                                                                                                                                                                                                                <div class="file-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                                                                                                                                                                                                                                                                                                                                                                                <div class="file-info">
+                                                                                                                                                                                                                                                                                                                                                                                    <div class="file-name">${escHtml(file.name)}</div>
+                                                                                                                                                                                                                                                                                                                                                                                    <div class="file-meta">${escHtml(type)} · ${(file.size / 1024).toFixed(1)} KB</div>
+                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                <button type="button" class="file-remove" onclick="removePendingFile(${idx}, this)">
+                                                                                                                                                                                                                                                                                                                                                                                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                                                                                                                                                                                                                                                                                                                                                                </button>`;
                                                     fileList.appendChild(item);
                                                 }
 
