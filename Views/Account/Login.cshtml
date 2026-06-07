@@ -556,11 +556,99 @@
                     min-height: 100vh;
                 }
             }
+
+            /* ── MOBILE HEADER ── */
+            .mobile-header {
+                display: none;
+                @* background: white; *@
+                padding: 1rem 1.25rem;
+                align-items: center;
+                justify-content: space-between;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+            .mobile-brand {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            @@media (max-width: 900px) {
+                body {
+                    grid-template-columns: 1fr;
+                }
+
+                .panel-left {
+                    display: none;
+                }
+
+                .mobile-header {
+                    display: flex;
+                }
+
+                .panel-right {
+                    padding: 1.75rem 1.25rem 2.5rem;
+                    justify-content: flex-start;
+                    min-height: calc(100vh - 56px);
+                }
+
+                .form-wrap {
+                    max-width: 100%;
+                }
+
+                .form-title {
+                    font-size: 1.7rem;
+                }
+            }
+
+            @@media (max-width: 480px) {
+                .mobile-header {
+                    padding: .9rem 1rem;
+                }
+
+                .panel-right {
+                    padding: 1.5rem 1rem 2rem;
+                }
+
+                .form-row-2 {
+                    grid-template-columns: 1fr;
+                    gap: 0;
+                }
+
+                input[type="text"],
+                input[type="email"],
+                input[type="tel"],
+                input[type="password"],
+                select {
+                    font-size: 16px;
+                    padding: .78rem .9rem .78rem 2.5rem;
+                }
+
+                .btn-submit {
+                    padding: 1rem;
+                    font-size: .92rem;
+                }
+
+                .form-title {
+                    font-size: 1.55rem;
+                }
+            }
     </style>
 </head>
 
 <body>
-
+    <!-- MOBILE HEADER -->
+    <header class="mobile-header">
+        <div class="mobile-brand">
+            <a href="/">
+                <div class="brand-icon">
+                    <img src="~/assets/images/logo.png" alt="NSIA" />
+                </div>
+            </a>
+        </div>
+    </header>
     <!-- LEFT PANEL -->
     <div class="panel-left">
         <div class="brand">
