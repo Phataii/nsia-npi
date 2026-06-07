@@ -860,7 +860,7 @@ else
                 }
             </div>
         </div>
-        <form asp-action="UpdateStatus" asp-controller="Admin" method="post" class="status-form">
+        @* <form asp-action="UpdateStatus" asp-controller="Admin" method="post" class="status-form">
             @Html.AntiForgeryToken()
             <input type="hidden" name="id" value="@app.Id" />
             <select name="status" class="status-select">
@@ -870,7 +870,7 @@ else
                 }
             </select>
             <button type="submit" class="btn-update">Update status</button>
-        </form>
+        </form> *@
     </div>
 
     <!-- ── STEP PROGRESS ── -->
