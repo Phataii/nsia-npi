@@ -29,7 +29,7 @@ namespace Nsia.Controllers
         // ── GET /Account/Register
         [HttpGet]
         public IActionResult Register() =>
-            IsLoggedIn() ? RedirectToDashboard() : RedirectToAction("ComingSoon"); // View();
+            IsLoggedIn() ? RedirectToDashboard() : View(); //RedirectToAction("ComingSoon");
 
         // ── POST /Account/Register
         [HttpPost, ValidateAntiForgeryToken]
@@ -167,7 +167,7 @@ namespace Nsia.Controllers
         // ── GET /Account/Login
         [HttpGet]
         public IActionResult Login() =>
-            IsLoggedIn() ? RedirectToDashboard() : RedirectToAction("ComingSoon"); // View();
+            IsLoggedIn() ? RedirectToDashboard() : View(); //RedirectToAction("ComingSoon");
 
         // ── POST /Account/Login
         [HttpPost, ValidateAntiForgeryToken]
