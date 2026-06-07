@@ -34,7 +34,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddSingleton<INinEncryptionService, NinEncryptionService>();
 // Email — typed HttpClient, do NOT also add AddScoped for IEmailService
 builder.Services.AddHttpClient<IEmailService, EmailService>();
-
+builder.Services.AddScoped<IScoringService, ScoringService>();
 // File service
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddAntiforgery(options =>

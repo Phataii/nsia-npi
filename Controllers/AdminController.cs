@@ -13,14 +13,70 @@ namespace Nsia.Controllers
         private readonly ApplicationDbContext _db;
         private readonly ILogger<AdminController> _logger;
         private readonly INinEncryptionService _ninService;
+        private readonly IScoringService _scoring;
 
-        public AdminController(ApplicationDbContext db, ILogger<AdminController> logger, INinEncryptionService ninService)
+        public AdminController(ApplicationDbContext db, ILogger<AdminController> logger, INinEncryptionService ninService, IScoringService scoring)
         {
             _db = db;
             _logger = logger;
             _ninService = ninService;
+            _scoring = scoring;
         }
+        [HttpGet]
+        public async Task<IActionResult> DebugScore(Guid id)
+        {
+            var app = await _db.Applications.FirstOrDefaultAsync(a => a.Id == id);
+            if (app == null) return NotFound();
 
+            var fields = new Dictionary<string, string?>
+            {
+                ["IsRegisteredInNigeria"] = app.IsRegisteredInNigeria,
+                ["CountryOfOrigin"] = app.CountryOfOrigin,
+                ["BusinessSector"] = app.BusinessSector,
+                ["CompanyWebsite"] = app.CompanyWebsite,
+                ["GeographicScope"] = app.GeographicScope,
+                ["NumberOfFounders"] = app.NumberOfFounders,
+                ["GrowthStage"] = app.GrowthStage,
+                ["ExistingUsers"] = app.ExistingUsers,
+                ["TotalUsersReached"] = app.TotalUsersReached,
+                ["HasStartedGeneratingSales"] = app.HasStartedGeneratingSales,
+                ["YearOfFirstSale"] = app.YearOfFirstSale,
+                ["YearlySalesRevenue"] = app.YearlySalesRevenue,
+                ["YearlyProfit"] = app.YearlyProfit,
+                ["ProprietaryFunding"] = app.ProprietaryFunding,
+                ["ExternalFunding"] = app.ExternalFunding,
+                ["DemandEvidence"] = app.DemandEvidence,
+                ["GeographicScalability"] = app.GeographicScalability,
+                ["GrossMargins"] = app.GrossMargins,
+                ["PrimaryCompetitiveAdvantage"] = app.PrimaryCompetitiveAdvantage,
+                ["OperatingRunway"] = app.OperatingRunway,
+                ["ActivePartnerships"] = app.ActivePartnerships,
+                ["LongTermGrowthStrategy"] = app.LongTermGrowthStrategy,
+                ["IpOwnership"] = app.IpOwnership,
+                ["NewCustomersSixMonths"] = app.NewCustomersSixMonths,
+                ["CustomerGrowthRate"] = app.CustomerGrowthRate,
+                ["RepeatCustomerRevenue"] = app.RepeatCustomerRevenue,
+                ["SdgAlignment"] = app.SdgAlignment,
+                ["BusinessReplicability"] = app.BusinessReplicability,
+                ["UnderservedMarketPercentage"] = app.UnderservedMarketPercentage,
+                ["SystemicInequalityApproach"] = app.SystemicInequalityApproach,
+                ["BeneficiaryInvolvement"] = app.BeneficiaryInvolvement,
+                ["ImpactDataSharing"] = app.ImpactDataSharing,
+                ["JobsCreated"] = app.JobsCreated,
+                ["GenderGapApproach"] = app.GenderGapApproach,
+                ["AccessForUnderserved"] = app.AccessForUnderserved,
+                ["ResourceOptimization"] = app.ResourceOptimization,
+                ["DataProtection"] = app.DataProtection,
+                ["PopulationImpacted"] = app.PopulationImpacted,
+                ["SocialGoodContribution"] = app.SocialGoodContribution,
+                ["EthicalOperations"] = app.EthicalOperations,
+                ["DiversityInclusion"] = app.DiversityInclusion,
+                ["EquitableOpportunities"] = app.EquitableOpportunities,
+                ["AccessibilityForDisadvantaged"] = app.AccessibilityForDisadvantaged,
+            };
+
+            return Json(fields);
+        }
         // ─────────────────────────────────
         // AUTH
         // ─────────────────────────────────
@@ -211,6 +267,9 @@ namespace Nsia.Controllers
 
             ViewBag.AdminName = HttpContext.Session.GetString("AdminName");
             ViewBag.Application = app;
+
+            ViewBag.Score = _scoring.Calculate(app);  // ← calculated fresh
+
             return View();
         }
 
