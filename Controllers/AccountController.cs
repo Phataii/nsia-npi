@@ -29,7 +29,7 @@ namespace Nsia.Controllers
         // ── GET /Account/Register
         [HttpGet]
         public IActionResult Register() =>
-            IsLoggedIn() ? RedirectToDashboard() : View(); // RedirectToAction("ComingSoon");
+            IsLoggedIn() ? RedirectToDashboard() : RedirectToAction("ComingSoon"); // View();
 
         // ── POST /Account/Register
         [HttpPost, ValidateAntiForgeryToken]
