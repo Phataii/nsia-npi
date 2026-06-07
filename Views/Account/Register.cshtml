@@ -798,7 +798,8 @@
                                     </svg>
                                 </span>
                                 <input type="tel" id="phone" name="PhoneNumber" placeholder="+234 800 000 0000"
-                                       value="@Model?.PhoneNumber" autocomplete="tel" inputmode="tel" />
+                                       value="@Model?.PhoneNumber" autocomplete="tel" inputmode="tel"
+                                       oninput="this.value=this.value.replace(/[^0-9+\s]/g,'')" />
                             </div>
                             <div class="field-error">Enter a valid phone number.</div>
                         </div>

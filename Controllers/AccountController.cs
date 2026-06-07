@@ -24,11 +24,12 @@ namespace Nsia.Controllers
             _logger = logger;
         }
 
-
+        [HttpGet]
+        public IActionResult ComingSoon() => View();
         // ── GET /Account/Register
         [HttpGet]
         public IActionResult Register() =>
-            IsLoggedIn() ? RedirectToDashboard() : View();
+            IsLoggedIn() ? RedirectToDashboard() : RedirectToAction("ComingSoon"); // View();
 
         // ── POST /Account/Register
         [HttpPost, ValidateAntiForgeryToken]
@@ -166,7 +167,7 @@ namespace Nsia.Controllers
         // ── GET /Account/Login
         [HttpGet]
         public IActionResult Login() =>
-            IsLoggedIn() ? RedirectToDashboard() : View();
+            IsLoggedIn() ? RedirectToDashboard() : RedirectToAction("ComingSoon"); // View();
 
         // ── POST /Account/Login
         [HttpPost, ValidateAntiForgeryToken]
