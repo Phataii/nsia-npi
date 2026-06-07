@@ -16,6 +16,7 @@ namespace Nsia.Controllers
         private readonly INinEncryptionService _ninService;
         private readonly IConfiguration _config;
 
+
         public ApplicationController(
             ApplicationDbContext db,
             IEmailService email,

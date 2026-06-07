@@ -9,6 +9,8 @@
     string Val(string? v) => string.IsNullOrWhiteSpace(v) ? "—" : v;
     string ListVal(string? v) => string.IsNullOrWhiteSpace(v) ? "—"
         : string.Join(" · ", v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()));
+
+    var score = ViewBag.Score as nsia.Models.ScoreResult;
 }
 
 @section Styles {
@@ -670,6 +672,45 @@
                 grid-template-columns: 1fr;
             }
         }
+
+
+        @* SCORE STYLE *@
+        .score-panel { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.75rem; }
+.score-panel-header { padding: 1.5rem; border-bottom: 1px solid var(--border); }
+.score-overview { display: flex; align-items: center; gap: 1.75rem; flex-wrap: wrap; }
+.score-ring-wrap { position: relative; width: 90px; height: 90px; flex-shrink: 0; }
+.score-ring-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-pct { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: var(--ink); line-height: 1; }
+.score-band { font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+.score-total { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: var(--ink); }
+.score-total span { font-size: 1rem; color: var(--muted); font-family: 'DM Sans', sans-serif; }
+.score-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; margin-bottom: .75rem; }
+.score-sections-mini { display: flex; flex-direction: column; gap: .4rem; }
+.score-mini-row { display: flex; align-items: center; gap: .6rem; font-size: .72rem; color: var(--muted); }
+.score-mini-row span:first-child { width: 110px; flex-shrink: 0; }
+.score-mini-row span:last-child  { width: 40px; text-align: right; flex-shrink: 0; }
+.score-mini-bar { flex: 1; height: 4px; background: var(--off); border-radius: 100px; overflow: hidden; }
+.score-mini-fill { height: 100%; border-radius: 100px; }
+
+.score-breakdown { padding: .5rem 1.5rem 1rem; display: flex; flex-direction: column; gap: .5rem; }
+.score-section { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.score-section-summary { display: flex; align-items: center; gap: 1rem; padding: .85rem 1.1rem; cursor: pointer; list-style: none; font-size: .84rem; font-weight: 500; color: var(--ink); background: var(--off); user-select: none; }
+.score-section-summary::-webkit-details-marker { display: none; }
+.score-section-pts { margin-left: auto; font-size: .78rem; color: var(--muted); flex-shrink: 0; }
+.score-section-bar { width: 80px; height: 5px; background: rgba(45,184,176,0.15); border-radius: 100px; overflow: hidden; flex-shrink: 0; }
+.score-section-fill { height: 100%; background: var(--teal); border-radius: 100px; }
+
+.score-criteria { display: flex; flex-direction: column; gap: 0; }
+.score-criterion { display: grid; grid-template-columns: 1fr 1.5fr 1fr auto; gap: .75rem; align-items: center; padding: .65rem 1.1rem; border-top: 1px solid rgba(45,184,176,0.06); font-size: .78rem; }
+.criterion-label  { color: var(--muted); font-weight: 500; }
+.criterion-value  { color: var(--ink); }
+.criterion-reason { color: #d97706; font-size: .72rem; }
+.criterion-score  { font-weight: 600; font-size: .75rem; padding: .18rem .6rem; border-radius: 100px; text-align: center; white-space: nowrap; }
+.criterion-score.full    { background: rgba(123,193,68,0.12); color: var(--green-dark); }
+.criterion-score.zero    { background: rgba(220,38,38,0.08);  color: #b91c1c; }
+.criterion-score.partial { background: rgba(245,158,11,0.1);  color: #92400e; }
+
+@@media (max-width: 700px) { .score-criterion { grid-template-columns: 1fr 1fr; } .criterion-value, .criterion-reason { grid-column: 1/-1; } }
     </style>
 }
 
@@ -677,7 +718,7 @@
     var appStep = app?.ApplicationStep ?? 0;
     var stepPct = (int)Math.Round(appStep / 10.0 * 100);
     var stepNames = new[] { "Pre-Check", "Personal", "Company", "Team", "Product", "Comm I", "Comm II", "Sustain.",
-"Impact", "Additional" };
+        "Impact", "Additional" };
 
     string PillStatus(string? s) => s switch
     {
@@ -721,6 +762,89 @@
 }
 else
 {
+
+    @if (score != null)
+    {
+        <div class="score-panel">
+            <div class="score-panel-header">
+                <div class="score-overview">
+                    <div class="score-ring-wrap">
+                        @{
+                            var pct = score.Percentage;
+                            var dashArr = 2 * Math.PI * 35;
+                            var dashOff = dashArr - (dashArr * pct / 100);
+                            var bandColor = score.Band switch
+                            {
+                                "Excellent" => "#7BC144",
+                                "Strong" => "#2DB8B0",
+                                "Moderate" => "#f59e0b",
+                                "Weak" => "#f97316",
+                                _ => "#dc2626"
+                            };
+                        }
+                        <svg width="90" height="90" viewBox="0 0 90 90">
+                            <circle cx="45" cy="45" r="35" fill="none" stroke="var(--off)" stroke-width="7" />
+                            <circle cx="45" cy="45" r="35" fill="none" stroke="@bandColor" stroke-width="7"
+                                    stroke-linecap="round" stroke-dasharray="@dashArr.ToString("F1")"
+                                    stroke-dashoffset="@dashOff.ToString("F1")" transform="rotate(-90 45 45)" />
+                        </svg>
+                        <div class="score-ring-label">
+                            <span class="score-pct">@pct%</span>
+                            <span class="score-band" style="color:@bandColor">@score.Band</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="score-total">@score.TotalScore <span>/ @score.MaxScore pts</span></div>
+                        <div class="score-sub">Calculated on page load</div>
+                        <div class="score-sections-mini">
+                            @foreach (var s in score.Sections)
+                            {
+                                <div class="score-mini-row">
+                                    <span>@s.Name</span>
+                                    <div class="score-mini-bar">
+                                        <div class="score-mini-fill" style="width:@s.Percentage%;background:@bandColor"></div>
+                                    </div>
+                                    <span>@s.Score/@s.MaxScore</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Breakdown accordion -->
+            @* <div class="score-breakdown">
+                @foreach (var section in score.Sections)
+                {
+                    <details class="score-section">
+                        <summary class="score-section-summary">
+                            <span>@@section.Name</span>
+                            <span class="score-section-pts">@@section.Score / @@section.MaxScore</span>
+                            <div class="score-section-bar">
+                                <div class="score-section-fill" style="width:@@section.Percentage%"></div>
+                            </div>
+                        </summary>
+                        <div class="score-criteria">
+                            @foreach (var c in section.Criteria)
+                            {
+                                <div class="score-criterion">
+                                    <div class="criterion-label">@c.Label</div>
+                                    <div class="criterion-value">@(c.Value ?? "—")</div>
+                                    @if (!string.IsNullOrEmpty(c.Reason))
+                                    {
+                                        <div class="criterion-reason">@c.Reason</div>
+                                    }
+                                    <div class="criterion-score @(c.Score == c.MaxScore ? "full" : c.Score == 0 ? "zero" : "partial")">
+                                        @c.Score / @c.MaxScore
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </details>
+                }
+            </div> *@
+        </div>
+    }
 
     <!-- ── HEADER ── -->
     <div class="detail-header">
@@ -951,7 +1075,7 @@ else
                 <div class="field-row">
                     <div class="field-label">State / LGA</div>
                     <div class="field-value">@Val(app.BusinessState) @(app.BusinessLga != null ? $"· {app.BusinessLga}" :
-                                                                                       "")</div>
+                                                                                                                                                               "")</div>
                     </div>
                     <div class="field-row">
                         <div class="field-label">HQ Address</div>
