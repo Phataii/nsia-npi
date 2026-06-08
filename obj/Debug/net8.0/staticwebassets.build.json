@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "f5pXNUpA628haDX7vd+CaWF2nJsAGOLTPERuyIRrdHg=",
+  "Hash": "hDtuJ8oqZI2aC3ebYmYKsUgltmlE4ovq8kvBDCI06J4=",
   "Source": "nsia",
   "BasePath": "_content/nsia",
   "Mode": "Default",
@@ -2162,25 +2162,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/assets/images/brand/wema.png"
-    },
-    {
-      "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/bullseye-arrow.svg",
-      "SourceId": "nsia",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/",
-      "BasePath": "_content/nsia",
-      "RelativePath": "assets/images/bullseye-arrow.svg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/images/bullseye-arrow.svg"
     },
     {
       "Identity": "/Users/phataii/Documents/work/wennovationhub/nsia/wwwroot/assets/images/course.jpg",
