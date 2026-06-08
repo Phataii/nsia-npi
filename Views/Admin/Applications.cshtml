@@ -1,68 +1,324 @@
 @{
-    ViewData["Title"] = "All Applications";
-    var apps        = ViewBag.Applications as IEnumerable<dynamic> ?? new List<dynamic>();
-    var totalCount  = (int)(ViewBag.TotalCount  ?? 0);
-    var page        = (int)(ViewBag.Page        ?? 1);
-    var pageSize    = (int)(ViewBag.PageSize    ?? 25);
-    var totalPages  = (int)Math.Ceiling(totalCount / (double)pageSize);
-    var search      = ViewBag.Search   as string ?? "";
-    var statusFilter = ViewBag.Status  as string ?? "";
-    var sectorFilter = ViewBag.Sector  as string ?? "";
+    ViewData["Title"] = "Applications";
+    var apps = ViewBag.Applications as IEnumerable<dynamic> ?? new List<dynamic>();
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var page = (int)(ViewBag.Page ?? 1);
+    var pageSize = (int)(ViewBag.PageSize ?? 25);
+    var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+    var search = ViewBag.Search as string ?? "";
+    var statusFilter = ViewBag.Status as string ?? "";
+    var sectorFilter = ViewBag.Sector as string ?? "";
 }
 
 @section Styles {
-<style>
-    .filter-bar { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .search-wrap { position: relative; flex: 1; min-width: 200px; }
-    .search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; stroke: var(--muted); stroke-width: 1.75; fill: none; pointer-events: none; }
-    .search-input { width: 100%; padding: .65rem .9rem .65rem 2.4rem; border: 1px solid var(--border); border-radius: 7px; font-size: .84rem; font-family: 'DM Sans', sans-serif; color: var(--ink); outline: none; transition: border-color .2s, box-shadow .2s; }
-    .search-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(45,184,176,0.1); }
-    select.filter-select { padding: .65rem .9rem .65rem 2rem; border: 1px solid var(--border); border-radius: 7px; font-size: .82rem; font-family: 'DM Sans', sans-serif; color: var(--ink); outline: none; background: white; cursor: pointer; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234A6260' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 2rem; transition: border-color .2s; }
-    select.filter-select:focus { border-color: var(--teal); }
-    .btn-filter { padding: .65rem 1.25rem; border-radius: 7px; background: var(--teal); color: white; border: none; font-size: .82rem; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background .2s; white-space: nowrap; }
-    .btn-filter:hover { background: var(--teal-d); }
-    .btn-filter svg { width: 14px; height: 14px; stroke: white; stroke-width: 2; fill: none; }
-    .btn-export { padding: .65rem 1.25rem; border-radius: 7px; background: white; color: var(--teal); border: 1px solid var(--teal); font-size: .82rem; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background .2s; text-decoration: none; white-space: nowrap; }
-    .btn-export:hover { background: var(--teal-pale); }
-    .btn-export svg { width: 14px; height: 14px; stroke: var(--teal); stroke-width: 2; fill: none; }
+    <style>
+        .filter-bar {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
 
-    .results-meta { font-size: .78rem; color: var(--muted); margin-bottom: .85rem; }
-    .results-meta strong { color: var(--ink); }
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
 
-    .table-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
-    table { width: 100%; border-collapse: collapse; }
-    th { font-size: .7rem; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: .75rem 1.25rem; text-align: left; background: var(--off); border-bottom: 1px solid var(--border); white-space: nowrap; }
-    td { padding: .85rem 1.25rem; font-size: .82rem; color: var(--ink); border-bottom: 1px solid rgba(45,184,176,0.06); vertical-align: middle; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--teal-pale); }
-    .status-pill { display: inline-block; padding: .18rem .65rem; border-radius: 100px; font-size: .68rem; font-weight: 500; white-space: nowrap; }
-    .pill-submitted { background: rgba(45,184,176,0.12); color: var(--teal-deep); }
-    .pill-draft     { background: rgba(245,158,11,0.1);  color: #92400e; }
-    .pill-reviewed  { background: rgba(123,193,68,0.12); color: var(--green-dark); }
-    .pill-shortlisted { background: rgba(139,92,246,0.1); color: #6d28d9; }
-    .pill-rejected  { background: rgba(220,38,38,0.08); color: #b91c1c; }
-    .td-link { color: var(--teal); text-decoration: none; font-weight: 500; }
-    .td-link:hover { text-decoration: underline; }
+        .search-wrap svg {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 15px;
+            stroke: var(--muted);
+            stroke-width: 1.75;
+            fill: none;
+            pointer-events: none;
+        }
 
-    .step-bar-mini { display: flex; gap: 2px; }
-    .step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--off); }
-    .step-dot.done { background: var(--teal); }
+        .search-input {
+            width: 100%;
+            padding: .65rem .9rem .65rem 2.4rem;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            font-size: .84rem;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
 
-    .pagination { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-    .page-info { font-size: .78rem; color: var(--muted); }
-    .page-btns { display: flex; gap: .4rem; }
-    .page-btn { padding: .4rem .75rem; border-radius: 6px; border: 1px solid var(--border); background: white; font-size: .78rem; color: var(--ink); cursor: pointer; text-decoration: none; transition: all .15s; font-family: 'DM Sans', sans-serif; }
-    .page-btn:hover { border-color: var(--teal); color: var(--teal); }
-    .page-btn.active { background: var(--teal); border-color: var(--teal); color: white; }
-    .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+        .search-input:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(45, 184, 176, 0.1);
+        }
 
-    @@media (max-width: 800px) { .filter-bar { flex-direction: column; align-items: stretch; } .search-wrap { min-width: unset; } }
-</style>
+        select.filter-select {
+            padding: .65rem .9rem .65rem 2rem;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            font-size: .82rem;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
+            outline: none;
+            background: white;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234A6260' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 2rem;
+            transition: border-color .2s;
+        }
+
+        select.filter-select:focus {
+            border-color: var(--teal);
+        }
+
+        .btn-filter {
+            padding: .65rem 1.25rem;
+            border-radius: 7px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            font-size: .82rem;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background .2s;
+            white-space: nowrap;
+        }
+
+        .btn-filter:hover {
+            background: var(--teal-d);
+        }
+
+        .btn-filter svg {
+            width: 14px;
+            height: 14px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .btn-export {
+            padding: .65rem 1.25rem;
+            border-radius: 7px;
+            background: white;
+            color: var(--teal);
+            border: 1px solid var(--teal);
+            font-size: .82rem;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background .2s;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-export:hover {
+            background: var(--teal-pale);
+        }
+
+        .btn-export svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--teal);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .results-meta {
+            font-size: .78rem;
+            color: var(--muted);
+            margin-bottom: .85rem;
+        }
+
+        .results-meta strong {
+            color: var(--ink);
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            font-size: .7rem;
+            font-weight: 500;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            padding: .75rem 1.25rem;
+            text-align: left;
+            background: var(--off);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: .85rem 1.25rem;
+            font-size: .82rem;
+            color: var(--ink);
+            border-bottom: 1px solid rgba(45, 184, 176, 0.06);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--teal-pale);
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: .18rem .65rem;
+            border-radius: 100px;
+            font-size: .68rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .pill-submitted {
+            background: rgba(45, 184, 176, 0.12);
+            color: var(--teal-deep);
+        }
+
+        .pill-draft {
+            background: rgba(245, 158, 11, 0.1);
+            color: #92400e;
+        }
+
+        .pill-reviewed {
+            background: rgba(123, 193, 68, 0.12);
+            color: var(--green-dark);
+        }
+
+        .pill-shortlisted {
+            background: rgba(139, 92, 246, 0.1);
+            color: #6d28d9;
+        }
+
+        .pill-rejected {
+            background: rgba(220, 38, 38, 0.08);
+            color: #b91c1c;
+        }
+
+        .td-link {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .td-link:hover {
+            text-decoration: underline;
+        }
+
+        .step-bar-mini {
+            display: flex;
+            gap: 2px;
+        }
+
+        .step-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--off);
+        }
+
+        .step-dot.done {
+            background: var(--teal);
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .page-info {
+            font-size: .78rem;
+            color: var(--muted);
+        }
+
+        .page-btns {
+            display: flex;
+            gap: .4rem;
+        }
+
+        .page-btn {
+            padding: .4rem .75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: white;
+            font-size: .78rem;
+            color: var(--ink);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all .15s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .page-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .page-btn.active {
+            background: var(--teal);
+            border-color: var(--teal);
+            color: white;
+        }
+
+        .page-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
+        @@media (max-width: 800px) {
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-wrap {
+                min-width: unset;
+            }
+        }
+    </style>
 }
 
 <div class="breadcrumb">
     <a asp-action="Dashboard" asp-controller="Admin">Admin</a>
-    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    <svg viewBox="0 0 24 24">
+        <polyline points="9 18 15 12 9 6" />
+    </svg>
     <span>Applications</span>
 </div>
 
@@ -70,8 +326,12 @@
 <form method="get" asp-action="Applications" asp-controller="Admin">
     <div class="filter-bar">
         <div class="search-wrap">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" name="search" class="search-input" placeholder="Search name, email, company, reference…" value="@search" />
+            <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input type="text" name="search" class="search-input" placeholder="Search name, email, company, reference…"
+                   value="@search" />
         </div>
         <select name="status" class="filter-select">
             <option value="">All statuses</option>
@@ -90,13 +350,18 @@
         </select>
 
         <button type="submit" class="btn-filter">
-            <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <svg viewBox="0 0 24 24">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+            </svg>
             Filter
         </button>
-        <a asp-action="ExportCsv" asp-controller="Admin"
-           asp-route-search="@search" asp-route-status="@statusFilter" asp-route-sector="@sectorFilter"
-           class="btn-export">
-            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <a asp-action="ExportCsv" asp-controller="Admin" asp-route-search="@search" asp-route-status="@statusFilter"
+           asp-route-sector="@sectorFilter" class="btn-export">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
             Export CSV
         </a>
     </div>
@@ -104,7 +369,10 @@
 
 <div class="results-meta">
     Showing <strong>@apps.Count()</strong> of <strong>@totalCount</strong> applications
-    @if (!string.IsNullOrEmpty(search)) { <text> matching "<strong>@search</strong>"</text> }
+    @if (!string.IsNullOrEmpty(search))
+    {
+        <text> matching "<strong>@search</strong>"</text>
+    }
 </div>
 
 <!-- Table -->
@@ -123,7 +391,8 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var app in apps) {
+            @foreach (var app in apps)
+            {
                 var step = (int)(app.ApplicationStep ?? 0);
                 <tr>
                     <td><code style="font-size:.72rem;color:var(--muted)">@app.ReferenceNumber</code></td>
@@ -136,7 +405,8 @@
                     <td>
                         <div style="display:flex;align-items:center;gap:.5rem;">
                             <div class="step-bar-mini">
-                                @for (int i = 1; i <= 10; i++) {
+                                @for (int i = 1; i <= 10; i++)
+                                {
                                     <div class="step-dot @(i <= step ? "done" : "")"></div>
                                 }
                             </div>
@@ -146,14 +416,15 @@
                     <td>
                         @{
                             var pillCls = app.Status == "Submitted" ? "pill-submitted"
-                                       : app.Status == "Reviewed"   ? "pill-reviewed"
-                                       : app.Status == "Shortlisted"? "pill-shortlisted"
-                                       : app.Status == "Rejected"   ? "pill-rejected"
+                                       : app.Status == "Reviewed" ? "pill-reviewed"
+                                       : app.Status == "Shortlisted" ? "pill-shortlisted"
+                                       : app.Status == "Rejected" ? "pill-rejected"
                                        : "pill-draft";
                         }
                         <span class="status-pill @pillCls">@app.Status</span>
                     </td>
-                    <td style="color:var(--muted);font-size:.78rem">@((app.CreatedAt as DateTime?)?.ToString("d MMM yyyy"))</td>
+                    <td style="color:var(--muted);font-size:.78rem">@((app.CreatedAt as DateTime?)?.ToString("d MMM yyyy"))
+                    </td>
                     <td>
                         <a asp-action="ApplicationDetail" asp-controller="Admin" asp-route-id="@app.Id" class="td-link">
                             View →
@@ -161,35 +432,37 @@
                     </td>
                 </tr>
             }
-            @if (!apps.Any()) {
-                <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2.5rem">No applications found.</td></tr>
+            @if (!apps.Any())
+            {
+                <tr>
+                    <td colspan="8" style="text-align:center;color:var(--muted);padding:2.5rem">No applications found.</td>
+                </tr>
             }
         </tbody>
     </table>
 </div>
 
 <!-- Pagination -->
-@if (totalPages > 1) {
+@if (totalPages > 1)
+{
     <div class="pagination">
         <span class="page-info">Page @@page of @totalPages</span>
         <div class="page-btns">
-            @if (page > 1) {
-                <a asp-action="Applications" asp-controller="Admin"
-                   asp-route-page="@(page-1)" asp-route-search="@search"
-                   asp-route-status="@statusFilter" asp-route-sector="@sectorFilter"
-                   class="page-btn">← Prev</a>
+            @if (page > 1)
+            {
+                <a asp-action="Applications" asp-controller="Admin" asp-route-page="@(page - 1)" asp-route-search="@search"
+                   asp-route-status="@statusFilter" asp-route-sector="@sectorFilter" class="page-btn">← Prev</a>
             }
-            @for (int p = Math.Max(1, page-2); p <= Math.Min(totalPages, page+2); p++) {
-                <a asp-action="Applications" asp-controller="Admin"
-                   asp-route-page="@p" asp-route-search="@search"
+            @for (int p = Math.Max(1, page - 2); p <= Math.Min(totalPages, page + 2); p++)
+            {
+                <a asp-action="Applications" asp-controller="Admin" asp-route-page="@p" asp-route-search="@search"
                    asp-route-status="@statusFilter" asp-route-sector="@sectorFilter"
                    class="page-btn @(p == page ? "active" : "")">@p</a>
             }
-            @if (page < totalPages) {
-                <a asp-action="Applications" asp-controller="Admin"
-                   asp-route-page="@(page+1)" asp-route-search="@search"
-                   asp-route-status="@statusFilter" asp-route-sector="@sectorFilter"
-                   class="page-btn">Next →</a>
+            @if (page < totalPages)
+            {
+                <a asp-action="Applications" asp-controller="Admin" asp-route-page="@(page + 1)" asp-route-search="@search"
+                   asp-route-status="@statusFilter" asp-route-sector="@sectorFilter" class="page-btn">Next →</a>
             }
         </div>
     </div>
