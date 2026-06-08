@@ -317,6 +317,7 @@ namespace nsia.Models
         // ── AGREEMENTS
         public bool AgreesToTermsOfService { get; set; } = false;
         public bool AgreesToPrivacyPolicy { get; set; } = false;
+        public bool AgreeToSubmissionAgreement { get; set; } = false;
     }
 
     // ======================

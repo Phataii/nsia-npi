@@ -953,6 +953,9 @@ namespace Nsia.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveAdditional(
             string? AdditionalInformation,
+            bool AgreeTerms,
+            bool AgreePrivacy,
+            bool AgreeAgreement,
             List<IFormFile>? Documents,
             List<string>? DocumentTypes)
         {
@@ -963,7 +966,11 @@ namespace Nsia.Controllers
                 return RedirectToAction("Additional");
 
             app.AdditionalInformation = AdditionalInformation?.Trim();
+            app.AgreesToTermsOfService = AgreeTerms;
+            app.AgreesToPrivacyPolicy = AgreePrivacy;
+            app.AgreeToSubmissionAgreement = AgreeAgreement;
             app.Status = "Submitted";
+            app.SubmittedAt = DateTime.Now;
             if (Documents != null)
             {
                 for (int i = 0; i < Documents.Count; i++)

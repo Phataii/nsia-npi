@@ -72,7 +72,7 @@ namespace Nsia.Controllers
                 ReferenceNumber = refNumber,
                 Status = "Draft",
                 ApplicationStep = 0,
-                // AgreesToNsiaPrivacyPolicy = model.AgreeToTerms
+                AgreesToTermsOfService = model.AgreeToTerms
             };
 
             _db.Applications.Add(application);

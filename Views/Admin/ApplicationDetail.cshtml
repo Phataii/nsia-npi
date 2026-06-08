@@ -1866,6 +1866,17 @@ else
                                 </div>
                                 Agreed to Privacy Policy
                             </div>
+                            <div class="agree-row">
+                                <div class="agree-check @(app.AgreeToSubmissionAgreement ? "yes" : "no")">
+                                    @if (app.AgreeToSubmissionAgreement)
+                                    {
+                                        <svg viewBox="0 0 12 12">
+                                            <polyline points="2,6 5,9 10,3" />
+                                        </svg>
+                                    }
+                                </div>
+                                Agreed to Competition Submission Agreement
+                            </div>
                         </div>
                     </div>
 
