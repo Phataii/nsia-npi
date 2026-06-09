@@ -1,77 +1,427 @@
 @{
     ViewData["Title"] = "Dashboard";
-    var total      = (int)(ViewBag.Total      ?? 0);
-    var submitted  = (int)(ViewBag.Submitted  ?? 0);
-    var drafts     = (int)(ViewBag.Drafts     ?? 0);
-    var todayCount = (int)(ViewBag.Today      ?? 0);
-    var byStatus   = ViewBag.ByStatus   as Dictionary<string, int> ?? new();
-    var bySector   = ViewBag.BySector   as Dictionary<string, int> ?? new();
-    var recentApps = ViewBag.RecentApps as IEnumerable<dynamic>   ?? new List<dynamic>();
+    var total = (int)(ViewBag.Total ?? 0);
+    var submitted = (int)(ViewBag.Submitted ?? 0);
+    var drafts = (int)(ViewBag.Drafts ?? 0);
+    var todayCount = (int)(ViewBag.Today ?? 0);
+    var byStatus = ViewBag.ByStatus as Dictionary<string, int> ?? new();
+    var bySector = ViewBag.BySector as Dictionary<string, int> ?? new();
+    var recentApps = ViewBag.RecentApps as IEnumerable<dynamic> ?? new List<dynamic>();
 }
 
 @section Styles {
-<style>
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
-    .stat-card { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem 1.75rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-    .stat-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .4rem; }
-    .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2.25rem; font-weight: 700; color: var(--ink); line-height: 1; }
-    .stat-sub { font-size: .72rem; color: var(--muted); margin-top: .3rem; }
-    .stat-icon { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-    .stat-icon svg { width: 20px; height: 20px; stroke-width: 1.75; fill: none; }
-    .stat-icon.teal { background: var(--teal-light); }
-    .stat-icon.teal svg { stroke: var(--teal); }
-    .stat-icon.green { background: rgba(123,193,68,0.12); }
-    .stat-icon.green svg { stroke: var(--green-dark); }
-    .stat-icon.amber { background: rgba(245,158,11,0.1); }
-    .stat-icon.amber svg { stroke: #d97706; }
-    .stat-icon.purple { background: rgba(139,92,246,0.1); }
-    .stat-icon.purple svg { stroke: #7c3aed; }
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
 
-    .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 2rem; }
-    .chart-card { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; }
-    .chart-title { font-size: .85rem; font-weight: 500; color: var(--ink); margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
-    .chart-title span { font-size: .72rem; color: var(--muted); font-weight: 400; }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem 1.75rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
 
-    /* Bar chart */
-    .bar-chart { display: flex; flex-direction: column; gap: .75rem; }
-    .bar-row { display: flex; align-items: center; gap: .85rem; }
-    .bar-label { font-size: .76rem; color: var(--muted); width: 90px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .bar-track { flex: 1; height: 8px; background: var(--off); border-radius: 100px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 100px; background: var(--teal); transition: width 1s ease; }
-    .bar-count { font-size: .76rem; font-weight: 500; color: var(--ink); width: 30px; text-align: right; flex-shrink: 0; }
+        .stat-label {
+            font-size: .72rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            margin-bottom: .4rem;
+        }
 
-    /* Donut */
-    .donut-wrap { display: flex; align-items: center; gap: 1.5rem; }
-    .donut-legend { display: flex; flex-direction: column; gap: .6rem; flex: 1; }
-    .legend-item { display: flex; align-items: center; gap: .6rem; font-size: .78rem; color: var(--ink); }
-    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .stat-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1;
+        }
 
-    /* Recent table */
-    .table-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
-    .table-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-    .table-title { font-size: .88rem; font-weight: 500; color: var(--ink); }
-    .table-link { font-size: .76rem; color: var(--teal); text-decoration: none; display: flex; align-items: center; gap: 4px; }
-    .table-link svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2; fill: none; }
-    table { width: 100%; border-collapse: collapse; }
-    th { font-size: .7rem; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: .75rem 1.5rem; text-align: left; background: var(--off); border-bottom: 1px solid var(--border); white-space: nowrap; }
-    td { padding: .9rem 1.5rem; font-size: .82rem; color: var(--ink); border-bottom: 1px solid rgba(45,184,176,0.06); }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--teal-pale); }
-    .status-pill { display: inline-block; padding: .18rem .65rem; border-radius: 100px; font-size: .68rem; font-weight: 500; letter-spacing: .04em; white-space: nowrap; }
-    .pill-submitted { background: rgba(45,184,176,0.12); color: var(--teal-deep); }
-    .pill-draft     { background: rgba(245,158,11,0.1);  color: #92400e; }
-    .pill-reviewed  { background: rgba(123,193,68,0.12); color: var(--green-dark); }
-    .td-link { color: var(--teal); text-decoration: none; font-weight: 500; }
-    .td-link:hover { text-decoration: underline; }
+        .stat-sub {
+            font-size: .72rem;
+            color: var(--muted);
+            margin-top: .3rem;
+        }
 
-    @@media (max-width: 1100px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
-    @@media (max-width: 700px)  { .stats-grid { grid-template-columns: 1fr; } .charts-row { grid-template-columns: 1fr; } }
-</style>
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 1.75;
+            fill: none;
+        }
+
+        .stat-icon.teal {
+            background: var(--teal-light);
+        }
+
+        .stat-icon.teal svg {
+            stroke: var(--teal);
+        }
+
+        .stat-icon.green {
+            background: rgba(123, 193, 68, 0.12);
+        }
+
+        .stat-icon.green svg {
+            stroke: var(--green-dark);
+        }
+
+        .stat-icon.amber {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .stat-icon.amber svg {
+            stroke: #d97706;
+        }
+
+        .stat-icon.purple {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .stat-icon.purple svg {
+            stroke: #7c3aed;
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: .85rem;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chart-title span {
+            font-size: .72rem;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: .75rem;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+        }
+
+        .bar-label {
+            font-size: .76rem;
+            color: var(--muted);
+            width: 90px;
+            flex-shrink: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 8px;
+            background: var(--off);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 100px;
+            background: var(--teal);
+            transition: width 1s ease;
+        }
+
+        .bar-count {
+            font-size: .76rem;
+            font-weight: 500;
+            color: var(--ink);
+            width: 30px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .donut-wrap {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .donut-legend {
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+            flex: 1;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .78rem;
+            color: var(--ink);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* Table card */
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+        }
+
+        .table-header {
+            padding: 1.1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-title {
+            font-size: .88rem;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .table-link {
+            font-size: .76rem;
+            color: var(--teal);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .table-link svg {
+            width: 12px;
+            height: 12px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* Search row */
+        .dt-search-row {
+            padding: .75rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dt-search-row input {
+            width: 100%;
+            max-width: 320px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: .42rem .75rem;
+            font-size: .8rem;
+            color: var(--ink);
+            background: var(--off);
+            outline: none;
+        }
+
+        .dt-search-row input:focus {
+            border-color: var(--teal);
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            font-size: .7rem;
+            font-weight: 500;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            padding: .75rem 1.5rem;
+            text-align: left;
+            background: var(--off);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            color: var(--ink);
+        }
+
+        th .sort-icon {
+            margin-left: 4px;
+            opacity: .35;
+        }
+
+        th.sort-asc .sort-icon,
+        th.sort-desc .sort-icon {
+            opacity: 1;
+        }
+
+        /* last th (actions) not sortable */
+        th.no-sort {
+            cursor: default;
+        }
+
+        td {
+            padding: .9rem 1.5rem;
+            font-size: .82rem;
+            color: var(--ink);
+            border-bottom: 1px solid rgba(45, 184, 176, 0.06);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--teal-pale);
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: .18rem .65rem;
+            border-radius: 100px;
+            font-size: .68rem;
+            font-weight: 500;
+            letter-spacing: .04em;
+            white-space: nowrap;
+        }
+
+        .pill-submitted {
+            background: rgba(45, 184, 176, 0.12);
+            color: var(--teal-deep);
+        }
+
+        .pill-draft {
+            background: rgba(245, 158, 11, 0.1);
+            color: #92400e;
+        }
+
+        .pill-reviewed {
+            background: rgba(123, 193, 68, 0.12);
+            color: var(--green-dark);
+        }
+
+        .td-link {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .td-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Pagination */
+        .dt-footer {
+            padding: .75rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: .76rem;
+            color: var(--muted);
+        }
+
+        .dt-pager {
+            display: flex;
+            gap: .4rem;
+        }
+
+        .dt-pager button {
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            padding: .28rem .7rem;
+            font-size: .75rem;
+            cursor: pointer;
+            color: var(--ink);
+        }
+
+        .dt-pager button:hover:not(:disabled) {
+            background: var(--teal-pale);
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .dt-pager button.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+
+        .dt-pager button:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+        @@media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @@media (max-width: 700px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 }
 
 <div class="breadcrumb">
     <a asp-action="Dashboard" asp-controller="Admin">Admin</a>
-    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    <svg viewBox="0 0 24 24">
+        <polyline points="9 18 15 12 9 6" />
+    </svg>
     <span>Dashboard</span>
 </div>
 
@@ -84,7 +434,10 @@
             <div class="stat-sub">All time</div>
         </div>
         <div class="stat-icon teal">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+            </svg>
         </div>
     </div>
     <div class="stat-card">
@@ -94,7 +447,10 @@
             <div class="stat-sub">Awaiting review</div>
         </div>
         <div class="stat-icon green">
-            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
         </div>
     </div>
     <div class="stat-card">
@@ -104,7 +460,10 @@
             <div class="stat-sub">In progress</div>
         </div>
         <div class="stat-icon amber">
-            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
         </div>
     </div>
     <div class="stat-card">
@@ -114,7 +473,11 @@
             <div class="stat-sub">New today</div>
         </div>
         <div class="stat-icon purple">
-            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
         </div>
     </div>
 </div>
@@ -125,69 +488,84 @@
     <!-- By Sector -->
     <div class="chart-card">
         <div class="chart-title">Applications by Sector <span>All time</span></div>
-        <div class="bar-chart" id="sectorChart">
+        <div class="bar-chart">
             @{
                 var sectorMax = bySector.Values.DefaultIfEmpty(1).Max();
             }
-            @foreach (var kv in bySector.OrderByDescending(x => x.Value)) {
+            @foreach (var kv in bySector.OrderByDescending(x => x.Value))
+            {
                 var pct = sectorMax > 0 ? (kv.Value * 100 / sectorMax) : 0;
                 <div class="bar-row">
                     <div class="bar-label" title="@kv.Key">@kv.Key</div>
-                    <div class="bar-track"><div class="bar-fill" style="width:@pct%"></div></div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:@pct%"></div>
+                    </div>
                     <div class="bar-count">@kv.Value</div>
                 </div>
             }
-            @if (!bySector.Any()) {
+            @if (!bySector.Any())
+            {
                 <div style="font-size:.8rem;color:var(--muted);text-align:center;padding:1rem 0">No data yet</div>
             }
         </div>
     </div>
 
-    <!-- By Status -->
+    <!-- By Status: Submitted + Draft only -->
     <div class="chart-card">
         <div class="chart-title">Applications by Status <span>All time</span></div>
         <div class="donut-wrap">
-            <svg width="110" height="110" viewBox="0 0 110 110" id="donutSvg">
-                <circle cx="55" cy="55" r="40" fill="none" stroke="var(--off)" stroke-width="14"/>
-                @{
-                    var statusColors = new Dictionary<string, string> {
-                        ["Submitted"] = "#2DB8B0",
-                        ["Draft"]     = "#f59e0b",
-                        ["Reviewed"]  = "#7BC144",
-                        ["Shortlisted"] = "#7c3aed",
-                        ["Rejected"]  = "#dc2626",
-                    };
-                    double statusTotal = byStatus.Values.Sum();
-                    double offset = 0;
-                    double circumference = 2 * Math.PI * 40;
-                }
-                @foreach (var kv in byStatus.OrderByDescending(x => x.Value)) {
-                    if (statusTotal == 0) break;
-                    var dashLen = (kv.Value / statusTotal) * circumference;
-                    var color   = statusColors.GetValueOrDefault(kv.Key, "#9ca3af");
-                    <circle cx="55" cy="55" r="40" fill="none"
-                            stroke="@color" stroke-width="14"
-                            stroke-dasharray="@dashLen.ToString("F1") @circumference.ToString("F1")"
-                            stroke-dashoffset="@(-(offset * circumference / 360)).ToString("F1")"
+            @{
+                var submittedCount = byStatus.GetValueOrDefault("Submitted", 0);
+                var draftCount = byStatus.GetValueOrDefault("Draft", 0);
+                double donutTotal = submittedCount + draftCount;
+                double circ = 2 * Math.PI * 40;
+
+                double submittedDash = donutTotal > 0 ? (submittedCount / donutTotal) * circ : 0;
+                double draftDash = donutTotal > 0 ? (draftCount / donutTotal) * circ : 0;
+
+                // stroke-dashoffset shifts the start point around the circle
+                // Submitted starts at top (-90deg handled by transform), Draft follows after
+                double draftOffset = -(submittedDash);
+            }
+            <svg width="110" height="110" viewBox="0 0 110 110">
+                <!-- background ring -->
+                <circle cx="55" cy="55" r="40" fill="none" stroke="var(--off)" stroke-width="14" />
+                @if (donutTotal > 0)
+                {
+                    <!-- Submitted slice -->
+                    <circle cx="55" cy="55" r="40" fill="none" stroke="#2DB8B0" stroke-width="14"
+                            stroke-dasharray="@submittedDash.ToString("F2") @circ.ToString("F2")" stroke-dashoffset="0"
                             transform="rotate(-90 55 55)" />
-                    offset += (kv.Value / statusTotal) * 360;
+                    <!-- Draft slice -->
+                    <circle cx="55" cy="55" r="40" fill="none" stroke="#f59e0b" stroke-width="14"
+                            stroke-dasharray="@draftDash.ToString("F2") @circ.ToString("F2")"
+                            stroke-dashoffset="@draftOffset.ToString("F2")" transform="rotate(-90 55 55)" />
                 }
-                @if (statusTotal == 0) {
-                    <circle cx="55" cy="55" r="40" fill="none" stroke="var(--border)" stroke-width="14"/>
+                else
+                {
+                    <circle cx="55" cy="55" r="40" fill="none" stroke="var(--border)" stroke-width="14" />
                 }
-                <text x="55" y="50" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="18" font-weight="700" fill="var(--ink)">@total</text>
-                <text x="55" y="65" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="var(--muted)">TOTAL</text>
+                <text x="55" y="50" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="18"
+                      font-weight="700" fill="var(--ink)">@(submittedCount + draftCount)</text>
+                <text x="55" y="65" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9"
+                      fill="var(--muted)">TOTAL</text>
             </svg>
             <div class="donut-legend">
-                @foreach (var kv in byStatus.OrderByDescending(x => x.Value)) {
-                    var color = statusColors.GetValueOrDefault(kv.Key, "#9ca3af");
+                @if (donutTotal > 0)
+                {
                     <div class="legend-item">
-                        <div class="legend-dot" style="background:@color"></div>
-                        <span>@kv.Key</span>
-                        <span style="margin-left:auto;font-weight:500">@kv.Value</span>
+                        <div class="legend-dot" style="background:#2DB8B0"></div>
+                        <span>Submitted</span>
+                        <span style="margin-left:auto;font-weight:500">@submittedCount</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:#f59e0b"></div>
+                        <span>Draft</span>
+                        <span style="margin-left:auto;font-weight:500">@draftCount</span>
                     </div>
                 }
-                @if (!byStatus.Any()) {
+                else
+                {
                     <div style="font-size:.8rem;color:var(--muted)">No data yet</div>
                 }
             </div>
@@ -196,49 +574,208 @@
 
 </div>
 
-<!-- Recent Applications -->
+<!-- Recent Applications DataTable -->
 <div class="table-card">
     <div class="table-header">
         <span class="table-title">Recent Applications</span>
-        <a asp-action="Applications" asp-controller="Admin" class="table-link">
-            View all <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        @* <a asp-action="Applications" asp-controller="Admin" class="table-link">
+            View all
+            <svg viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+        </a> *@
     </div>
-    <table>
+
+    <div class="dt-search-row">
+        <input type="text" id="dtSearch" placeholder="Search by name, company, sector, status…" />
+    </div>
+
+    <table id="recentTable">
         <thead>
             <tr>
-                <th>Reference</th>
-                <th>Applicant</th>
-                <th>Company</th>
-                <th>Sector</th>
-                <th>Status</th>
-                <th>Registered</th>
-                <th></th>
+                <th data-col="0">Reference <span class="sort-icon">↕</span></th>
+                <th data-col="1">Applicant <span class="sort-icon">↕</span></th>
+                <th data-col="2">Company <span class="sort-icon">↕</span></th>
+                <th data-col="3">Sector <span class="sort-icon">↕</span></th>
+                <th data-col="4">Status <span class="sort-icon">↕</span></th>
+                <th data-col="5">Registered <span class="sort-icon">↕</span></th>
+                <th class="no-sort"></th>
             </tr>
         </thead>
-        <tbody>
-            @foreach (var app in recentApps) {
+        <tbody id="dtBody">
+            @foreach (var app in recentApps)
+            {
                 <tr>
-                    <td><code style="font-size:.75rem;color:var(--muted)">@app.ReferenceNumber</code></td>
+                    <td>@app.ReferenceNumber</td>
                     <td>@app.FullName</td>
                     <td>@app.CompanyName</td>
                     <td>@app.BusinessSector</td>
                     <td>
-                        <span class="status-pill @(app.Status == "Submitted" ? "pill-submitted" : app.Status == "Draft" ? "pill-draft" : "pill-reviewed")">
+                        <span
+                            class="status-pill @(app.Status == "Submitted" ? "pill-submitted" : app.Status == "Draft" ? "pill-draft" : "pill-reviewed")">
                             @app.Status
                         </span>
                     </td>
-                    <td style="color:var(--muted)">@((app.CreatedAt as DateTime?)?.ToString("d MMM yyyy"))</td>
+                    <td data-sort="@((app.CreatedAt as DateTime?)?.ToString("yyyy-MM-dd"))">
+                        @((app.CreatedAt as DateTime?)?.ToString("d MMM yyyy"))
+                    </td>
                     <td>
-                        <a asp-action="ApplicationDetail" asp-controller="Admin" asp-route-id="@app.Id" class="td-link">
-                            View
-                        </a>
+                        <a asp-action="ApplicationDetail" asp-controller="Admin" asp-route-id="@app.Id"
+                           class="td-link">View</a>
                     </td>
                 </tr>
             }
-            @if (!recentApps.Any()) {
-                <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem">No applications yet.</td></tr>
+            @if (!recentApps.Any())
+            {
+                <tr id="dtEmpty">
+                    <td colspan="7" style="text-align:center;color:var(--muted);padding:2rem">No applications yet.</td>
+                </tr>
             }
         </tbody>
     </table>
+
+    <div class="dt-footer">
+        <span id="dtInfo"></span>
+        <div class="dt-pager" id="dtPager"></div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var PAGE_SIZE = 10;
+            var tbody = document.getElementById('dtBody');
+            var searchBox = document.getElementById('dtSearch');
+            var infoEl = document.getElementById('dtInfo');
+            var pagerEl = document.getElementById('dtPager');
+
+            if (!tbody) return;
+
+            // Snapshot all rows from the DOM once
+            var allRows = Array.from(tbody.querySelectorAll('tr[data-row-index], tr')).filter(function (r) {
+                return !r.id || r.id !== 'dtEmpty';
+            });
+
+            // Tag each row with its original index so we can restore order
+            allRows.forEach(function (r, i) { r.dataset.rowIndex = i; });
+
+            var sortCol = -1;
+            var sortDir = 1;
+            var currentPage = 0;
+            var filtered = allRows.slice();
+
+            function cellText(row, col) {
+                var cell = row.cells[col];
+                if (!cell) return '';
+                // Use data-sort attribute when available (for date column)
+                return cell.getAttribute('data-sort') || cell.textContent.trim().toLowerCase();
+            }
+
+            function applyFilter() {
+                var q = searchBox.value.trim().toLowerCase();
+                filtered = allRows.filter(function (row) {
+                    if (!q) return true;
+                    var text = row.textContent.toLowerCase();
+                    return text.indexOf(q) !== -1;
+                });
+                currentPage = 0;
+                render();
+            }
+
+            function applySort() {
+                if (sortCol < 0) return;
+                filtered.sort(function (a, b) {
+                    var av = cellText(a, sortCol);
+                    var bv = cellText(b, sortCol);
+                    return av.localeCompare(bv, undefined, { numeric: true, sensitivity: 'base' }) * sortDir;
+                });
+            }
+
+            function render() {
+                applySort();
+
+                var total = filtered.length;
+                var totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+                if (currentPage >= totalPages) currentPage = totalPages - 1;
+
+                var start = currentPage * PAGE_SIZE;
+                var end = Math.min(start + PAGE_SIZE, total);
+                var page = filtered.slice(start, end);
+
+                // Hide all rows first
+                allRows.forEach(function (r) { r.style.display = 'none'; });
+
+                // Show only current page rows in sorted order
+                page.forEach(function (r) {
+                    r.style.display = '';
+                    tbody.appendChild(r);
+                });
+
+                // Info text
+                if (total === 0) {
+                    infoEl.textContent = 'No results found';
+                } else {
+                    infoEl.textContent = 'Showing ' + (start + 1) + '–' + end + ' of ' + total;
+                }
+
+                // Pagination buttons
+                pagerEl.innerHTML = '';
+
+                var prevBtn = document.createElement('button');
+                prevBtn.textContent = '← Prev';
+                prevBtn.disabled = currentPage === 0;
+                prevBtn.addEventListener('click', function () { currentPage--; render(); });
+                pagerEl.appendChild(prevBtn);
+
+                // Page number buttons (show up to 5)
+                var startPage = Math.max(0, currentPage - 2);
+                var endPage = Math.min(totalPages - 1, startPage + 4);
+                for (var p = startPage; p <= endPage; p++) {
+                    (function (pg) {
+                        var btn = document.createElement('button');
+                        btn.textContent = pg + 1;
+                        if (pg === currentPage) btn.classList.add('active');
+                        btn.addEventListener('click', function () { currentPage = pg; render(); });
+                        pagerEl.appendChild(btn);
+                    })(p);
+                }
+
+                var nextBtn = document.createElement('button');
+                nextBtn.textContent = 'Next →';
+                nextBtn.disabled = currentPage >= totalPages - 1;
+                nextBtn.addEventListener('click', function () { currentPage++; render(); });
+                pagerEl.appendChild(nextBtn);
+            }
+
+            // Column sort
+            var headers = document.querySelectorAll('#recentTable th[data-col]');
+            headers.forEach(function (th) {
+                th.addEventListener('click', function () {
+                    var col = parseInt(th.getAttribute('data-col'));
+                    if (sortCol === col) {
+                        sortDir = -sortDir;
+                    } else {
+                        sortCol = col;
+                        sortDir = 1;
+                    }
+                    headers.forEach(function (h) {
+                        h.classList.remove('sort-asc', 'sort-desc');
+                        var ic = h.querySelector('.sort-icon');
+                        if (ic) ic.textContent = '↕';
+                    });
+                    th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+                    var icon = th.querySelector('.sort-icon');
+                    if (icon) icon.textContent = sortDir === 1 ? '↑' : '↓';
+                    currentPage = 0;
+                    render();
+                });
+            });
+
+            // Search
+            searchBox.addEventListener('input', applyFilter);
+
+            // Initial render
+            render();
+        })();
+    </script>
+}
