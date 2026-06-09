@@ -22,61 +22,7 @@ namespace Nsia.Controllers
             _ninService = ninService;
             _scoring = scoring;
         }
-        [HttpGet]
-        public async Task<IActionResult> DebugScore(Guid id)
-        {
-            var app = await _db.Applications.FirstOrDefaultAsync(a => a.Id == id);
-            if (app == null) return NotFound();
 
-            var fields = new Dictionary<string, string?>
-            {
-                ["IsRegisteredInNigeria"] = app.IsRegisteredInNigeria,
-                ["CountryOfOrigin"] = app.CountryOfOrigin,
-                ["BusinessSector"] = app.BusinessSector,
-                ["CompanyWebsite"] = app.CompanyWebsite,
-                ["GeographicScope"] = app.GeographicScope,
-                ["NumberOfFounders"] = app.NumberOfFounders,
-                ["GrowthStage"] = app.GrowthStage,
-                ["ExistingUsers"] = app.ExistingUsers,
-                ["TotalUsersReached"] = app.TotalUsersReached,
-                ["HasStartedGeneratingSales"] = app.HasStartedGeneratingSales,
-                ["YearOfFirstSale"] = app.YearOfFirstSale,
-                ["YearlySalesRevenue"] = app.YearlySalesRevenue,
-                ["YearlyProfit"] = app.YearlyProfit,
-                ["ProprietaryFunding"] = app.ProprietaryFunding,
-                ["ExternalFunding"] = app.ExternalFunding,
-                ["DemandEvidence"] = app.DemandEvidence,
-                ["GeographicScalability"] = app.GeographicScalability,
-                ["GrossMargins"] = app.GrossMargins,
-                ["PrimaryCompetitiveAdvantage"] = app.PrimaryCompetitiveAdvantage,
-                ["OperatingRunway"] = app.OperatingRunway,
-                ["ActivePartnerships"] = app.ActivePartnerships,
-                ["LongTermGrowthStrategy"] = app.LongTermGrowthStrategy,
-                ["IpOwnership"] = app.IpOwnership,
-                ["NewCustomersSixMonths"] = app.NewCustomersSixMonths,
-                ["CustomerGrowthRate"] = app.CustomerGrowthRate,
-                ["RepeatCustomerRevenue"] = app.RepeatCustomerRevenue,
-                ["SdgAlignment"] = app.SdgAlignment,
-                ["BusinessReplicability"] = app.BusinessReplicability,
-                ["UnderservedMarketPercentage"] = app.UnderservedMarketPercentage,
-                ["SystemicInequalityApproach"] = app.SystemicInequalityApproach,
-                ["BeneficiaryInvolvement"] = app.BeneficiaryInvolvement,
-                ["ImpactDataSharing"] = app.ImpactDataSharing,
-                ["JobsCreated"] = app.JobsCreated,
-                ["GenderGapApproach"] = app.GenderGapApproach,
-                ["AccessForUnderserved"] = app.AccessForUnderserved,
-                ["ResourceOptimization"] = app.ResourceOptimization,
-                ["DataProtection"] = app.DataProtection,
-                ["PopulationImpacted"] = app.PopulationImpacted,
-                ["SocialGoodContribution"] = app.SocialGoodContribution,
-                ["EthicalOperations"] = app.EthicalOperations,
-                ["DiversityInclusion"] = app.DiversityInclusion,
-                ["EquitableOpportunities"] = app.EquitableOpportunities,
-                ["AccessibilityForDisadvantaged"] = app.AccessibilityForDisadvantaged,
-            };
-
-            return Json(fields);
-        }
         // ─────────────────────────────────
         // AUTH
         // ─────────────────────────────────
@@ -152,7 +98,7 @@ namespace Nsia.Controllers
             // ── Recent 10
             ViewBag.RecentApps = apps
                 .OrderByDescending(a => a.CreatedAt)
-                .Take(10)
+                // .Take(10)
                 .Select(a => new
                 {
                     a.Id,
