@@ -116,16 +116,29 @@ namespace Nsia.Controllers
         {
             var app = await GetCurrentApplicationAsync();
             if (app == null) return RedirectToLogin();
-            Console.WriteLine(Gender);
+
             app.FullName = FullName?.Trim();
             app.Phone = Phone?.Trim();
             app.Gender = Gender;
             app.RelationshipToBusiness = RelationshipToBusiness;
             app.UpdatedAt = DateTime.UtcNow;
 
-            // Encrypt NIN only if provided
+            // Encrypt and check NIN only if provided
             if (!string.IsNullOrWhiteSpace(Nin))
-                app.NinEncrypted = _ninService.Encrypt(Nin.Trim());
+            {
+                var encryptedNin = _ninService.Encrypt(Nin.Trim());
+
+                var duplicate = await _db.Applications
+                    .AnyAsync(a => a.NinEncrypted == encryptedNin && a.Id != app.Id);
+
+                if (duplicate)
+                {
+                    ModelState.AddModelError("Nin", "This NIN is already registered.");
+                    return View("PersonalInfo", app); // return to form with error
+                }
+
+                app.NinEncrypted = encryptedNin;
+            }
 
             app.ApplicationStep = Math.Max(app.ApplicationStep, 3);
             await _db.SaveChangesAsync();

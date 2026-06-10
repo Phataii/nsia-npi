@@ -119,65 +119,65 @@ namespace Nsia.Controllers
         // APPLICATIONS LIST
         // ─────────────────────────────────
 
-        [HttpGet("/admin/applications")]
-        public async Task<IActionResult> Applications(
-            string? search, string? status, string? sector,
-            string? stage, int page = 1)
-        {
-            if (!IsAdminLoggedIn()) return Redirect("/admin/login");
+        // [HttpGet("/admin/applications")]
+        // public async Task<IActionResult> Applications(
+        //     string? search, string? status, string? sector,
+        //     string? stage, int page = 1)
+        // {
+        //     if (!IsAdminLoggedIn()) return Redirect("/admin/login");
 
-            const int pageSize = 20;
+        //     const int pageSize = 20;
 
-            var query = _db.Applications.AsQueryable();
+        //     var query = _db.Applications.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                var s = search.ToLower();
-                query = query.Where(a =>
-                    a.FullName.ToLower().Contains(s) ||
-                    a.Email.ToLower().Contains(s) ||
-                    (a.CompanyName != null && a.CompanyName.ToLower().Contains(s)) ||
-                    (a.ReferenceNumber != null && a.ReferenceNumber.ToLower().Contains(s)));
-            }
+        //     if (!string.IsNullOrWhiteSpace(search))
+        //     {
+        //         var s = search.ToLower();
+        //         query = query.Where(a =>
+        //             a.FullName.ToLower().Contains(s) ||
+        //             a.Email.ToLower().Contains(s) ||
+        //             (a.CompanyName != null && a.CompanyName.ToLower().Contains(s)) ||
+        //             (a.ReferenceNumber != null && a.ReferenceNumber.ToLower().Contains(s)));
+        //     }
 
-            if (!string.IsNullOrEmpty(status))
-                query = query.Where(a => a.Status == status);
+        //     if (!string.IsNullOrEmpty(status))
+        //         query = query.Where(a => a.Status == status);
 
-            // if (!string.IsNullOrEmpty(sector))
-            //     query = query.Where(a => a.Sector == sector);
+        //     // if (!string.IsNullOrEmpty(sector))
+        //     //     query = query.Where(a => a.Sector == sector);
 
-            if (!string.IsNullOrEmpty(stage))
-                query = query.Where(a => a.GrowthStage == stage);
+        //     if (!string.IsNullOrEmpty(stage))
+        //         query = query.Where(a => a.GrowthStage == stage);
 
-            var total = await query.CountAsync();
+        //     var total = await query.CountAsync();
 
-            var applications = await query
-                .OrderByDescending(a => a.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+        //     var applications = await query
+        //         .OrderByDescending(a => a.CreatedAt)
+        //         .Skip((page - 1) * pageSize)
+        //         .Take(pageSize)
+        //         .ToListAsync();
 
-            ViewBag.AdminName = HttpContext.Session.GetString("AdminName");
-            ViewBag.Applications = applications;
-            ViewBag.Total = total;
-            ViewBag.Page = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalPages = (int)Math.Ceiling(total / (double)pageSize);
-            ViewBag.Search = search;
-            ViewBag.StatusFilter = status;
-            ViewBag.SectorFilter = sector;
-            ViewBag.StageFilter = stage;
+        //     ViewBag.AdminName = HttpContext.Session.GetString("AdminName");
+        //     ViewBag.Applications = applications;
+        //     ViewBag.Total = total;
+        //     ViewBag.Page = page;
+        //     ViewBag.PageSize = pageSize;
+        //     ViewBag.TotalPages = (int)Math.Ceiling(total / (double)pageSize);
+        //     ViewBag.Search = search;
+        //     ViewBag.StatusFilter = status;
+        //     ViewBag.SectorFilter = sector;
+        //     ViewBag.StageFilter = stage;
 
-            // ViewBag.Sectors = await _db.Applications
-            //     .Where(a => a.Sector != null)
-            //     .Select(a => a.Sector).Distinct().ToListAsync();
+        //     // ViewBag.Sectors = await _db.Applications
+        //     //     .Where(a => a.Sector != null)
+        //     //     .Select(a => a.Sector).Distinct().ToListAsync();
 
-            ViewBag.Stages = await _db.Applications
-                .Where(a => a.GrowthStage != null)
-                .Select(a => a.GrowthStage).Distinct().ToListAsync();
+        //     ViewBag.Stages = await _db.Applications
+        //         .Where(a => a.GrowthStage != null)
+        //         .Select(a => a.GrowthStage).Distinct().ToListAsync();
 
-            return View();
-        }
+        //     return View();
+        // }
 
         // ─────────────────────────────────
         // APPLICATION DETAIL
