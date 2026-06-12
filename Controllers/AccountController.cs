@@ -190,6 +190,9 @@ namespace Nsia.Controllers
             {
                 TempData["VerifyEmail"] = application.Email;
                 TempData["MaskedEmail"] = MaskEmail(application.Email);
+
+                var otp = GenerateOtp();
+                await _email.SendOtpEmailAsync(application.Email, application.FullName, otp);
                 return RedirectToAction("VerifyEmail");
             }
 
