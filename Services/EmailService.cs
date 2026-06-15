@@ -115,6 +115,89 @@ namespace nsia.Services
         }
 
         // ─────────────────────────────────
+        // APPLICATION REMINDER
+        // ─────────────────────────────────
+        public async Task SendApplicationReminderEmailAsync(
+            string toEmail,
+            string toName,
+            string referenceNumber)
+        {
+            var firstName = toName.Split(' ')[0];
+            var html = $@"
+                <div style='font-family:DM Sans,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#faf8f3'>
+                    <div style='background:#20A1B8;border-radius:12px;padding:32px;margin-bottom:24px'>
+                        <p style='font-size:11px;color:white;letter-spacing:.08em;text-transform:uppercase;margin:0 0 16px'>
+                            NSIA · Prize for Innovation
+                        </p>
+
+                        <h1 style='font-family:Georgia,serif;font-size:28px;color:white;margin:0 0 8px;line-height:1.1'>
+                            Complete your application, 
+                            <span style='color:#83c240;font-style:italic'>{firstName}.</span>
+                        </h1>
+
+                        <p style='font-size:14px;color:rgba(255,255,255,0.75);margin:0;line-height:1.6'>
+                            Our records show that your NPI 4.0 application is still incomplete.
+                            Please return to your dashboard and complete all required sections
+                            before the application deadline.
+                        </p>
+                    </div>
+
+                    <div style='background:white;border-radius:12px;border:1px solid rgba(0,0,0,0.08);padding:24px;margin-bottom:16px'>
+                        <p style='font-size:12px;color:#5a6b60;margin:0 0 8px;text-transform:uppercase;letter-spacing:.06em'>
+                            Your application reference
+                        </p>
+
+                        <p style='font-family:Georgia,serif;font-size:24px;font-weight:700;color:#0d1a12;letter-spacing:.05em;margin:0 0 16px'>
+                            {referenceNumber}
+                        </p>
+
+                        <p style='font-size:13px;color:#5a6b60;margin:0;line-height:1.6'>
+                            Keep this reference number safe for any communication with the
+                            NSIA NPI team.
+                        </p>
+                    </div>
+
+                    <div style='background:rgba(131,194,64,0.08);border:1px solid rgba(131,194,64,0.25);border-radius:8px;padding:16px;margin-bottom:16px'>
+                        <p style='font-size:12px;color:#4d7c1f;margin:0 0 6px;font-weight:600'>
+                            Reminder
+                        </p>
+
+                        <p style='font-size:13px;color:#4d7c1f;margin:0;line-height:1.7'>
+                            Applications for the NSIA Prize for Innovation (NPI 4.0)
+                            close on <strong>8 July 2026</strong>.
+                            Incomplete applications may not be considered after the deadline.
+                        </p>
+                    </div>
+
+                    <div style='text-align:center;margin-bottom:20px'>
+                        <a href='https://nsia-ip.com/account/login'
+                        style='display:inline-block;background:#20A1B8;color:white;
+                                text-decoration:none;padding:14px 24px;border-radius:8px;
+                                font-size:14px;font-weight:600'>
+                            Continue Application
+                        </a>
+                    </div>
+
+                    <p style='font-size:11px;color:#aab5af;text-align:center;margin:0;line-height:1.6'>
+                        Questions? Email
+                        <a href='mailto:npi@nsia.com.ng'
+                        style='color:#0e86ab;text-decoration:none'>
+                        npi@nsia.com.ng
+                        </a>
+                        &nbsp;·&nbsp;
+                        &copy; {DateTime.UtcNow.Year} Nigeria Sovereign Investment Authority
+                    </p>
+                </div>";
+
+            await SendAsync(
+                toEmail,
+                toName,
+                "Reminder: Complete Your NPI 4.0 Application Before July 8",
+                html);
+
+        }
+
+        // ─────────────────────────────────
         // WELCOME EMAIL
         // ─────────────────────────────────
 

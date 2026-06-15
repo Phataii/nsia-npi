@@ -6,7 +6,7 @@ using nsia.Services;
 using nsia.ViewModels;
 using BCrypt.Net;
 
-namespace Nsia.Controllers
+namespace nsia.Controllers
 {
     public class AccountController : Controller
     {
@@ -50,6 +50,15 @@ namespace Nsia.Controllers
             if (exists)
             {
                 ModelState.AddModelError("Email", "An account with this email already exists.");
+                return View(model);
+            }
+
+            var existsPhone = await _db.Applications
+                .AnyAsync(a => a.Phone == model.PhoneNumber.Trim());
+
+            if (existsPhone)
+            {
+                ModelState.AddModelError("Phone", "An account with this phone number already exists.");
                 return View(model);
             }
 

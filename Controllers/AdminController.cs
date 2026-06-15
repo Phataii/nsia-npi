@@ -6,7 +6,7 @@ using nsia.Data;
 using nsia.Models;
 using nsia.Services;
 
-namespace Nsia.Controllers
+namespace nsia.Controllers
 {
     public class AdminController : Controller
     {
@@ -14,13 +14,14 @@ namespace Nsia.Controllers
         private readonly ILogger<AdminController> _logger;
         private readonly INinEncryptionService _ninService;
         private readonly IScoringService _scoring;
-
-        public AdminController(ApplicationDbContext db, ILogger<AdminController> logger, INinEncryptionService ninService, IScoringService scoring)
+        private readonly IEmailService _email;
+        public AdminController(ApplicationDbContext db, ILogger<AdminController> logger, INinEncryptionService ninService, IScoringService scoring, IEmailService email)
         {
             _db = db;
             _logger = logger;
             _ninService = ninService;
             _scoring = scoring;
+            _email = email;
         }
 
         // ─────────────────────────────────
@@ -71,7 +72,8 @@ namespace Nsia.Controllers
         [HttpGet("/admin/dashboard")]
         public async Task<IActionResult> Dashboard()
         {
-            if (!IsAdminLoggedIn()) return Redirect("/admin/login");
+            if (!IsAdminLoggedIn())
+                return Redirect("/admin/login");
 
             var apps = await _db.Applications.ToListAsync();
 
@@ -95,10 +97,9 @@ namespace Nsia.Controllers
                 .GroupBy(a => a.BusinessSector!)
                 .ToDictionary(g => g.Key, g => g.Count());
 
-            // ── Recent 10
+            // ── Recent Applications
             ViewBag.RecentApps = apps
                 .OrderByDescending(a => a.CreatedAt)
-                // .Take(10)
                 .Select(a => new
                 {
                     a.Id,
@@ -109,8 +110,11 @@ namespace Nsia.Controllers
                     a.BusinessSector,
                     a.Status,
                     a.CreatedAt,
+                    Score = _scoring.Calculate(a).TotalScore
                 })
                 .ToList();
+
+            ViewBag.Success = TempData["Success"];
 
             return View();
         }
@@ -334,6 +338,53 @@ namespace Nsia.Controllers
         }
 
         // ─────────────────────────────────
+        // SEND REMINDER TO PENDING APPLICATIONS
+        // ─────────────────────────────────
+
+        [Route("send-reminder")]
+        public async Task<IActionResult> SendReminder(
+        )
+        {
+            try
+            {
+                // Find existing application
+                var applications = await _db.Applications
+                    .Where(a => a.Status != "Submitted").ToListAsync();
+
+                if (applications == null)
+                {
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = "Applications not found"
+                    });
+                }
+
+                foreach (var application in applications)
+                {
+                    await _email.SendApplicationReminderEmailAsync(application.Email, application.FullName, application.ReferenceNumber);
+
+                }
+
+                // Return success response
+                TempData["Success"] = "Reminders sent successfully!";
+
+                return Redirect("/admin/dashboard");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sendig emails");
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while sending emails. Please try again."
+                });
+            }
+        }
+
+        // ─────────────────────────────────
         // PRIVATE HELPERS
         // ─────────────────────────────────
 
@@ -349,63 +400,176 @@ namespace Nsia.Controllers
             return value;
         }
 
-        private static string BuildCsv(List<Application> apps)
+        private string BuildCsv(List<Application> apps)
         {
             var sb = new StringBuilder();
+            var baseUrl = "https://nsia-ip.com/npi/uploads";
+            // var baseUrl = "http://localhost:5228/npi/uploads";
 
+            string BuildDocumentUrl(string? path)
+            {
+                return string.IsNullOrWhiteSpace(path)
+                    ? ""
+                    : $"{baseUrl}/{path}";
+            }
             // ── MAIN HEADERS ──
             sb.AppendLine(string.Join(",", new[]
             {
-                // Identity
-                "Reference Number","Status","Application Step","Submitted At","Created At",
-                // Profile
-                "Full Name","Email","Phone","Gender","Email Verified", "Location", "How Did You Hear",
-                // Company
-                "Company Name","Company URL","Business Address","Year Incorporated",
-                "Legally Registered","CAC Reg Number","Is Operational Entity",
-                "Has Foreign Affiliates","Foreign Affiliate Details",
-                "Twitter","Instagram","LinkedIn","Facebook",
-                "Company Description","Milestones","Success Metrics","Long Term Vision",
-                // Team
-                "Number of Founders","Team Composition","Total Employees",
-                // Founders (up to 5)
-                "Founder 1 Name","Founder 1 Phone","Founder 1 Role","Founder 1 LinkedIn","Founder 1 Nationality",
-                "Founder 2 Name","Founder 2 Phone","Founder 2 Role","Founder 2 LinkedIn","Founder 2 Nationality",
-                // "Founder 3 Name","Founder 3 Phone","Founder 3 Role","Founder 3 LinkedIn","Founder 3 Nationality",
-                // "Founder 4 Name","Founder 4 Phone","Founder 4 Role","Founder 4 LinkedIn","Founder 4 Nationality",
-                // "Founder 5 Name","Founder 5 Phone","Founder 5 Role","Founder 5 LinkedIn","Founder 5 Nationality",
-                // Product
-                "Growth Stage","Sector","MVP Link","Product Description","User Count Range",
-                "Business Model","USP","Competitors","Go To Market","Key Features",
-                // Commercial
-                "Generating Revenue","Funding Types","Currently Fundraising",
-                "Company Valuation","Projected Revenue","Revenue Streams",
-                "Gross Margins","Repeat Revenue %","Pricing Strategy","Operating Runway",
-                "Demand Evidence","Market Share","Competitive Edge",
-                "Geographic Scalability","Cross Industry","Growth Plan",
-                "Update Frequency","New Customers 6m","Customer Growth Rate",
-                "Avg CAC","Supply Chain","Regulatory Compliance",
-                "Biggest Risks","Active Partnerships","IP Ownership",
-                // Impact
-                "Aligns With SDGs","SDGs Addressed","Reduces Env Harm",
-                "Env Harm Reduction","Resource Optimisation",
-                "Underserved Market %","Systemic Inequality Reduction",
-                "Gender Gap Approach","Access For Underserved",
-                "Jobs Created","People Impacted","User Self Reliance",
-                "Outcome Tracking","Impact Measurement","Impact Sharing",
-                "Beneficiary Involvement","Local Context","Ethical Practices",
-                "Data Protection","Trust Building",
-                "Model Replicability","Impact Durability","Crisis Performance",
-                "Policy Advocacy","Impact Data","Community Differences","Top Impact Examples",
-                "Agrees Privacy Policy","Agrees Competition Agreement",
-                // Additional
-                "Document Details","Additional Information",
-                // Documents (up to 5)
-                "Doc 1 Name",
-                "Doc 2 Name",
-                "Doc 3 Name",
-                "Doc 4 Name",
-                "Doc 5 Name",
+               // ── META
+                "Score",
+                "Reference Number",
+                "Application Status",
+                // "Application Step",
+                "Started At",
+                "Last Updated At",
+                "Submitted At",
+
+                // ── PRE-SUBMISSION CHECKLIST
+                "Registered In Nigeria",
+                "Business Sector",
+                "Country Of Origin",
+
+                // ── PERSONAL INFORMATION
+                "Full Name",
+                "Email Address",
+                "Phone Number",
+                "Gender",
+                "Email Verified",
+                "Location",
+                "How Did You Hear About NPI",
+                "Relationship To Business",
+
+                // ── COMPANY INFORMATION
+                "Company Name",
+                "Company Website",
+                "Business State",
+                "Business LGA",
+                "Company HQ Address",
+                "Geographic Scope",
+                "Company Registration Number",
+                "Regulatory Compliance",
+                "Tax Compliance",
+                "Has Foreign Affiliates",
+                "Is Nigerian Entity Primary",
+                "Company Structure",
+                "Parent Organization Name",
+                "Other Competitions Participated In",
+
+                // ── SOCIAL MEDIA
+                "LinkedIn",
+                "Twitter",
+                "Instagram",
+                "Facebook",
+
+                // ── TEAM INFORMATION
+                "Number Of Founders",
+                "Founding Team Type",
+                "Founder Industry Experience",
+                "Management Team Experience",
+                "Total Full-Time Employees",
+
+                // ── FOUNDERS
+                "Founder 1 Name",
+                "Founder 1 Phone",
+                "Founder 1 Role",
+                "Founder 1 LinkedIn",
+                "Founder 1 Nationality",
+
+                "Founder 2 Name",
+                "Founder 2 Phone",
+                "Founder 2 Role",
+                "Founder 2 LinkedIn",
+                "Founder 2 Nationality",
+
+                "Founder 3 Name",
+                "Founder 3 Phone",
+                "Founder 3 Role",
+                "Founder 3 LinkedIn",
+                "Founder 3 Nationality",
+
+                // ── PRODUCT, GROWTH & TRACTION
+                "Growth Stage",
+                "Key Milestones",
+                "Existing Users",
+                "Total Users Reached",
+                "Core Business Model",
+                "Unique Selling Point",
+                "Main Competitors",
+                "Market Penetration Strategy",
+                "Key Features",
+
+                // ── COMMERCIAL PART 1 — REVENUE/FUNDING
+                "Started Generating Sales",
+                "Year Of First Sale",
+                "Yearly Sales Revenue",
+                "Yearly Profit",
+                "Proprietary Funding",
+                "External Funding",
+                "Types Of Funding",
+                "Currently Fundraising",
+                "Projected Revenue",
+                "Company Valuation",
+
+                // ── COMMERCIAL PART 2 — STRATEGY/MARKET
+                "Demand Evidence",
+                "Revenue Streams",
+                "Geographic Scalability",
+                "Gross Margins",
+                "Primary Competitive Advantage",
+                "Operating Runway",
+                "Active Partnerships",
+                "Regulatory Approach",
+                "Cross Industry Application",
+                "Long-Term Growth Strategy",
+                "Supply Chain Reliability",
+                "IP Ownership",
+                "Pricing Strategy",
+                "Biggest Risks",
+                "New Customers (Last 6 Months)",
+                "Customer Growth Rate",
+                "Average CAC",
+                "Repeat Customer Revenue",
+
+                // ── SUSTAINABILITY
+                "SDG Alignment",
+                "Business Replicability",
+                "Sustainability Integration",
+                "Energy & Waste Reduction",
+                "Sustainability Technology",
+                "Scaling With Sustainability",
+                "Climate Change Approach",
+                "Digital Accessibility",
+
+                // ── IMPACT
+                "Underserved Market Percentage",
+                "Systemic Inequality Approach",
+                "Beneficiary Involvement",
+                "Impact Data Sharing",
+                "Jobs Created",
+                "Gender Gap Approach",
+                "Access For Underserved",
+                "Resource Optimization",
+                "Data Protection",
+                "Population Impacted",
+                "Social Good Contribution",
+                "Ethical Operations",
+                "Diversity & Inclusion",
+                "Equitable Opportunities",
+                "Accessibility For Disadvantaged",
+
+                // ── ADDITIONAL INFORMATION
+                "Document Details",
+                "Additional Information",
+
+                // ── AGREEMENTS
+                "Agreed To Terms Of Service",
+                "Agreed To Privacy Policy",
+                "Agreed To Submission Agreement",
+
+                // ── DOCUMENTS
+                "Document 1",
+                "Document 2",
+                "Document 3",
             }));
 
             foreach (var a in apps)
@@ -419,127 +583,170 @@ namespace Nsia.Controllers
                 string D(int i, Func<ApplicationDocument, string?> selector) =>
                     EscapeCsv(i < docs.Count ? selector(docs[i]) : null);
 
+                // Get score for each application
+                var score = _scoring.Calculate(a).TotalScore;
+
                 var row = new[]
                 {
-                    // Identity
+                    // ── META
+                    score.ToString(),
                     EscapeCsv(a.ReferenceNumber),
                     EscapeCsv(a.Status),
-                    a.ApplicationStep.ToString(),
-                    a.SubmittedAt?.AddHours(1).ToString("yyyy-MM-dd HH:mm") ?? "",
+                    // a.ApplicationStep.ToString(),
                     a.CreatedAt.ToString("yyyy-MM-dd HH:mm"),
-                    // Profile
+                    a.UpdatedAt.ToString("yyyy-MM-dd HH:mm"),
+                    a.SubmittedAt?.AddHours(1).ToString("yyyy-MM-dd HH:mm") ?? "",
+
+                    // ── PRE-SUBMISSION CHECKLIST
+                    EscapeCsv(a.IsRegisteredInNigeria),
+                    EscapeCsv(a.BusinessSector),
+                    EscapeCsv(a.CountryOfOrigin),
+
+                    // ── PERSONAL INFORMATION
                     EscapeCsv(a.FullName),
                     EscapeCsv(a.Email),
                     EscapeCsv(a.Phone),
                     EscapeCsv(a.Gender),
                     a.IsEmailVerified ? "Yes" : "No",
-                    // EscapeCsv(a.Location),
-                    // EscapeCsv(a.HowDidYouHear),
-                    // // Company
-                    // EscapeCsv(a.CompanyName),
-                    // EscapeCsv(a.CompanyUrl),
-                    // EscapeCsv(a.BusinessAddress),
-                    // a.YearOfIncorporation?.ToString() ?? "",
-                    // a.IsLegallyRegisteredInNigeria ? "Yes" : "No",
-                    // EscapeCsv(a.CacRegistrationNumber),
-                    // a.IsNigerianEntityOperational ? "Yes" : "No",
-                    // a.HasForeignAffiliates ? "Yes" : "No",
-                    // EscapeCsv(a.ForeignAffiliateDetails),
-                    // EscapeCsv(a.SocialMedia?.Twitter),
-                    // EscapeCsv(a.SocialMedia?.Instagram),
-                    // EscapeCsv(a.SocialMedia?.LinkedIn),
-                    // EscapeCsv(a.SocialMedia?.Facebook),
-                    // EscapeCsv(a.CompanyDescription),
-                    // EscapeCsv(a.Milestones),
-                    // EscapeCsv(a.SuccessMetrics),
-                    // EscapeCsv(a.LongTermVision),
-                    // // Team
-                    // a.NumberOfFounders?.ToString() ?? "",
-                    // EscapeCsv(a.TeamComposition),
-                    // a.TotalEmployees?.ToString() ?? "",
-                    // Founders
-                    F(0,f=>f.FullName), F(0,f=>f.PhoneNumber), F(0,f=>f.Role), F(0,f=>f.LinkedInUrl), F(0,f=>f.Nationality),
-                    F(1,f=>f.FullName), F(1,f=>f.PhoneNumber), F(1,f=>f.Role), F(1,f=>f.LinkedInUrl), F(1,f=>f.Nationality),
-                    // F(2,f=>f.FullName), F(2,f=>f.PhoneNumber), F(2,f=>f.Role), F(2,f=>f.LinkedInUrl), F(2,f=>f.Nationality),
-                    // F(3,f=>f.FullName), F(3,f=>f.PhoneNumber), F(3,f=>f.Role), F(3,f=>f.LinkedInUrl), F(3,f=>f.Nationality),
-                    // F(4,f=>f.FullName), F(4,f=>f.PhoneNumber), F(4,f=>f.Role), F(4,f=>f.LinkedInUrl), F(4,f=>f.Nationality),
-                    // Product
+                    EscapeCsv(a.Location),
+                    EscapeCsv(a.HowDidYouHear),
+                    EscapeCsv(a.RelationshipToBusiness),
+
+                    // ── COMPANY INFORMATION
+                    EscapeCsv(a.CompanyName),
+                    EscapeCsv(a.CompanyWebsite),
+                    EscapeCsv(a.BusinessState),
+                    EscapeCsv(a.BusinessLga),
+                    EscapeCsv(a.CompanyHqAddress),
+                    EscapeCsv(a.GeographicScope),
+                    EscapeCsv(a.CompanyRegistrationNumber),
+                    EscapeCsv(a.RegulatoryCompliance),
+                    EscapeCsv(a.TaxCompliance),
+                    EscapeCsv(a.HasForeignAffiliates),
+                    EscapeCsv(a.IsNigerianEntityPrimary),
+                    EscapeCsv(a.CompanyStructure),
+                    EscapeCsv(a.ParentOrganizationName),
+                    EscapeCsv(a.OtherCompetitions),
+
+                    // ── SOCIAL MEDIA
+                    EscapeCsv(a.SocialMedia?.LinkedIn),
+                    EscapeCsv(a.SocialMedia?.Twitter),
+                    EscapeCsv(a.SocialMedia?.Instagram),
+                    EscapeCsv(a.SocialMedia?.Facebook),
+
+                    // ── TEAM INFORMATION
+                    EscapeCsv(a.NumberOfFounders),
+                    EscapeCsv(a.FoundingTeamType),
+                    EscapeCsv(a.FounderIndustryExperience),
+                    EscapeCsv(a.ManagementTeamExperience),
+                    EscapeCsv(a.TotalFullTimeEmployees),
+
+                    // ── FOUNDERS
+                    F(0, f => f.FullName),
+                    F(0, f => f.PhoneNumber),
+                    F(0, f => f.Role),
+                    F(0, f => f.LinkedInUrl),
+                    F(0, f => f.Nationality),
+
+                    F(1, f => f.FullName),
+                    F(1, f => f.PhoneNumber),
+                    F(1, f => f.Role),
+                    F(1, f => f.LinkedInUrl),
+                    F(1, f => f.Nationality),
+
+                    F(2, f => f.FullName),
+                    F(2, f => f.PhoneNumber),
+                    F(2, f => f.Role),
+                    F(2, f => f.LinkedInUrl),
+                    F(2, f => f.Nationality),
+
+                    // ── PRODUCT, GROWTH & TRACTION
                     EscapeCsv(a.GrowthStage),
-                    // EscapeCsv(a.Sector),
-                    // EscapeCsv(a.MvpLink),
-                    // EscapeCsv(a.ProductDescription),
-                    // EscapeCsv(a.UserCountRange),
-                    // EscapeCsv(a.BusinessModel),
-                    // EscapeCsv(a.UniqueSellingPoint),
-                    // EscapeCsv(a.MainCompetitors),
-                    // EscapeCsv(a.GoToMarketStrategy),
+                    EscapeCsv(a.KeyMilestones),
+                    EscapeCsv(a.ExistingUsers),
+                    EscapeCsv(a.TotalUsersReached),
+                    EscapeCsv(a.CoreBusinessModel),
+                    EscapeCsv(a.UniqueSellingPoint),
+                    EscapeCsv(a.MainCompetitors),
+                    EscapeCsv(a.MarketPenetrationStrategy),
                     EscapeCsv(a.KeyFeatures),
-                    // Commercial
-                    // a.HasStartedGeneratingRevenue == true ? "Yes" : a.HasStartedGeneratingRevenue == false ? "No" : "",
-                    // EscapeCsv(a.FundingTypes),
-                    // a.IsCurrentlyFundraising == true ? "Yes" : a.IsCurrentlyFundraising == false ? "No" : "",
-                    // EscapeCsv(a.CompanyValuation),
-                    // EscapeCsv(a.ProjectedRevenueNextYear),
-                    // EscapeCsv(a.RevenueStreams),
-                    // EscapeCsv(a.GrossMargins),
-                    // EscapeCsv(a.RepeatCustomerRevenuePercentage),
-                    // EscapeCsv(a.PricingStrategy),
-                    // EscapeCsv(a.OperatingRunway),
-                    // EscapeCsv(a.DemandEvidence),
-                    // EscapeCsv(a.EstimatedMarketShare),
-                    // EscapeCsv(a.PrimaryCompetitiveEdge),
-                    // EscapeCsv(a.GeographicScalability),
-                    // EscapeCsv(a.CrossIndustryApplicability),
-                    // EscapeCsv(a.LongTermGrowthPlan),
-                    // EscapeCsv(a.FeedbackUpdateFrequency),
-                    // EscapeCsv(a.CustomersAcquiredPastSixMonths),
-                    // EscapeCsv(a.CustomerGrowthRatePastYear),
-                    // EscapeCsv(a.AverageCustomerAcquisitionCost),
-                    // EscapeCsv(a.SupplyChainReliability),
-                    // EscapeCsv(a.RegulatoryCompliance),
-                    // EscapeCsv(a.BiggestRisks),
-                    // EscapeCsv(a.ActivePartnerships),
-                    // EscapeCsv(a.IpOwnership),
-                    // Impact
-                    // a.AlignsWithUnSdgs == true ? "Yes" : a.AlignsWithUnSdgs == false ? "No" : "",
-                    // EscapeCsv(a.SdgsAddressed),
-                    // a.ReducesEnvironmentalHarm == true ? "Yes" : a.ReducesEnvironmentalHarm == false ? "No" : "",
-                    // EscapeCsv(a.EnvironmentalHarmReduction),
-                    // EscapeCsv(a.ResourceOptimisation),
-                    // EscapeCsv(a.UnderservedMarketPercentage),
-                    // EscapeCsv(a.SystemicInequalityReduction),
-                    // EscapeCsv(a.GenderGapApproach),
-                    // EscapeCsv(a.AccessForUnderservedGroups),
-                    // EscapeCsv(a.JobsCreated),
-                    // EscapeCsv(a.PeopleImpacted),
-                    // EscapeCsv(a.UserSelfRelianceLevel),
-                    // EscapeCsv(a.SocialOutcomeTracking),
-                    // EscapeCsv(a.ImpactMeasurementMethod),
-                    // EscapeCsv(a.ImpactDataSharingLevel),
-                    // EscapeCsv(a.BeneficiaryInvolvementLevel),
-                    // EscapeCsv(a.LocalContextTailoring),
-                    // EscapeCsv(a.EthicalPracticesApproach),
-                    // EscapeCsv(a.DataProtectionApproach),
-                    // EscapeCsv(a.TrustBuildingApproach),
-                    // EscapeCsv(a.ModelReplicability),
-                    // EscapeCsv(a.ImpactDurability),
-                    // EscapeCsv(a.CrisisPerformance),
-                    // EscapeCsv(a.PolicyAdvocacy),
-                    // EscapeCsv(a.ImpactDataAndStatistics),
-                    // EscapeCsv(a.MeasurableCommunityDifferences),
-                    // EscapeCsv(a.TopImpactExamplesDetails),
-                    // a.AgreesToNsiaPrivacyPolicy ? "Yes" : "No",
-                    // a.AgreesToCompetitionSubmissionAgreement ? "Yes" : "No",
-                    // Additional
+
+                    // ── COMMERCIAL PART 1
+                    EscapeCsv(a.HasStartedGeneratingSales),
+                    EscapeCsv(a.YearOfFirstSale),
+                    EscapeCsv(a.YearlySalesRevenue),
+                    EscapeCsv(a.YearlyProfit),
+                    EscapeCsv(a.ProprietaryFunding),
+                    EscapeCsv(a.ExternalFunding),
+                    EscapeCsv(a.TypesOfFunding),
+                    EscapeCsv(a.IsCurrentlyFundraising),
+                    EscapeCsv(a.ProjectedRevenue),
+                    EscapeCsv(a.CompanyValuation),
+
+                    // ── COMMERCIAL PART 2
+                    EscapeCsv(a.DemandEvidence),
+                    EscapeCsv(a.RevenueStreams),
+                    EscapeCsv(a.GeographicScalability),
+                    EscapeCsv(a.GrossMargins),
+                    EscapeCsv(a.PrimaryCompetitiveAdvantage),
+                    EscapeCsv(a.OperatingRunway),
+                    EscapeCsv(a.ActivePartnerships),
+                    EscapeCsv(a.RegulatoryApproach),
+                    EscapeCsv(a.CrossIndustryApplication),
+                    EscapeCsv(a.LongTermGrowthStrategy),
+                    EscapeCsv(a.SupplyChainReliability),
+                    EscapeCsv(a.IpOwnership),
+                    EscapeCsv(a.PricingStrategy),
+                    EscapeCsv(a.BiggestRisks),
+                    EscapeCsv(a.NewCustomersSixMonths),
+                    EscapeCsv(a.CustomerGrowthRate),
+                    EscapeCsv(a.AverageCAC),
+                    EscapeCsv(a.RepeatCustomerRevenue),
+
+                    // ── SUSTAINABILITY
+                    EscapeCsv(a.SdgAlignment),
+                    EscapeCsv(a.BusinessReplicability),
+                    EscapeCsv(a.SustainabilityIntegration),
+                    EscapeCsv(a.EnergyWasteReduction),
+                    EscapeCsv(a.SustainabilityTechnology),
+                    EscapeCsv(a.ScalingWithSustainability),
+                    EscapeCsv(a.ClimateChangeApproach),
+                    EscapeCsv(a.DigitalAccessibility),
+
+                    // ── IMPACT
+                    EscapeCsv(a.UnderservedMarketPercentage),
+                    EscapeCsv(a.SystemicInequalityApproach),
+                    EscapeCsv(a.BeneficiaryInvolvement),
+                    EscapeCsv(a.ImpactDataSharing),
+                    EscapeCsv(a.JobsCreated),
+                    EscapeCsv(a.GenderGapApproach),
+                    EscapeCsv(a.AccessForUnderserved),
+                    EscapeCsv(a.ResourceOptimization),
+                    EscapeCsv(a.DataProtection),
+                    EscapeCsv(a.PopulationImpacted),
+                    EscapeCsv(a.SocialGoodContribution),
+                    EscapeCsv(a.EthicalOperations),
+                    EscapeCsv(a.DiversityInclusion),
+                    EscapeCsv(a.EquitableOpportunities),
+                    EscapeCsv(a.AccessibilityForDisadvantaged),
+
+                    // ── ADDITIONAL
                     EscapeCsv(a.DocumentDetails),
                     EscapeCsv(a.AdditionalInformation),
-                    // Documents
-                    D(0,d=>d.StoredFilePath),
-                    D(1,d=>d.StoredFilePath),
-                    D(2,d=>d.StoredFilePath),
-                    D(3,d=>d.StoredFilePath),
-                    D(4,d=>d.StoredFilePath),
-                };
+
+                    // ── AGREEMENTS
+                    a.AgreesToTermsOfService ? "Yes" : "No",
+                    a.AgreesToPrivacyPolicy ? "Yes" : "No",
+                    a.AgreeToSubmissionAgreement ? "Yes" : "No",
+
+                    // ── DOCUMENTS
+                    BuildDocumentUrl(D(0, d => d.StoredFilePath)),
+                    BuildDocumentUrl(D(1, d => d.StoredFilePath)),
+                    BuildDocumentUrl(D(2, d => d.StoredFilePath)),
+                    BuildDocumentUrl(D(3, d => d.StoredFilePath)),
+                    BuildDocumentUrl(D(4, d => d.StoredFilePath)),
+                }
+            ;
 
                 sb.AppendLine(string.Join(",", row));
             }

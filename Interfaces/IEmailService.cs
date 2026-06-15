@@ -5,5 +5,7 @@ namespace nsia.Services
         Task SendOtpEmailAsync(string toEmail, string toName, string otp);
         Task SendWelcomeEmailAsync(string toEmail, string toName, string referenceNumber);
         Task SendSubmissionConfirmationAsync(string toEmail, string toName, string referenceNumber);
+        Task SendApplicationReminderEmailAsync(string toEmail, string toName, string referenceNumber);
+
     }
 }

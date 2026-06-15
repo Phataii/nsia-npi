@@ -52,8 +52,8 @@ namespace nsia.Services
             // var isNigerian = IsNigerian(app.CountryOfOrigin);
 
             // Add this temporarily to see what's happening:
-            Console.WriteLine($"[SCORE DEBUG] IsRegisteredInNigeria='{app.IsRegisteredInNigeria}' → {isRegistered}");
-            Console.WriteLine($"[SCORE DEBUG] CountryOfOrigin='{app.CountryOfOrigin}' → {isNigerian}");
+            // Console.WriteLine($"[SCORE DEBUG] IsRegisteredInNigeria='{app.IsRegisteredInNigeria}' → {isRegistered}");
+            // Console.WriteLine($"[SCORE DEBUG] CountryOfOrigin='{app.CountryOfOrigin}' → {isNigerian}");
 
             return new ScoreResult
             {

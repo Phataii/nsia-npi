@@ -5,7 +5,7 @@ using nsia.Models;
 using nsia.Services;
 using nsia.ViewModels;
 
-namespace Nsia.Controllers
+namespace nsia.Controllers
 {
     public class ApplicationController : Controller
     {

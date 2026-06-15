@@ -573,17 +573,23 @@
     </div>
 
 </div>
-
+@if (ViewBag.Success != null)
+{
+    <div class="pill-submitted" style="margin-bottom: 3px; padding: 10px" role="alert">
+        @ViewBag.Success
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 <!-- Recent Applications DataTable -->
 <div class="table-card">
     <div class="table-header">
         <span class="table-title">Recent Applications</span>
-        @* <a asp-action="Applications" asp-controller="Admin" class="table-link">
-            View all
+        <a href="/send-reminder" class="table-link">
+            Send Reminder to Drafts
             <svg viewBox="0 0 24 24">
                 <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-        </a> *@
+        </a>
     </div>
 
     <div class="dt-search-row">
@@ -599,6 +605,7 @@
                 <th data-col="3">Sector <span class="sort-icon">↕</span></th>
                 <th data-col="4">Status <span class="sort-icon">↕</span></th>
                 <th data-col="5">Registered <span class="sort-icon">↕</span></th>
+                <th data-col="6">Score</th>
                 <th class="no-sort"></th>
             </tr>
         </thead>
@@ -620,9 +627,13 @@
                         @((app.CreatedAt as DateTime?)?.ToString("d MMM yyyy"))
                     </td>
                     <td>
+                        <span class="td-link">@app.Score / 261</span>
+                    </td>
+                    <td>
                         <a asp-action="ApplicationDetail" asp-controller="Admin" asp-route-id="@app.Id"
                            class="td-link">View</a>
                     </td>
+
                 </tr>
             }
             @if (!recentApps.Any())
