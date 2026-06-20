@@ -36,11 +36,13 @@ namespace nsia.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string email, string password)
         {
+
             var admin = await _db.AdminUsers
                 .FirstOrDefaultAsync(a => a.Email == email.ToLowerInvariant() && a.IsActive);
 
             if (admin == null || !BCrypt.Net.BCrypt.Verify(password, admin.PasswordHash))
             {
+
                 ViewBag.Error = "Invalid email or password.";
                 return View();
             }
@@ -49,6 +51,7 @@ namespace nsia.Controllers
             await _db.SaveChangesAsync();
 
             HttpContext.Session.SetString("AdminId", admin.Id.ToString());
+            HttpContext.Session.SetString("AdminEmail", admin.Email);
             HttpContext.Session.SetString("AdminName", admin.FullName);
             HttpContext.Session.SetString("AdminRole", admin.Role);
 
@@ -79,6 +82,7 @@ namespace nsia.Controllers
 
             ViewBag.AdminName = HttpContext.Session.GetString("AdminName");
             ViewBag.AdminRole = HttpContext.Session.GetString("AdminRole");
+            ViewBag.AdminEmail = HttpContext.Session.GetString("AdminEmail");
 
             // ── Stats
             ViewBag.Total = apps.Count;

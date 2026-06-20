@@ -64,16 +64,25 @@ app.MapControllerRoute(
 // Seed default admin
 var adminPassword = builder.Configuration["AdminSeed:Password"]
     ?? throw new InvalidOperationException("AdminSeed:Password is not configured.");
+var commsAdminPassword = builder.Configuration["AdminSeed:commsAdminPassword"]
+?? throw new InvalidOperationException("AdminSeed:commsAdminPassword is not configured.");
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     if (!db.AdminUsers.Any())
     {
-        db.AdminUsers.Add(new nsia.Models.AdminUser
+        db.AdminUsers.AddRange(new nsia.Models.AdminUser
         {
             FullName = "NSIA Admin",
             Email = "npi@nsia.com.ng",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
+            Role = "SuperAdmin",
+        },
+        new nsia.Models.AdminUser
+        {
+            FullName = "NSIA Admin Two",
+            Email = "corporatecommunications@loftyincltd.biz",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(commsAdminPassword),
             Role = "SuperAdmin",
         });
         await db.SaveChangesAsync();
