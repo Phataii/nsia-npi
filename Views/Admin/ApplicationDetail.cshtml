@@ -1880,14 +1880,24 @@ else
                         </div>
                     </div>
 
-                    <div class="field-row">
-                        <div class="field-label">Submitted At</div>
-                        <div class="field-value">
-                            @(app.SubmittedAt.HasValue
-                                ? app.SubmittedAt.Value.ToString("d MMMM yyyy, HH:mm")
-                                : "Not yet submitted")
-                        </div>
-                    </div>
+                    <div class="" style="display:flex; gap:30px;">
+    <div>
+        <div class="field-label">Started At</div>
+        <div class="field-value">
+            @app.CreatedAt.ToString("d MMMM yyyy, HH:mm")
+        </div>
+    </div>
+
+    <div>
+        <div class="field-label">Submitted At</div>
+        <div class="field-value">
+            @(app.SubmittedAt.HasValue
+                ? app.SubmittedAt.Value.ToString("d MMMM yyyy, HH:mm")
+                : "Not yet submitted")
+        </div>
+    </div>
+</div>
+                    
                 </div>
             </div>
 

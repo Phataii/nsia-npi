@@ -321,6 +321,14 @@
             background: var(--teal-pale);
         }
 
+        tbody tr {
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
         .status-pill {
             display: inline-block;
             padding: .18rem .65rem;
@@ -610,13 +618,14 @@
                 <th data-col="4">Status <span class="sort-icon">↕</span></th>
                 <th data-col="5">Registered <span class="sort-icon">↕</span></th>
                 <th data-col="6">Score</th>
-                <th class="no-sort"></th>
+                @* <th class="no-sort"></th> *@
             </tr>
         </thead>
         <tbody id="dtBody">
             @foreach (var app in recentApps)
             {
-                <tr>
+                <tr onclick="window.location='@Url.Action("ApplicationDetail", "Admin", new { id = app.Id })'"
+                    style="cursor:pointer;">
                     <td>@app.ReferenceNumber</td>
                     <td>@app.FullName</td>
                     <td>@app.CompanyName</td>
@@ -627,17 +636,12 @@
                             @app.Status
                         </span>
                     </td>
-                    <td data-sort="@((app.CreatedAt as DateTime?)?.ToString("yyyy-MM-dd"))">
-                        @((app.CreatedAt as DateTime?)?.ToString("d MMM yyyy"))
+                    <td data-sort="@((app.CreatedAt as DateTime?)?.ToString("yyyy-MM-dd, HH:mm"))">
+                        @((app.CreatedAt as DateTime?)?.ToString("d MMM yyyy, HH:mm"))
                     </td>
                     <td>
-                        <span class="td-link">@app.Score / 261</span>
+                        @app.Score / 261
                     </td>
-                    <td>
-                        <a asp-action="ApplicationDetail" asp-controller="Admin" asp-route-id="@app.Id"
-                           class="td-link">View</a>
-                    </td>
-
                 </tr>
             }
             @if (!recentApps.Any())
