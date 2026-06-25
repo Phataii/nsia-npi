@@ -3,12 +3,13 @@
     Layout = null;
     var applicantName = ViewBag.ApplicantName as string ?? "";
     var status = ViewBag.Status as string ?? "Draft";
-    var currentStep = (int)(ViewBag.CompletedStep ?? 1);
+    @* var currentStep = (int)(ViewBag.CompletedStep ?? 1); *@
     @* var completedStep = currentStep - 1; *@
     var referenceNumber = ViewBag.ReferenceNumber as string ?? "";
     var initials = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
     var totalSteps = 10;
     var isSubmitted = status == "Submitted";
+    var currentStep = Math.Clamp((int)(ViewBag.CompletedStep ?? 1), 1, totalSteps);
     var allStepsReached = currentStep >= totalSteps;
     var completedStep = isSubmitted ? totalSteps : currentStep - 1;
     var progressPct = isSubmitted ? 100 : (int)Math.Round((completedStep / (double)totalSteps) * 100);
@@ -48,10 +49,15 @@ Action = "ProductInfo", Icon = "box"      },
         return st != "locked";
     }
 
-    var nextAction = isSubmitted || allStepsReached ? "Additional" : steps[currentStep - 1].Action;
+    var nextAction = isSubmitted || allStepsReached
+    ? "Additional"
+    : (currentStep >= 1 && currentStep <= steps.Length)
+        ? steps[currentStep - 1].Action
+        : steps[0].Action;
+
     var btnText = isSubmitted ? "View Submission"
-                   : allStepsReached ? "Submit Application"
-                   : "Continue Application";
+                       : allStepsReached ? "Submit Application"
+                       : "Continue Application";
 }
 <!DOCTYPE html>
 <html lang="en">
