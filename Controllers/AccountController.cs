@@ -62,7 +62,7 @@ namespace nsia.Controllers
                 return View(model);
             }
 
-            var otp = GenerateOtp();
+            //var otp = GenerateOtp();
             var refNumber = GenerateReference();
 
             var application = new Application
@@ -75,8 +75,8 @@ namespace nsia.Controllers
                 CountryOfOrigin = "Nigeria",
                 Location = model.Location?.Trim(),
                 HowDidYouHear = model.HowDidYouHear?.Trim(),
-                IsEmailVerified = false,
-                EmailVerificationOtp = otp,
+                IsEmailVerified = true,
+                EmailVerificationOtp = string.Empty,
                 OtpExpiresAt = DateTime.UtcNow.AddMinutes(10),
                 ReferenceNumber = refNumber,
                 Status = "Draft",
@@ -86,11 +86,12 @@ namespace nsia.Controllers
 
             _db.Applications.Add(application);
             await _db.SaveChangesAsync();
-            await _email.SendOtpEmailAsync(application.Email, application.FullName, otp);
+            TempData["Success"] = $"Sign up successful. Login to continue.";
+            // await _email.SendOtpEmailAsync(application.Email, application.FullName, otp);
 
             TempData["VerifyEmail"] = application.Email;
             TempData["MaskedEmail"] = MaskEmail(application.Email);
-            return RedirectToAction("VerifyEmail");
+            return RedirectToAction("Login");
         }
 
         // GET /Account/VerifyEmail
@@ -175,9 +176,15 @@ namespace nsia.Controllers
 
         // ── GET /Account/Login
         [HttpGet]
-        public IActionResult Login() =>
-            IsLoggedIn() ? RedirectToDashboard() : View(); //RedirectToAction("ComingSoon");
+        public IActionResult Login()
+        {
+            if (IsLoggedIn())
+                return RedirectToDashboard();
 
+            ViewBag.Success = TempData["Success"];
+
+            return View();
+        }
         // ── POST /Account/Login
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -195,15 +202,15 @@ namespace nsia.Controllers
                 return View(model);
             }
 
-            if (!application.IsEmailVerified)
-            {
-                TempData["VerifyEmail"] = application.Email;
-                TempData["MaskedEmail"] = MaskEmail(application.Email);
+            // if (!application.IsEmailVerified)
+            // {
+            //     TempData["VerifyEmail"] = application.Email;
+            //     TempData["MaskedEmail"] = MaskEmail(application.Email);
 
-                var otp = GenerateOtp();
-                await _email.SendOtpEmailAsync(application.Email, application.FullName, otp);
-                return RedirectToAction("VerifyEmail");
-            }
+            //     var otp = GenerateOtp();
+            //     await _email.SendOtpEmailAsync(application.Email, application.FullName, otp);
+            //     return RedirectToAction("VerifyEmail");
+            // }
 
             SignIn(application, model.RememberMe);
             return RedirectToAction("Dashboard", "Application");

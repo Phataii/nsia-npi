@@ -638,6 +638,38 @@
                     font-size: 1.55rem;
                 }
             }
+            .success-alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ecfdf3;
+    border: 1px solid #b7ebc6;
+    border-left: 5px solid #16a34a;
+    color: #166534;
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.success-icon {
+    font-size: 22px;
+    color: #16a34a;
+}
+
+.success-text {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.success-alert .btn-close {
+    opacity: .7;
+}
+
+.success-alert .btn-close:hover {
+    opacity: 1;
+}
     </style>
 </head>
 
@@ -712,10 +744,18 @@
         <div class="form-wrap">
             <div class="form-header">
                 <h2 class="form-title">Welcome!</h2>
-                @* <p class="form-subtitle">
-                Don't have an account?
-                <a href="/account/register">Create one free</a>
-            </p> *@
+                @if (ViewBag.Success != null)
+                    {
+                        <div class="success-alert">
+                            <div class="success-icon">
+                                <i class="fa fa-check-circle"></i>
+                            </div>
+                            <div class="success-text">
+                                @ViewBag.Success
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
             </div>
 
             <div class="error-msg" id="errorMsg">
