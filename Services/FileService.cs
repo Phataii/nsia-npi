@@ -24,18 +24,21 @@ namespace nsia.Services
         }
 
         public async Task<(string storedPath, string fileName)> SaveDocumentAsync(
-            IFormFile file,
-            Guid applicationId)
+    IFormFile file,
+    Guid applicationId)
         {
             if (file == null || file.Length == 0)
-                throw new ArgumentException("File is empty.");
+                throw new ArgumentException("One of the selected files is empty.");
 
             if (file.Length > MaxFileSizeBytes)
-                throw new ArgumentException("File exceeds the 10MB limit.");
+                throw new ArgumentException(
+                    $"'{file.FileName}' exceeds the maximum allowed file size of 10 MB.");
 
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+
             if (!AllowedExtensions.Contains(ext))
-                throw new ArgumentException($"File type '{ext}' is not allowed.");
+                throw new ArgumentException(
+                    $"'{file.FileName}' is not a supported file type. Allowed types are PDF, DOC, DOCX, JPG, JPEG and PNG.");
 
             var originalFileName = Path.GetFileName(file.FileName);
 
@@ -64,11 +67,12 @@ namespace nsia.Services
 
             _logger.LogInformation(
                 "Saved file {OriginalFileName} to {AbsolutePath} (stored path: {StoredPath})",
-                originalFileName, absolutePath, storedPath);
+                originalFileName,
+                absolutePath,
+                storedPath);
 
             return (storedPath, originalFileName);
         }
-
         public void DeleteFile(string storedPath)
         {
             try

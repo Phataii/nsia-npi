@@ -973,44 +973,68 @@ namespace nsia.Controllers
             List<string>? DocumentTypes)
         {
             var app = await GetCurrentApplicationAsync(includeDocuments: true);
-            if (app == null) return RedirectToLogin();
+            if (app == null)
+                return RedirectToLogin();
 
             if (app.ApplicationStep < 10)
                 return RedirectToAction("Additional");
 
-            app.AdditionalInformation = AdditionalInformation?.Trim();
-            app.AgreesToTermsOfService = AgreeTerms;
-            app.AgreesToPrivacyPolicy = AgreePrivacy;
-            app.AgreeToSubmissionAgreement = AgreeAgreement;
-            app.Status = "Submitted";
-            app.SubmittedAt = DateTime.Now;
-            if (Documents != null)
+            try
             {
-                for (int i = 0; i < Documents.Count; i++)
+                app.AdditionalInformation = AdditionalInformation?.Trim();
+                app.AgreesToTermsOfService = AgreeTerms;
+                app.AgreesToPrivacyPolicy = AgreePrivacy;
+                app.AgreeToSubmissionAgreement = AgreeAgreement;
+                app.Status = "Submitted";
+                app.SubmittedAt = DateTime.Now;
+
+                if (Documents != null)
                 {
-                    var file = Documents[i];
-                    if (file == null || file.Length == 0) continue;
-
-                    var (storedPath, originalFileName) =
-                        await _fileService.SaveDocumentAsync(file, app.Id);
-
-                    _db.ApplicationDocuments.Add(new ApplicationDocument
+                    for (int i = 0; i < Documents.Count; i++)
                     {
-                        ApplicationId = app.Id,
-                        OriginalFileName = originalFileName,
-                        StoredFilePath = storedPath,
-                        DocumentType = DocumentTypes?.ElementAtOrDefault(i) ?? "Supporting Document",
-                        FileSizeBytes = file.Length,
-                        FileExtension = Path.GetExtension(originalFileName).ToLowerInvariant(),
-                        UploadedAt = DateTime.UtcNow,
-                    });
+                        var file = Documents[i];
+
+                        if (file == null || file.Length == 0)
+                            continue;
+
+                        var (storedPath, originalFileName) =
+                            await _fileService.SaveDocumentAsync(file, app.Id);
+
+                        _db.ApplicationDocuments.Add(new ApplicationDocument
+                        {
+                            ApplicationId = app.Id,
+                            OriginalFileName = originalFileName,
+                            StoredFilePath = storedPath,
+                            DocumentType = DocumentTypes?.ElementAtOrDefault(i) ?? "Supporting Document",
+                            FileSizeBytes = file.Length,
+                            FileExtension = Path.GetExtension(originalFileName).ToLowerInvariant(),
+                            UploadedAt = DateTime.UtcNow
+                        });
+                    }
                 }
+
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction("Submitted");
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex, "Validation error");
+
+                TempData["Error"] = ex.Message;
+
+                return RedirectToAction("Additional");
             }
 
-            await _db.SaveChangesAsync();
-            return RedirectToAction("Submitted");
-        }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error");
 
+                TempData["Error"] = "We couldn't submit your application. Please try again.";
+
+                return RedirectToAction("Additional");
+            }
+        }
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveAdditionalDraft(
