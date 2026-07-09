@@ -164,7 +164,7 @@ namespace nsia.Services
 
                         <p style='font-size:13px;color:#4d7c1f;margin:0;line-height:1.7'>
                             Applications for the NSIA Prize for Innovation (NPI 4.0)
-                            close on <strong>8 July 2026</strong>.
+                            close on <strong>15 July 2026</strong>.
                             Incomplete applications may not be considered after the deadline.
                         </p>
                     </div>
@@ -239,7 +239,7 @@ namespace nsia.Services
                     <p style='font-size:12px;color:#065a2f;margin:0 0 4px;font-weight:500'>Next steps</p>
                     <p style='font-size:12px;color:#08703a;margin:0;line-height:1.6'>
                         Log in to your dashboard and complete all 10 sections of your application
-                        before the deadline of <strong>8 July 2026</strong>.
+                        before the deadline of <strong>15 July 2026</strong>.
                     </p>
                 </div>
                 <p style='font-size:11px;color:#aab5af;text-align:center;margin:0'>

@@ -1163,7 +1163,7 @@ Action = "ProductInfo", Icon = "box"      },
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                 </svg>
-                Deadline: <span class="deadline-val">8 July 2026</span>
+                Deadline: <span class="deadline-val">15 July 2026</span>
             </div>
             <div class="nav-user">
                 <div class="user-avatar">@initials</div>
@@ -1275,253 +1275,254 @@ Action = "ProductInfo", Icon = "box"      },
                                 progress!</text>
                             } else
                             {
-                                <text>All steps complete. Review your answers and submit before the 8 July 2026 deadline.</text>
+                                <text>All steps complete. Review your answers and submit before the 15 July 2026
+                                    deadline.</text>
+                                }
+                            </p>
+                        </div>
+                        <div class="wb-right">
+                            @if (!string.IsNullOrEmpty(referenceNumber))
+                            {
+                                <div class="ref-pill">
+                                    <div class="ref-label">Reference</div>
+                                    <div class="ref-value">@referenceNumber</div>
+                                </div>
                             }
-                        </p>
-                    </div>
-                    <div class="wb-right">
-                        @if (!string.IsNullOrEmpty(referenceNumber))
-                        {
-                            <div class="ref-pill">
-                                <div class="ref-label">Reference</div>
-                                <div class="ref-value">@referenceNumber</div>
-                            </div>
-                        }
-                        <div class="ring-wrap">
-                            <svg class="progress-ring" viewBox="0 0 86 86">
-                                <circle class="ring-bg" cx="43" cy="43" r="35" />
-                                <circle class="ring-fill" id="ringFill" cx="43" cy="43" r="35"
-                                        style="stroke-dashoffset: @ringOffset" />
-                            </svg>
-                            <div class="ring-label">
-                                <span class="ring-pct">@progressPct%</span>
-                                <span class="ring-sub">Done</span>
+                            <div class="ring-wrap">
+                                <svg class="progress-ring" viewBox="0 0 86 86">
+                                    <circle class="ring-bg" cx="43" cy="43" r="35" />
+                                    <circle class="ring-fill" id="ringFill" cx="43" cy="43" r="35"
+                                            style="stroke-dashoffset: @ringOffset" />
+                                </svg>
+                                <div class="ring-label">
+                                    <span class="ring-pct">@progressPct%</span>
+                                    <span class="ring-sub">Done</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Step Cards -->
-                <div class="section-label">Application steps</div>
-                <div class="steps-grid">
-                    @foreach (var s in steps)
-                    {
-                        var st = StepStatus(s.Num);
-                        var clickable = IsClickable(s.Num, st);
-                        var cardHref = clickable ? $"/Application/{s.Action}" : "javascript:void(0)";
+                    <!-- Step Cards -->
+                    <div class="section-label">Application steps</div>
+                    <div class="steps-grid">
+                        @foreach (var s in steps)
+                        {
+                            var st = StepStatus(s.Num);
+                            var clickable = IsClickable(s.Num, st);
+                            var cardHref = clickable ? $"/Application/{s.Action}" : "javascript:void(0)";
 
-                        var badgeTxt = isSubmitted ? "Submitted"
-                                     : st == "completed" ? "Completed"
-                                     : st == "active" ? "In Progress"
-                                     : st == "locked" ? "Locked"
-                                     : "Not Started";
+                            var badgeTxt = isSubmitted ? "Submitted"
+                                         : st == "completed" ? "Completed"
+                                         : st == "active" ? "In Progress"
+                                         : st == "locked" ? "Locked"
+                                         : "Not Started";
 
-                        var badgeCls = isSubmitted || st == "completed" ? "badge-done"
-                                     : st == "active" ? "badge-active"
-                                     : st == "locked" ? "badge-locked"
-                                     : "badge-pending";
+                            var badgeCls = isSubmitted || st == "completed" ? "badge-done"
+                                         : st == "active" ? "badge-active"
+                                         : st == "locked" ? "badge-locked"
+                                         : "badge-pending";
 
-                        var actionTxt = st == "completed" ? "Edit"
-                                      : st == "active" ? "Continue"
-                                      : "Start";
+                            var actionTxt = st == "completed" ? "Edit"
+                                          : st == "active" ? "Continue"
+                                          : "Start";
 
-                        <a href="@cardHref" class="step-card @st @(!clickable ? "locked" : "")">
-                            <div class="card-top">
-                                <div class="card-icon">
-                                    @if (s.Icon == "check")
-                                    {
-                                        <svg viewBox="0 0 24 24">
-                                            <path d="M9 11l3 3L22 4" />
-                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                                        </svg>
-                                    }
-                                    else if (s.Icon == "user")
-                                    {
-                                        <svg viewBox="0 0 24 24">
-                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                            <circle cx="12" cy="7" r="4" />
-                                        </svg>
-                                    }
-                                    else if (s.Icon == "building")
-                                    {
-                                        <svg viewBox="0 0 24 24">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                                            <path d="M3 9h18M9 21V9" />
-                                        </svg>
-                                    }
-                                    else if (s.Icon == "users")
-                                    {
-                                        <svg viewBox="0 0 24 24">
-                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                            <circle cx="9" cy="7" r="4" />
-                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                                        </svg>
-                                    }
-                                    else if (s.Icon == "box")
-                                    {
-                                        <svg viewBox="0 0 24 24">
-                                            <path
-                                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                                            <line x1="12" y1="22.08" x2="12" y2="12" />
-                                        </svg>
-                                    }
-                                    else if (s.Icon == "naira")
-                                    {
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                                             stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M6 20V4l12 16V4" />
-                                            <line x1="4" y1="9" x2="20" y2="9" />
-                                            <line x1="4" y1="13" x2="20" y2="13" />
-                                        </svg>
-                                    }
-                                    else if (s.Icon == "trending")
-                                    {
-                                        <svg viewBox="0 0 24 24">
-                                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                                            <polyline points="17 6 23 6 23 12" />
-                                        </svg>
-                                    }
-                                    else if (s.Icon == "leaf")
-                                    {
-                                        <svg viewBox="0 0 24 24">
-                                            <path
-                                            d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z" />
-                                            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-                                        </svg>
-                                    }
-                                    else if (s.Icon == "heart")
-                                    {
-                                        <svg viewBox="0 0 24 24">
-                                            <path
-                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                                        </svg>
-                                    }
-                                    else
-                                    {
-                                        <svg viewBox="0 0 24 24">
-                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                            <polyline points="14 2 14 8 20 8" />
-                                        </svg>
-                                    }
+                            <a href="@cardHref" class="step-card @st @(!clickable ? "locked" : "")">
+                                <div class="card-top">
+                                    <div class="card-icon">
+                                        @if (s.Icon == "check")
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M9 11l3 3L22 4" />
+                                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                            </svg>
+                                        }
+                                        else if (s.Icon == "user")
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                                <circle cx="12" cy="7" r="4" />
+                                            </svg>
+                                        }
+                                        else if (s.Icon == "building")
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                <path d="M3 9h18M9 21V9" />
+                                            </svg>
+                                        }
+                                        else if (s.Icon == "users")
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                                <circle cx="9" cy="7" r="4" />
+                                                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                                            </svg>
+                                        }
+                                        else if (s.Icon == "box")
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <path
+                                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                                                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                                                <line x1="12" y1="22.08" x2="12" y2="12" />
+                                            </svg>
+                                        }
+                                        else if (s.Icon == "naira")
+                                        {
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                                 stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M6 20V4l12 16V4" />
+                                                <line x1="4" y1="9" x2="20" y2="9" />
+                                                <line x1="4" y1="13" x2="20" y2="13" />
+                                            </svg>
+                                        }
+                                        else if (s.Icon == "trending")
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                                                <polyline points="17 6 23 6 23 12" />
+                                            </svg>
+                                        }
+                                        else if (s.Icon == "leaf")
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <path
+                                                d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z" />
+                                                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                                            </svg>
+                                        }
+                                        else if (s.Icon == "heart")
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <path
+                                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                            </svg>
+                                        }
+                                        else
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                <polyline points="14 2 14 8 20 8" />
+                                            </svg>
+                                        }
+                                    </div>
+                                    <span class="card-badge @badgeCls">@badgeTxt</span>
                                 </div>
-                                <span class="card-badge @badgeCls">@badgeTxt</span>
+                                <div>
+                                    <div class="card-num">Step @s.Num of @totalSteps</div>
+                                    <div class="card-name">@s.Name</div>
+                                </div>
+                                <div class="card-desc">@s.Desc</div>
+                                <div class="card-footer">
+                                    <span class="card-action">
+                                        @if (isSubmitted)
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                                <polyline points="22 4 12 14.01 9 11.01" />
+                                            </svg>
+                                            <span>Submitted</span>
+                                        }
+                                        else if (st == "locked")
+                                        {
+                                            <svg viewBox="0 0 24 24">
+                                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                            </svg>
+                                            <span>Complete previous step</span>
+                                        }
+                                        else
+                                        {
+                                            <text>@actionTxt</text>
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M5 12h14M12 5l7 7-7 7" />
+                                            </svg>
+                                        }
+                                    </span>
+                                </div>
+                            </a>
+                        }
+                    </div>
+
+                    <!-- Info Row -->
+                    <div class="info-row">
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>
                             </div>
                             <div>
-                                <div class="card-num">Step @s.Num of @totalSteps</div>
-                                <div class="card-name">@s.Name</div>
+                                <div class="info-label">Deadline</div>
+                                <div class="info-value">15 July 2026</div>
+                                <div class="info-sub">Closes at 11:59 PM WAT</div>
                             </div>
-                            <div class="card-desc">@s.Desc</div>
-                            <div class="card-footer">
-                                <span class="card-action">
-                                    @if (isSubmitted)
+                        </div>
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                                    <polyline points="17 6 23 6 23 12" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="info-label">Progress</div>
+                                <div class="info-value">@completedStep of @totalSteps steps done</div>
+                                <div class="info-sub">@progressPct% complete</div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <polyline points="22 4 12 14.01 9 11.01" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="info-label">Status</div>
+                                <div class="info-value">@status</div>
+                                <div class="info-sub">
+                                    @if (!string.IsNullOrEmpty(referenceNumber))
                                     {
-                                        <svg viewBox="0 0 24 24">
-                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                            <polyline points="22 4 12 14.01 9 11.01" />
-                                        </svg>
-                                        <span>Submitted</span>
-                                    }
-                                    else if (st == "locked")
-                                    {
-                                        <svg viewBox="0 0 24 24">
-                                            <rect x="3" y="11" width="18" height="11" rx="2" />
-                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                                        </svg>
-                                        <span>Complete previous step</span>
+                                        <text>Ref: @referenceNumber</text>
                                     }
                                     else
                                     {
-                                        <text>@actionTxt</text>
+                                        <text>NPI 4.0 Application</text>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="continue-cta">
+                        <div class="cta-left">
+                            @if (isSubmitted)
+                            {
+                                <h3>Application submitted!</h3>
+                                <p>Your application has been received. We'll be in touch with next steps. Thank you for applying to
+                                    the NSIA Prize for Innovation 4.0.</p>
+                                } else if (allStepsReached)
+                                {
+                                    <h3>You're ready to submit!</h3>
+                                    <p>All 10 steps are complete. Review your answers then submit your application before the 15 July
+                                        2026 deadline.</p>
+                                    } else
+                                    {
+                                        <h3>Continue your application</h3>
+                                        <p>You're on step @currentStep of @totalSteps. Complete all sections and submit before the 15 July
+                                            2026 deadline. Your progress is saved automatically.</p>
+                                        }
+                                    </div>
+                                    <a href="/Application/@nextAction" class="btn-cta @(isSubmitted ? "submitted" : "")">
                                         <svg viewBox="0 0 24 24">
                                             <path d="M5 12h14M12 5l7 7-7 7" />
                                         </svg>
-                                    }
-                                </span>
-                            </div>
-                        </a>
-                    }
-                </div>
-
-                <!-- Info Row -->
-                <div class="info-row">
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <svg viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 16 14" />
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="info-label">Deadline</div>
-                            <div class="info-value">8 July 2026</div>
-                            <div class="info-sub">Closes at 11:59 PM WAT</div>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <svg viewBox="0 0 24 24">
-                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                                <polyline points="17 6 23 6 23 12" />
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="info-label">Progress</div>
-                            <div class="info-value">@completedStep of @totalSteps steps done</div>
-                            <div class="info-sub">@progressPct% complete</div>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                <polyline points="22 4 12 14.01 9 11.01" />
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="info-label">Status</div>
-                            <div class="info-value">@status</div>
-                            <div class="info-sub">
-                                @if (!string.IsNullOrEmpty(referenceNumber))
-                                {
-                                    <text>Ref: @referenceNumber</text>
-                                }
-                                else
-                                {
-                                    <text>NPI 4.0 Application</text>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CTA -->
-                <div class="continue-cta">
-                    <div class="cta-left">
-                        @if (isSubmitted)
-                        {
-                            <h3>Application submitted!</h3>
-                            <p>Your application has been received. We'll be in touch with next steps. Thank you for applying to
-                                the NSIA Prize for Innovation 4.0.</p>
-                            } else if (allStepsReached)
-                            {
-                                <h3>You're ready to submit!</h3>
-                                <p>All 10 steps are complete. Review your answers then submit your application before the 8 July
-                                    2026 deadline.</p>
-                                } else
-                                {
-                                    <h3>Continue your application</h3>
-                                    <p>You're on step @currentStep of @totalSteps. Complete all sections and submit before the 8 July
-                                        2026 deadline. Your progress is saved automatically.</p>
-                                    }
-                                </div>
-                                <a href="/Application/@nextAction" class="btn-cta @(isSubmitted ? "submitted" : "")">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M5 12h14M12 5l7 7-7 7" />
-                                    </svg>
-                                    @btnText
-                                </a>
-                                @* <a href="javascript:void(0)" class="btn-cta"
+                                        @btnText
+                                    </a>
+                                    @* <a href="javascript:void(0)" class="btn-cta"
                                    style="background:var(--off);color:var(--muted);box-shadow:none;border:1px solid
                 var(--border);cursor:not-allowed;pointer-events:none;">
                                     <svg viewBox="0 0 24 24">
@@ -1529,35 +1530,35 @@ Action = "ProductInfo", Icon = "box"      },
                                     </svg>
                                     @btnText
                                 </a> *@
+                                </div>
+
                             </div>
+                        </main>
 
-                        </div>
-                    </main>
+                        <script>
+                                const hamburger = document.getElementById('hamburger');
+                                const sideDrawer = document.getElementById('sideDrawer');
+                                const drawerOverlay = document.getElementById('drawerOverlay');
+                                const openDrawer = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display = 'block'; setTimeout(() => drawerOverlay.classList.add('open'), 10); hamburger.classList.add('open'); document.body.style.overflow = 'hidden'; };
+                                const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(() => drawerOverlay.style.display = '', 300); hamburger.classList.remove('open'); document.body.style.overflow = ''; };
+                                hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
+                                drawerOverlay.addEventListener('click', closeDrawer);
 
-                    <script>
-                            const hamburger = document.getElementById('hamburger');
-                            const sideDrawer = document.getElementById('sideDrawer');
-                            const drawerOverlay = document.getElementById('drawerOverlay');
-                            const openDrawer = () => { sideDrawer.classList.add('open'); drawerOverlay.style.display = 'block'; setTimeout(() => drawerOverlay.classList.add('open'), 10); hamburger.classList.add('open'); document.body.style.overflow = 'hidden'; };
-                            const closeDrawer = () => { sideDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); setTimeout(() => drawerOverlay.style.display = '', 300); hamburger.classList.remove('open'); document.body.style.overflow = ''; };
-                            hamburger.addEventListener('click', () => sideDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
-                            drawerOverlay.addEventListener('click', closeDrawer);
-
-                            window.addEventListener('load', () => {
-                                const ring = document.getElementById('ringFill');
-                                if (ring) {
-                                    const target = ring.style.strokeDashoffset;
-                                    ring.style.strokeDashoffset = 220;
-                                    ring.style.transition = 'none';
-                                    requestAnimationFrame(() => {
+                                window.addEventListener('load', () => {
+                                    const ring = document.getElementById('ringFill');
+                                    if (ring) {
+                                        const target = ring.style.strokeDashoffset;
+                                        ring.style.strokeDashoffset = 220;
+                                        ring.style.transition = 'none';
                                         requestAnimationFrame(() => {
-                                            ring.style.transition = 'stroke-dashoffset 1.2s ease';
-                                            ring.style.strokeDashoffset = target;
+                                            requestAnimationFrame(() => {
+                                                ring.style.transition = 'stroke-dashoffset 1.2s ease';
+                                                ring.style.strokeDashoffset = target;
+                                            });
                                         });
-                                    });
-                                }
-                            });
-                    </script>
-                </body>
+                                    }
+                                });
+                        </script>
+                    </body>
 
-            </html>
+                </html>
