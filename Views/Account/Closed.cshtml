@@ -1,0 +1,373 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Applications Closed || NSIA Prize for Innovation</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="~/assets/images/favicons/favicon-16x16.png" />
+    <style>
+            @@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500&display=swap');
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            :root {
+                --teal: #2DB8B0;
+                --teal-d: #1a9990;
+                --teal-deep: #0d7a73;
+                --teal-light: #E8F7F6;
+                --green: #7BC144;
+                --green-dark: #5a9130;
+                --ink: #1C2B2A;
+                --muted: #4A6260;
+                --off: #EEF4F3;
+            }
+
+            body {
+                font-family: 'DM Sans', sans-serif;
+                background: var(--off);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 1.5rem;
+            }
+
+            .wrap {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                max-width: 600px;
+                width: 100%;
+            }
+
+            .logo {
+                margin-bottom: 2.5rem;
+            }
+
+            .logo img {
+                height: 70px;
+                width: auto;
+            }
+
+            .logo-text {
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--muted);
+                letter-spacing: .18em;
+                text-transform: uppercase;
+                margin-top: 8px;
+            }
+
+            .status-icon {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: rgba(220, 38, 38, 0.08);
+                border: 1px solid rgba(220, 38, 38, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 2rem;
+            }
+
+            .status-icon svg {
+                width: 36px;
+                height: 36px;
+                stroke: #dc2626;
+                stroke-width: 1.75;
+                fill: none;
+            }
+
+            .badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(220, 38, 38, 0.08);
+                border: 1px solid rgba(220, 38, 38, 0.2);
+                padding: .3rem .9rem;
+                border-radius: 100px;
+                font-size: 11px;
+                font-weight: 600;
+                color: #dc2626;
+                letter-spacing: .1em;
+                text-transform: uppercase;
+                margin-bottom: 1.5rem;
+            }
+
+            .badge-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #dc2626;
+            }
+
+            .title {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: clamp(2rem, 5vw, 3.2rem);
+                font-weight: 700;
+                color: var(--ink);
+                line-height: 1.1;
+                margin-bottom: 1rem;
+            }
+
+            .title em {
+                color: var(--teal);
+                font-style: italic;
+            }
+
+            .sub {
+                font-size: .92rem;
+                color: var(--muted);
+                line-height: 1.8;
+                max-width: 460px;
+                margin-bottom: 2.5rem;
+            }
+
+            .divider {
+                width: 100%;
+                height: 1px;
+                background: rgba(45, 184, 176, 0.15);
+                margin-bottom: 2.5rem;
+            }
+
+            .info-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                width: 100%;
+                margin-bottom: 2.5rem;
+            }
+
+            .info-card {
+                background: white;
+                border-radius: 12px;
+                border: 1px solid rgba(45, 184, 176, 0.15);
+                padding: 1.25rem 1.4rem;
+                text-align: left;
+                display: flex;
+                align-items: flex-start;
+                gap: .85rem;
+            }
+
+            .info-card-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                background: var(--teal-light);
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .info-card-icon svg {
+                width: 16px;
+                height: 16px;
+                stroke: var(--teal);
+                stroke-width: 1.75;
+                fill: none;
+            }
+
+            .info-card-label {
+                font-size: 10px;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: .07em;
+                margin-bottom: .25rem;
+            }
+
+            .info-card-value {
+                font-size: .88rem;
+                font-weight: 600;
+                color: var(--ink);
+            }
+
+            .info-card-sub {
+                font-size: .72rem;
+                color: var(--muted);
+                margin-top: 2px;
+            }
+
+            .notice {
+                background: var(--teal-light);
+                border-radius: 10px;
+                border: 1px solid rgba(45, 184, 176, 0.2);
+                padding: 1.25rem 1.5rem;
+                width: 100%;
+                display: flex;
+                align-items: flex-start;
+                gap: .85rem;
+                text-align: left;
+                margin-bottom: 2rem;
+            }
+
+            .notice svg {
+                width: 18px;
+                height: 18px;
+                stroke: var(--teal);
+                stroke-width: 1.75;
+                fill: none;
+                flex-shrink: 0;
+                margin-top: 1px;
+            }
+
+            .notice-text {
+                font-size: .83rem;
+                color: var(--ink);
+                line-height: 1.65;
+            }
+
+            .notice-text strong {
+                color: var(--teal-deep);
+                font-weight: 600;
+            }
+
+            .footer {
+                font-size: .72rem;
+                color: var(--muted);
+                letter-spacing: .05em;
+            }
+
+            @@media (max-width: 480px) {
+                .info-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .title {
+                    font-size: 2rem;
+                }
+            }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+
+        <div class="logo">
+            <a href="/"><img src="~/assets/images/logo.png" alt="NSIA" /></a>
+            <div class="logo-text">NSIA Prize for Innovation 4.0</div>
+        </div>
+
+        <div class="status-icon">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+            </svg>
+        </div>
+
+        <div class="badge">
+            <span class="badge-dot"></span>
+            Applications Closed
+        </div>
+
+        <h1 class="title">
+            Applications are now <em>closed</em>
+        </h1>
+
+        <p class="sub">
+            Thank you to everyone who submitted an application for the NSIA Prize for Innovation 4.0.
+            The submission window closed on <strong>8 July 2026</strong>. Our team is currently reviewing all entries.
+        </p>
+
+        <div class="divider"></div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="info-card-label">Submission closed</div>
+                    <div class="info-card-value">8 July 2026</div>
+                    <div class="info-card-sub">11:59 PM WAT</div>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="info-card-label">Status</div>
+                    <div class="info-card-value">Under Review</div>
+                    <div class="info-card-sub">All entries being assessed</div>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="info-card-label">Sectors</div>
+                    <div class="info-card-value">3 Categories</div>
+                    <div class="info-card-sub">Manufacturing · Healthcare · Climate</div>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="info-card-label">Next Steps</div>
+                    <div class="info-card-value">Shortlisting</div>
+                    <div class="info-card-sub">Applicants will be contacted</div>
+                </div>
+            </div>
+        </div>
+
+        @* <div class="notice">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <div class="notice-text">
+                <strong>Already submitted?</strong> You can still log in to view your application.
+                Shortlisted applicants will be contacted directly via the email address provided during registration.
+                For enquiries contact <strong>npi@nsia.com.ng</strong>
+            </div>
+        </div> *@
+
+        @* <a href="/account/login"
+           style="display:inline-flex;align-items:center;gap:7px;background:var(--teal);color:white;padding:.85rem
+        2rem;border-radius:100px;text-decoration:none;font-size:.88rem;font-weight:600;margin-bottom:2rem;box-shadow:0
+        4px 14px rgba(45,184,176,0.3);transition:background .2s;"
+           onmouseover="this.style.background='#1a9990'" onmouseout="this.style.background='#2DB8B0'">
+            <svg viewBox="0 0 24 24" width="15" height="15" stroke="white" stroke-width="2" fill="none">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <polyline points="10 17 15 12 10 7" />
+                <line x1="15" y1="12" x2="3" y2="12" />
+            </svg>
+            Log in to view your application
+        </a> *@
+
+        <div class="footer">NSIA Prize for Innovation 4.0 &nbsp;·&nbsp; nsia-ip.com</div>
+
+    </div>
+</body>
+
+</html>

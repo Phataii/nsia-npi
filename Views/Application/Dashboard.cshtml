@@ -1515,7 +1515,14 @@ Action = "ProductInfo", Icon = "box"      },
                                         2026 deadline. Your progress is saved automatically.</p>
                                     }
                                 </div>
-                                <a href="/Application/@nextAction" class="btn-cta @(isSubmitted ? "submitted" : "")">
+                                @* <a href="/Application/@nextAction" class="btn-cta @(isSubmitted ? "submitted" : "")">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M5 12h14M12 5l7 7-7 7" />
+                                    </svg>
+                                    @btnText
+                                </a> *@
+                                <a href="javascript:void(0)" class="btn-cta"
+                                   style="background:var(--off);color:var(--muted);box-shadow:none;border:1px solid var(--border);cursor:not-allowed;pointer-events:none;">
                                     <svg viewBox="0 0 24 24">
                                         <path d="M5 12h14M12 5l7 7-7 7" />
                                     </svg>

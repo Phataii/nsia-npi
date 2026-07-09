@@ -35,16 +35,17 @@ namespace nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> PreChecklist()
         {
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return RedirectToLogin();
-            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
+            return Redirect("/account/closed");
+            // var app = await GetCurrentApplicationAsync();
+            // if (app == null) return RedirectToLogin();
+            // if (app.Status == "Submitted") return RedirectToAction("Dashboard");
 
-            PopulateStepViewBag(app);
-            ViewBag.IsRegisteredInNigeria = app.IsRegisteredInNigeria;
-            ViewBag.BusinessSector = app.BusinessSector;
-            ViewBag.CountryOfOrigin = app.CountryOfOrigin;
+            // PopulateStepViewBag(app);
+            // ViewBag.IsRegisteredInNigeria = app.IsRegisteredInNigeria;
+            // ViewBag.BusinessSector = app.BusinessSector;
+            // ViewBag.CountryOfOrigin = app.CountryOfOrigin;
 
-            return View();
+            // return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -88,22 +89,23 @@ namespace nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> PersonalInfo()
         {
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return RedirectToLogin();
-            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
-            if (app.ApplicationStep < 2) return RedirectToAction("PreChecklist");
+            return Redirect("/account/closed");
+            // var app = await GetCurrentApplicationAsync();
+            // if (app == null) return RedirectToLogin();
+            // if (app.Status == "Submitted") return RedirectToAction("Dashboard");
+            // if (app.ApplicationStep < 2) return RedirectToAction("PreChecklist");
 
-            if (!string.IsNullOrEmpty(app.NinEncrypted))
-                ViewBag.DecryptedNin = _ninService.Decrypt(app.NinEncrypted);
+            // if (!string.IsNullOrEmpty(app.NinEncrypted))
+            //     ViewBag.DecryptedNin = _ninService.Decrypt(app.NinEncrypted);
 
-            PopulateStepViewBag(app);
-            ViewBag.FullName = app.FullName;
-            ViewBag.Email = app.Email;
-            ViewBag.Phone = app.Phone;
-            ViewBag.Gender = app.Gender;
-            ViewBag.RelationshipToBusiness = app.RelationshipToBusiness;
+            // PopulateStepViewBag(app);
+            // ViewBag.FullName = app.FullName;
+            // ViewBag.Email = app.Email;
+            // ViewBag.Phone = app.Phone;
+            // ViewBag.Gender = app.Gender;
+            // ViewBag.RelationshipToBusiness = app.RelationshipToBusiness;
 
-            return View();
+            // return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -196,35 +198,35 @@ namespace nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> CompanyInfo()
         {
+            return Redirect("/account/closed");
+            // var app = await GetCurrentApplicationAsync();
+            // if (app == null) return RedirectToLogin();
 
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return RedirectToLogin();
+            // if (app.Status == "Submitted") return RedirectToAction("Dashboard");
 
-            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
+            // if (app.ApplicationStep < 3) return RedirectToAction("PersonalInfo");
 
-            if (app.ApplicationStep < 3) return RedirectToAction("PersonalInfo");
+            // PopulateStepViewBag(app);
+            // ViewBag.CompanyName = app.CompanyName;
+            // ViewBag.CompanyWebsite = app.CompanyWebsite;
+            // ViewBag.Twitter = app.SocialMedia?.Twitter;
+            // ViewBag.Instagram = app.SocialMedia?.Instagram;
+            // ViewBag.LinkedIn = app.SocialMedia?.LinkedIn;
+            // ViewBag.Facebook = app.SocialMedia?.Facebook;
+            // ViewBag.BusinessState = app.BusinessState;
+            // ViewBag.BusinessLga = app.BusinessLga;
+            // ViewBag.CompanyHqAddress = app.CompanyHqAddress;
+            // ViewBag.GeographicScope = app.GeographicScope;
+            // ViewBag.CompanyRegistrationNumber = app.CompanyRegistrationNumber;
+            // ViewBag.RegulatoryCompliance = app.RegulatoryCompliance;
+            // ViewBag.TaxCompliance = app.TaxCompliance;
+            // ViewBag.HasForeignAffiliates = app.HasForeignAffiliates;
+            // ViewBag.IsNigerianEntityPrimary = app.IsNigerianEntityPrimary;
+            // ViewBag.CompanyStructure = app.CompanyStructure;
+            // ViewBag.ParentOrganizationName = app.ParentOrganizationName;
+            // ViewBag.OtherCompetitions = app.OtherCompetitions;
 
-            PopulateStepViewBag(app);
-            ViewBag.CompanyName = app.CompanyName;
-            ViewBag.CompanyWebsite = app.CompanyWebsite;
-            ViewBag.Twitter = app.SocialMedia?.Twitter;
-            ViewBag.Instagram = app.SocialMedia?.Instagram;
-            ViewBag.LinkedIn = app.SocialMedia?.LinkedIn;
-            ViewBag.Facebook = app.SocialMedia?.Facebook;
-            ViewBag.BusinessState = app.BusinessState;
-            ViewBag.BusinessLga = app.BusinessLga;
-            ViewBag.CompanyHqAddress = app.CompanyHqAddress;
-            ViewBag.GeographicScope = app.GeographicScope;
-            ViewBag.CompanyRegistrationNumber = app.CompanyRegistrationNumber;
-            ViewBag.RegulatoryCompliance = app.RegulatoryCompliance;
-            ViewBag.TaxCompliance = app.TaxCompliance;
-            ViewBag.HasForeignAffiliates = app.HasForeignAffiliates;
-            ViewBag.IsNigerianEntityPrimary = app.IsNigerianEntityPrimary;
-            ViewBag.CompanyStructure = app.CompanyStructure;
-            ViewBag.ParentOrganizationName = app.ParentOrganizationName;
-            ViewBag.OtherCompetitions = app.OtherCompetitions;
-
-            return View();
+            // return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -327,29 +329,30 @@ namespace nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> TeamInfo()
         {
-            var app = await GetCurrentApplicationAsync(includeFounders: true);
-            if (app == null) return RedirectToLogin();
-            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
-            if (app.ApplicationStep < 4) return RedirectToAction("CompanyInfo");
+            return Redirect("/account/closed");
+            // var app = await GetCurrentApplicationAsync(includeFounders: true);
+            // if (app == null) return RedirectToLogin();
+            // if (app.Status == "Submitted") return RedirectToAction("Dashboard");
+            // if (app.ApplicationStep < 4) return RedirectToAction("CompanyInfo");
 
-            PopulateStepViewBag(app);
-            ViewBag.NumberOfFounders = app.NumberOfFounders;
-            ViewBag.FoundingTeamType = app.FoundingTeamType;
-            ViewBag.FounderIndustryExperience = app.FounderIndustryExperience;
-            ViewBag.ManagementTeamExperience = app.ManagementTeamExperience;
-            ViewBag.TotalFullTimeEmployees = app.TotalFullTimeEmployees;
-            ViewBag.Founders = app.Founders
-                .OrderBy(f => f.DisplayOrder)
-                .Select(f => new
-                {
-                    name = f.FullName ?? "",
-                    phone = f.PhoneNumber ?? "",
-                    role = f.Role ?? "",
-                    linkedin = f.LinkedInUrl ?? "",
-                    nationality = f.Nationality ?? "",
-                }).ToList();
+            // PopulateStepViewBag(app);
+            // ViewBag.NumberOfFounders = app.NumberOfFounders;
+            // ViewBag.FoundingTeamType = app.FoundingTeamType;
+            // ViewBag.FounderIndustryExperience = app.FounderIndustryExperience;
+            // ViewBag.ManagementTeamExperience = app.ManagementTeamExperience;
+            // ViewBag.TotalFullTimeEmployees = app.TotalFullTimeEmployees;
+            // ViewBag.Founders = app.Founders
+            //     .OrderBy(f => f.DisplayOrder)
+            //     .Select(f => new
+            //     {
+            //         name = f.FullName ?? "",
+            //         phone = f.PhoneNumber ?? "",
+            //         role = f.Role ?? "",
+            //         linkedin = f.LinkedInUrl ?? "",
+            //         nationality = f.Nationality ?? "",
+            //     }).ToList();
 
-            return View();
+            // return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -450,23 +453,24 @@ namespace nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> ProductInfo()
         {
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return RedirectToLogin();
-            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
-            if (app.ApplicationStep < 5) return RedirectToAction("TeamInfo");
+            return Redirect("/account/closed");
+            // var app = await GetCurrentApplicationAsync();
+            // if (app == null) return RedirectToLogin();
+            // if (app.Status == "Submitted") return RedirectToAction("Dashboard");
+            // if (app.ApplicationStep < 5) return RedirectToAction("TeamInfo");
 
-            PopulateStepViewBag(app);
-            ViewBag.GrowthStage = app.GrowthStage;
-            ViewBag.KeyMilestones = app.KeyMilestones;
-            ViewBag.ExistingUsers = app.ExistingUsers;
-            ViewBag.TotalUsersReached = app.TotalUsersReached;
-            ViewBag.CoreBusinessModel = app.CoreBusinessModel;
-            ViewBag.UniqueSellingPoint = app.UniqueSellingPoint;
-            ViewBag.MainCompetitors = app.MainCompetitors;
-            ViewBag.MarketPenetrationStrategy = app.MarketPenetrationStrategy;
-            ViewBag.KeyFeatures = app.KeyFeatures;
+            // PopulateStepViewBag(app);
+            // ViewBag.GrowthStage = app.GrowthStage;
+            // ViewBag.KeyMilestones = app.KeyMilestones;
+            // ViewBag.ExistingUsers = app.ExistingUsers;
+            // ViewBag.TotalUsersReached = app.TotalUsersReached;
+            // ViewBag.CoreBusinessModel = app.CoreBusinessModel;
+            // ViewBag.UniqueSellingPoint = app.UniqueSellingPoint;
+            // ViewBag.MainCompetitors = app.MainCompetitors;
+            // ViewBag.MarketPenetrationStrategy = app.MarketPenetrationStrategy;
+            // ViewBag.KeyFeatures = app.KeyFeatures;
 
-            return View();
+            // return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -537,24 +541,25 @@ namespace nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> Commercial1()
         {
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return RedirectToLogin();
-            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
-            if (app.ApplicationStep < 6) return RedirectToAction("ProductInfo");
+            return Redirect("/account/closed");
+            // var app = await GetCurrentApplicationAsync();
+            // if (app == null) return RedirectToLogin();
+            // if (app.Status == "Submitted") return RedirectToAction("Dashboard");
+            // if (app.ApplicationStep < 6) return RedirectToAction("ProductInfo");
 
-            PopulateStepViewBag(app);
-            ViewBag.HasStartedGeneratingSales = app.HasStartedGeneratingSales;
-            ViewBag.YearOfFirstSale = app.YearOfFirstSale;
-            ViewBag.YearlySalesRevenue = app.YearlySalesRevenue;
-            ViewBag.YearlyProfit = app.YearlyProfit;
-            ViewBag.ProprietaryFunding = app.ProprietaryFunding;
-            ViewBag.ExternalFunding = app.ExternalFunding;
-            ViewBag.TypesOfFunding = app.TypesOfFunding;
-            ViewBag.IsCurrentlyFundraising = app.IsCurrentlyFundraising;
-            ViewBag.ProjectedRevenue = app.ProjectedRevenue;
-            ViewBag.CompanyValuation = app.CompanyValuation;
+            // PopulateStepViewBag(app);
+            // ViewBag.HasStartedGeneratingSales = app.HasStartedGeneratingSales;
+            // ViewBag.YearOfFirstSale = app.YearOfFirstSale;
+            // ViewBag.YearlySalesRevenue = app.YearlySalesRevenue;
+            // ViewBag.YearlyProfit = app.YearlyProfit;
+            // ViewBag.ProprietaryFunding = app.ProprietaryFunding;
+            // ViewBag.ExternalFunding = app.ExternalFunding;
+            // ViewBag.TypesOfFunding = app.TypesOfFunding;
+            // ViewBag.IsCurrentlyFundraising = app.IsCurrentlyFundraising;
+            // ViewBag.ProjectedRevenue = app.ProjectedRevenue;
+            // ViewBag.CompanyValuation = app.CompanyValuation;
 
-            return View();
+            // return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -625,32 +630,33 @@ namespace nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> Commercial2()
         {
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return RedirectToLogin();
-            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
-            if (app.ApplicationStep < 7) return RedirectToAction("Commercial1");
+            return Redirect("/account/closed");
+            // var app = await GetCurrentApplicationAsync();
+            // if (app == null) return RedirectToLogin();
+            // if (app.Status == "Submitted") return RedirectToAction("Dashboard");
+            // if (app.ApplicationStep < 7) return RedirectToAction("Commercial1");
 
-            PopulateStepViewBag(app);
-            ViewBag.DemandEvidence = app.DemandEvidence;
-            ViewBag.RevenueStreams = app.RevenueStreams;
-            ViewBag.GeographicScalability = app.GeographicScalability;
-            ViewBag.GrossMargins = app.GrossMargins;
-            ViewBag.PrimaryCompetitiveAdvantage = app.PrimaryCompetitiveAdvantage;
-            ViewBag.OperatingRunway = app.OperatingRunway;
-            ViewBag.ActivePartnerships = app.ActivePartnerships;
-            ViewBag.RegulatoryApproach = app.RegulatoryApproach;
-            ViewBag.CrossIndustryApplication = app.CrossIndustryApplication;
-            ViewBag.LongTermGrowthStrategy = app.LongTermGrowthStrategy;
-            ViewBag.SupplyChainReliability = app.SupplyChainReliability;
-            ViewBag.IpOwnership = app.IpOwnership;
-            ViewBag.PricingStrategy = app.PricingStrategy;
-            ViewBag.BiggestRisks = app.BiggestRisks;
-            ViewBag.NewCustomersSixMonths = app.NewCustomersSixMonths;
-            ViewBag.CustomerGrowthRate = app.CustomerGrowthRate;
-            ViewBag.AverageCAC = app.AverageCAC;
-            ViewBag.RepeatCustomerRevenue = app.RepeatCustomerRevenue;
+            // PopulateStepViewBag(app);
+            // ViewBag.DemandEvidence = app.DemandEvidence;
+            // ViewBag.RevenueStreams = app.RevenueStreams;
+            // ViewBag.GeographicScalability = app.GeographicScalability;
+            // ViewBag.GrossMargins = app.GrossMargins;
+            // ViewBag.PrimaryCompetitiveAdvantage = app.PrimaryCompetitiveAdvantage;
+            // ViewBag.OperatingRunway = app.OperatingRunway;
+            // ViewBag.ActivePartnerships = app.ActivePartnerships;
+            // ViewBag.RegulatoryApproach = app.RegulatoryApproach;
+            // ViewBag.CrossIndustryApplication = app.CrossIndustryApplication;
+            // ViewBag.LongTermGrowthStrategy = app.LongTermGrowthStrategy;
+            // ViewBag.SupplyChainReliability = app.SupplyChainReliability;
+            // ViewBag.IpOwnership = app.IpOwnership;
+            // ViewBag.PricingStrategy = app.PricingStrategy;
+            // ViewBag.BiggestRisks = app.BiggestRisks;
+            // ViewBag.NewCustomersSixMonths = app.NewCustomersSixMonths;
+            // ViewBag.CustomerGrowthRate = app.CustomerGrowthRate;
+            // ViewBag.AverageCAC = app.AverageCAC;
+            // ViewBag.RepeatCustomerRevenue = app.RepeatCustomerRevenue;
 
-            return View();
+            // return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -747,22 +753,23 @@ namespace nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> Sustainability()
         {
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return RedirectToLogin();
-            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
-            if (app.ApplicationStep < 8) return RedirectToAction("Commercial2");
+            return Redirect("/account/closed");
+            // var app = await GetCurrentApplicationAsync();
+            // if (app == null) return RedirectToLogin();
+            // if (app.Status == "Submitted") return RedirectToAction("Dashboard");
+            // if (app.ApplicationStep < 8) return RedirectToAction("Commercial2");
 
-            PopulateStepViewBag(app);
-            ViewBag.SdgAlignment = app.SdgAlignment;
-            ViewBag.BusinessReplicability = app.BusinessReplicability;
-            ViewBag.SustainabilityIntegration = app.SustainabilityIntegration;
-            ViewBag.EnergyWasteReduction = app.EnergyWasteReduction;
-            ViewBag.SustainabilityTechnology = app.SustainabilityTechnology;
-            ViewBag.ScalingWithSustainability = app.ScalingWithSustainability;
-            ViewBag.ClimateChangeApproach = app.ClimateChangeApproach;
-            ViewBag.DigitalAccessibility = app.DigitalAccessibility;
+            // PopulateStepViewBag(app);
+            // ViewBag.SdgAlignment = app.SdgAlignment;
+            // ViewBag.BusinessReplicability = app.BusinessReplicability;
+            // ViewBag.SustainabilityIntegration = app.SustainabilityIntegration;
+            // ViewBag.EnergyWasteReduction = app.EnergyWasteReduction;
+            // ViewBag.SustainabilityTechnology = app.SustainabilityTechnology;
+            // ViewBag.ScalingWithSustainability = app.ScalingWithSustainability;
+            // ViewBag.ClimateChangeApproach = app.ClimateChangeApproach;
+            // ViewBag.DigitalAccessibility = app.DigitalAccessibility;
 
-            return View();
+            // return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -825,29 +832,30 @@ namespace nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> Impact()
         {
-            var app = await GetCurrentApplicationAsync();
-            if (app == null) return RedirectToLogin();
-            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
-            if (app.ApplicationStep < 9) return RedirectToAction("Sustainability");
+            return Redirect("/account/closed");
+            // var app = await GetCurrentApplicationAsync();
+            // if (app == null) return RedirectToLogin();
+            // if (app.Status == "Submitted") return RedirectToAction("Dashboard");
+            // if (app.ApplicationStep < 9) return RedirectToAction("Sustainability");
 
-            PopulateStepViewBag(app);
-            ViewBag.UnderservedMarketPercentage = app.UnderservedMarketPercentage;
-            ViewBag.SystemicInequalityApproach = app.SystemicInequalityApproach;
-            ViewBag.BeneficiaryInvolvement = app.BeneficiaryInvolvement;
-            ViewBag.ImpactDataSharing = app.ImpactDataSharing;
-            ViewBag.JobsCreated = app.JobsCreated;
-            ViewBag.GenderGapApproach = app.GenderGapApproach;
-            ViewBag.AccessForUnderserved = app.AccessForUnderserved;
-            ViewBag.ResourceOptimization = app.ResourceOptimization;
-            ViewBag.DataProtection = app.DataProtection;
-            ViewBag.PopulationImpacted = app.PopulationImpacted;
-            ViewBag.SocialGoodContribution = app.SocialGoodContribution;
-            ViewBag.EthicalOperations = app.EthicalOperations;
-            ViewBag.DiversityInclusion = app.DiversityInclusion;
-            ViewBag.EquitableOpportunities = app.EquitableOpportunities;
-            ViewBag.AccessibilityForDisadvantaged = app.AccessibilityForDisadvantaged;
+            // PopulateStepViewBag(app);
+            // ViewBag.UnderservedMarketPercentage = app.UnderservedMarketPercentage;
+            // ViewBag.SystemicInequalityApproach = app.SystemicInequalityApproach;
+            // ViewBag.BeneficiaryInvolvement = app.BeneficiaryInvolvement;
+            // ViewBag.ImpactDataSharing = app.ImpactDataSharing;
+            // ViewBag.JobsCreated = app.JobsCreated;
+            // ViewBag.GenderGapApproach = app.GenderGapApproach;
+            // ViewBag.AccessForUnderserved = app.AccessForUnderserved;
+            // ViewBag.ResourceOptimization = app.ResourceOptimization;
+            // ViewBag.DataProtection = app.DataProtection;
+            // ViewBag.PopulationImpacted = app.PopulationImpacted;
+            // ViewBag.SocialGoodContribution = app.SocialGoodContribution;
+            // ViewBag.EthicalOperations = app.EthicalOperations;
+            // ViewBag.DiversityInclusion = app.DiversityInclusion;
+            // ViewBag.EquitableOpportunities = app.EquitableOpportunities;
+            // ViewBag.AccessibilityForDisadvantaged = app.AccessibilityForDisadvantaged;
 
-            return View();
+            // return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -941,25 +949,26 @@ namespace nsia.Controllers
         [HttpGet]
         public async Task<IActionResult> Additional()
         {
-            var app = await GetCurrentApplicationAsync(includeDocuments: true);
-            if (app == null) return RedirectToLogin();
-            if (app.Status == "Submitted") return RedirectToAction("Dashboard");
-            if (app.ApplicationStep < 10) return RedirectToAction("Impact");
+            return Redirect("/account/closed");
+            // var app = await GetCurrentApplicationAsync(includeDocuments: true);
+            // if (app == null) return RedirectToLogin();
+            // if (app.Status == "Submitted") return RedirectToAction("Dashboard");
+            // if (app.ApplicationStep < 10) return RedirectToAction("Impact");
 
-            PopulateStepViewBag(app);
-            ViewBag.AdditionalInformation = app.AdditionalInformation;
-            ViewBag.Documents = app.Documents
-                .OrderBy(d => d.UploadedAt)
-                .Select(d => new
-                {
-                    id = d.Id,
-                    name = d.OriginalFileName ?? "",
-                    type = d.DocumentType ?? "",
-                    size = d.FileSizeBytes,
-                    url = d.OriginalFileName ?? "",
-                }).ToList();
+            // PopulateStepViewBag(app);
+            // ViewBag.AdditionalInformation = app.AdditionalInformation;
+            // ViewBag.Documents = app.Documents
+            //     .OrderBy(d => d.UploadedAt)
+            //     .Select(d => new
+            //     {
+            //         id = d.Id,
+            //         name = d.OriginalFileName ?? "",
+            //         type = d.DocumentType ?? "",
+            //         size = d.FileSizeBytes,
+            //         url = d.OriginalFileName ?? "",
+            //     }).ToList();
 
-            return View();
+            // return View();
         }
 
         [HttpPost]

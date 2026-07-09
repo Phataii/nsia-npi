@@ -25,11 +25,11 @@ namespace nsia.Controllers
         }
 
         [HttpGet]
-        public IActionResult ComingSoon() => View();
+        public IActionResult Closed() => View();
         // ── GET /Account/Register
         [HttpGet]
         public IActionResult Register() =>
-            IsLoggedIn() ? RedirectToDashboard() : View(); //RedirectToAction("ComingSoon");
+            IsLoggedIn() ? RedirectToDashboard() : RedirectToAction("Closed");
 
         // ── POST /Account/Register
         [HttpPost, ValidateAntiForgeryToken]
