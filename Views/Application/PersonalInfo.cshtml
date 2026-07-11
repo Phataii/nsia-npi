@@ -3,7 +3,11 @@
     Layout = null;
     var applicantName = ViewBag.ApplicantName as string ?? "";
     var completedStep = (int)(ViewBag.CompletedStep ?? 1);
-    var initials      = string.Join("", applicantName.Split(' ').Take(2).Select(w => w[0]));
+    var initials = string.Join("",
+    applicantName
+        .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+        .Take(2)
+        .Select(w => w[0]));
 
     var steps = new[] {
         new { Num = 1,  Name = "Pre-Checklist",    Action = "PreChecklist"   },
@@ -41,7 +45,7 @@
         :root {
             --teal: #2DB8B0; --teal-d: #1a9990; --teal-deep: #0d7a73;
             --teal-light: #E8F7F6; --teal-pale: #F0FAF9;
-            --green: #7BC144; --green-dark: #5a9130;
+            --green: #7BC144; --green-dark: #5a9130;/
             --ink: #1C2B2A; --cream: #F5F9F8; --off: #EEF4F3;
             --muted: #4A6260; --border: rgba(45,184,176,0.2);
             --nav-h: 62px; --step-h: 56px;
