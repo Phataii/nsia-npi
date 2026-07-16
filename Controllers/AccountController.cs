@@ -4,7 +4,6 @@ using nsia.Data;
 using nsia.Models;
 using nsia.Services;
 using nsia.ViewModels;
-using BCrypt.Net;
 
 namespace nsia.Controllers
 {
@@ -25,11 +24,11 @@ namespace nsia.Controllers
         }
 
         [HttpGet]
-        public IActionResult ComingSoon() => View();
+        public IActionResult Closed() => View();
         // ── GET /Account/Register
         [HttpGet]
         public IActionResult Register() =>
-            IsLoggedIn() ? RedirectToDashboard() : View(); //RedirectToAction("ComingSoon");
+            IsLoggedIn() ? RedirectToDashboard() : RedirectToAction("Closed");
 
         // ── POST /Account/Register
         [HttpPost, ValidateAntiForgeryToken]
@@ -178,17 +177,19 @@ namespace nsia.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            if (IsLoggedIn())
-                return RedirectToDashboard();
+            return RedirectToAction("Closed", "Account");
+            // if (IsLoggedIn())
+            //     return RedirectToDashboard();
 
-            ViewBag.Success = TempData["Success"];
+            // ViewBag.Success = TempData["Success"];
 
-            return View();
+            // return View();
         }
         // ── POST /Account/Login
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+
             if (!ModelState.IsValid) return View(model);
 
             var application = await _db.Applications
