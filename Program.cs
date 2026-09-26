@@ -49,6 +49,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Content-Security-Policy"] =
+        "frame-ancestors 'none';";
+
+    await next();
+});
+
 app.UseHttpsRedirection();
 app.UseDefaultFiles(); // serves index.html when hitting /
 app.UseStaticFiles();
